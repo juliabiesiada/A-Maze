@@ -1,7 +1,5 @@
-package application;
+package Application;
 
-import java.awt.GridLayout;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import javafx.scene.control.Button;
@@ -13,9 +11,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import view.GemsLabel;
-import view.PotionsLabel;
-import view.StatusLabel;
+import View.GemsLabel;
+import View.PotionsLabel;
+import View.StatusLabel;
+
 
 public class App extends BorderPane {
 
@@ -55,13 +54,13 @@ public class App extends BorderPane {
 		
 		inventoryL = new Label("Inventory"); 
 		
-		gemsImg = new Image(new FileInputStream("C:\\Users\\jbies\\eclipse-workspace\\A-maze v1\\img\\gem_icon.png"));
-		potionsImg = new Image(new FileInputStream("C:\\Users\\jbies\\eclipse-workspace\\A-maze v1\\img\\potion_icon.png"));
-		gemsIc = new ImageView(gemsImg);
-		potionsIc = new ImageView(potionsImg);
+//		gemsImg = new Image(new FileInputStream("diamond.png"));
+//		potionsImg = new Image(new FileInputStream("C:\\Users\\jbies\\eclipse-workspace\\A-maze v1\\img\\potion_icon.png"));
+//		gemsIc = new ImageView(gemsImg);
+//		potionsIc = new ImageView(potionsImg);
 		
-		inventory.getChildren().addAll(gemsIc, potionsIc);
-		top.getChildren().addAll(inventoryL, inventory);
+//		inventory.getChildren().addAll(gemsIc, potionsIc);
+//		top.getChildren().addAll(inventoryL, inventory);
 		
 		board = new GridPane();
 		card = new GridPane();
