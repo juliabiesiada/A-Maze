@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="593.0" prefWidth="669.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Controller">
+<BorderPane prefHeight="593.0" prefWidth="669.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" >
    <center>
-      <GridPane maxHeight="450.0" maxWidth="450.0" minHeight="300.0" minWidth="300.0" prefHeight="400.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+      <GridPane fx:id="board_grid" maxHeight="450.0" maxWidth="450.0" minHeight="300.0" minWidth="300.0" prefHeight="400.0" prefWidth="400.0" BorderPane.alignment="CENTER">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
