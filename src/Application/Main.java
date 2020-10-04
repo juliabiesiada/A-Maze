@@ -29,6 +29,14 @@ public class Main extends Application {
 			primaryStage.setScene(new Scene(root,400, 400));
 			primaryStage.setTitle("A-Maze");
 
+			primaryStage.setHeight(500);
+			primaryStage.setMaxHeight(700);
+			primaryStage.setMinHeight(500);
+			
+			primaryStage.setWidth(530);
+			primaryStage.setMaxWidth(700);
+			primaryStage.setMinWidth(530); 
+			
 			primaryStage.toFront();
 			primaryStage.show();
 
