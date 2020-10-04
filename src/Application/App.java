@@ -2,6 +2,9 @@ package Application;
 
 import java.io.FileNotFoundException;
 
+import View.GemsLabel;
+import View.PotionsLabel;
+import View.StatusLabel;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -11,9 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import View.GemsLabel;
-import View.PotionsLabel;
-import View.StatusLabel;
+
 
 
 public class App extends BorderPane {

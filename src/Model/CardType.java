@@ -1,4 +1,8 @@
 package Model;
 
-public class CardType {
+public enum CardType {
+    LINEPATH,
+    ANGLEPATH,
+    TPATH,
+    CROSSPATH
 }

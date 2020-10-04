@@ -3,11 +3,11 @@ package View;
 import javafx.scene.control.Label;
 
 public class GemsLabel extends Label {
-	
-	//add controller
-	//add update and value listener
-	public GemsLabel() {
-		
-	}
+
+    //add controller
+    //add update and value listener
+    public GemsLabel() {
+
+    }
 
 }
