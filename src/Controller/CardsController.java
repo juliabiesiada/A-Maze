@@ -108,7 +108,6 @@ public class CardsController {
         int newCol = 0;
 
         for (int k = 0; k<rot-1; k++) {
-            System.out.println("rotazione = "+ rot+ " - cycle = " + k);
             for (int i = 0; i<3; i++) {
                 switch(i) {
                     case 0:
@@ -130,13 +129,6 @@ public class CardsController {
                     tmp2[i][j]=tmp[i][j];
                 }
             }
-                for (int i = 0; i<tmp2.length; i++) {
-                    for (int j = 0; j<tmp2.length; j++) {
-                        System.out.print(tmp2[i][j] + " ");
-                    }
-                    System.out.println();
-                }
-                System.out.println();
         }
         if (rot == 1) {
             return matrix;
