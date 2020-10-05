@@ -4,5 +4,6 @@ public enum CardType {
     LINEPATH,
     ANGLEPATH,
     TPATH,
-    CROSSPATH
+    CROSSPATH;
+
 }

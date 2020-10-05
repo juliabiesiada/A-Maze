@@ -8,6 +8,10 @@ public class Card {
     private int[][] cardMatrix;
     private Rotation rotation;
 
+    public Rotation getRotation() {
+        return rotation;
+    }
+
     public int getIdNumber() {
         return idNumber;
     }
