@@ -75,8 +75,8 @@ public class Controller {
 
 		//this creates a pane inside each cell of the grid
 		panes = new ArrayList<Pane>();
-		for (int i = 0; i<7; i++) {
-			for (int j = 0; j<7; j++) {
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 7; j++) {
 				Pane pane = new Pane();
 				pane.setId("r"+i+"c"+j);
 				panes.add(pane);
