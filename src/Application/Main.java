@@ -1,6 +1,7 @@
 package Application;
 	
 import Controller.Controller;
+import Controller.levelController;
 import Model.Gem;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -19,21 +20,26 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 
-			Controller myController = new Controller();
+			//Controller myController = new Controller();
 
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/mainBoard.fxml"));
-			loader.setController(myController);
+			//FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/mainBoard.fxml"));
+			//loader.setController(myController);
+			//loader.load();
+
+			levelController controller = new levelController();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/Levels.fxml"));
+			loader.setController(controller);
 			loader.load();
-
+			
 			Parent root = loader.getRoot();
 			primaryStage.setScene(new Scene(root,400, 400));
 			primaryStage.setTitle("A-Maze");
 
-			primaryStage.setHeight(500);
-			primaryStage.setMaxHeight(700);
-			primaryStage.setMinHeight(500);
+			primaryStage.setHeight(450);
+			primaryStage.setMaxHeight(500);
+			primaryStage.setMinHeight(400);
 			
-			primaryStage.setWidth(530);
+			primaryStage.setWidth(700);
 			primaryStage.setMaxWidth(700);
 			primaryStage.setMinWidth(530); 
 			
