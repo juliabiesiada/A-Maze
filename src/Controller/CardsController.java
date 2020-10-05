@@ -124,8 +124,8 @@ public class CardsController {
                     tmp[j][newCol] = tmp2[i][j];
                 }
             }
-            for (int i = 0; i<tmp.length; i++) {
-                for (int j = 0; j<tmp.length; j++) {
+            for (int i = 0; i < tmp.length; i++) {
+                for (int j = 0; j < tmp.length; j++) {
                     tmp2[i][j]=tmp[i][j];
                 }
             }
