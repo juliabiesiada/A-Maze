@@ -136,6 +136,78 @@ public class CardsController {
             return tmp;
     }
 
+    public Card[] cardsSlider(Card[] cards, int prevCol, int prevRow, int newCol, int newRow, int value) {
+        int newPositionId = 0;
+        int oldPositionID = 0;
+        for (int i = 0; i<cards.length; i++) {
+            if (newCol == cards[i].getColumn() && newRow == cards[i].getRow()) {
+                newPositionId = cards[i].getIdNumber();
+            } else if (prevCol == cards[i].getColumn() && prevRow == cards[i].getRow()) {
+                oldPositionID = cards[i].getIdNumber();
+            }
+        }
+        Card[] toBeMoved = new Card[value];
+        Card [] moved = new Card[value];
+
+        //For vertical sliding:
+        if (prevCol == newCol && (prevRow == 0 && newRow == value || prevRow == value && newRow == 0)) {
+            int k = 0;
+            for (int i = 0; i<cards.length; i++) {
+                if (cards[i].getColumn() == newCol) {
+                    toBeMoved[k] = cards[i];
+                    k++;
+                }
+            }
+            cardsMover(value, newPositionId, oldPositionID, toBeMoved, moved);
+        }
+
+        //For horizontal sliding:
+        else if (prevRow == newRow && (prevCol == 0 && newCol == value || prevCol == value && newCol == 0)) {
+            int k = 0;
+            for (int i = 0; i<cards.length; i++) {
+                if (cards[i].getRow() == newRow) {
+                    toBeMoved[k] = cards[i];
+                    k++;
+                }
+            }
+            moved = cardsMover(value, newPositionId, oldPositionID, toBeMoved, moved);
+        }
+        // Final cycle to move cards
+        for (int i = 0; i<value; i++) {
+            for (int j = 0; j<cards.length; j++) {
+                if (cards[j].getIdNumber() == moved[i].getIdNumber()) {
+                    moved[i].setColumn(cards[j].getColumn());
+                    moved[i].setRow(cards[j].getRow());
+                    cards[j] = moved[i];
+                }
+            }
+        }
+
+        return cards;
+    }
+
+    private Card[] cardsMover(int value, int newPositionId, int oldPositionID, Card[] toBeMoved, Card[] moved) {
+        if (newPositionId < oldPositionID) {
+            int j = 1;
+            for (int i = 0; i<value; i++) {
+                if (j == value -1) {
+                    j = 0;
+                }
+                moved[j] = toBeMoved[i];
+                j++;
+            }
+        }
+        else {
+            int j = 0;
+            for (int i = 1; i<value; i++) {
+                moved[j] = toBeMoved[i];
+                j++;
+            }
+            moved[0] = toBeMoved[0];
+        }
+        return moved;
+    }
+
     public Card[] getCards() {
         return cards;
     }

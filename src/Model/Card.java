@@ -3,6 +3,27 @@ package Model;
 public class Card {
     private int idNumber;
     private int row;
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
+    public void setRotation(Rotation rotation) {
+        this.rotation = rotation;
+    }
+
     private int column;
     private CardType type;
     private int[][] cardMatrix;

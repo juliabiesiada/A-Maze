@@ -127,9 +127,6 @@ public class Controller {
 				
 				for (int k = 0; k<panes.size(); k++) {
 					GridPane tinyGrid = new GridPane();
-					//tinyGrid.setPrefSize(50,50);
-					//tinyGrid.setMaxSize(60,60);
-					//tinyGrid.setMinSize(60,60);
 					for (int i = 0; i < 3; i++) {
 						for (int j = 0; j < 3; j++) {
 							Pane pane = new Pane();
