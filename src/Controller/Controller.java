@@ -30,83 +30,13 @@ public class Controller {
 	}
 	
 	public void initialize() {
-		
-		
-		//this method actually print the first card but only if the 3x3 grid has an id.
-		/*for (int k = 0; k<1; k++) {
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < 3; j++) {
-					Pane pane = new Pane();
-					if (cards[k].getCardMatrix()[i][j] == 0) {
-						pane.setBackground(new Background(
-								new BackgroundFill(Paint.valueOf("white"), null, null)));
-					} else {
-						pane.setBackground(new Background(
-								new BackgroundFill(Paint.valueOf("brown"), null, null)));
-					}
-					littleGrid.add(pane, j, i);
-				}
-			}
-		}*/
-
-		/*
-		for (int k = 0; k<1; k++) {
-			GridPane prova = new GridPane();
-			prova.setPrefSize(60,60);
-			prova.setMaxSize(60,60);
-			prova.setMinSize(60,60);
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < 3; j++) {
-					Pane pane = new Pane();
-					if (cards[k].getCardMatrix()[i][j] == 0) {
-						pane.setBackground(new Background(
-								new BackgroundFill(Paint.valueOf("white"), null, null)));
-					} else {
-						pane.setBackground(new Background(
-								new BackgroundFill(Paint.valueOf("brown"), null, null)));
-					}
-					prova.addRow(i, new Text("    "));
-					prova.add(pane, j, i);
-					prova.setGridLinesVisible(true);
-				}
-			}
-			board_grid.add(prova, 0,0);
-			System.out.println(board_grid.getChildren().get(0).getId());
-		}*/
-
-		
-
-		/*
-		//this create a grid 3x3 inside each pane
-		for (int k = 0; k<panes.size(); k++) {
-			System.out.println(panes.get(k).getId());
-			//GridPane gridCard = new GridPane();
-			//panes.get(k).getChildren().add(gridCard);
-			//gridCard.toFront();
-
-			for (int i = 0; i<3; i++) {
-				for (int j = 0; j<3; j++) {
-					Pane pane = new Pane();
-					if (cards[k].getCardMatrix()[i][j] == 0) {
-						pane.setBackground(new Background(
-								new BackgroundFill(Paint.valueOf("white"), null, null)));
-					} else {
-						pane.setBackground(new Background(
-								new BackgroundFill(Paint.valueOf("brown"), null, null)));
-					}
-					gridCard.add(pane, j, i);
-					pane.toFront();
-				}
-			}
-
-		}*/
 
 	}
-	
+
 	public void createBoard(int levelSize) {
 		
 		CardsController cardsController = new CardsController(levelSize);
-		Card[] cards = cardsController.getCards();
+		Card[][] cards = cardsController.getCards();
 		
 		//root is pane, contains a grid, allows us to be flexible with the size
 		GridPane board_grid = new GridPane();
@@ -124,25 +54,28 @@ public class Controller {
 					}
 				}
 				
-				
-				for (int k = 0; k<panes.size(); k++) {
-					GridPane tinyGrid = new GridPane();
-					for (int i = 0; i < 3; i++) {
-						for (int j = 0; j < 3; j++) {
-							Pane pane = new Pane();
-							if (cards[k].getCardMatrix()[i][j] == 0) {
-								pane.setBackground(new Background(
-										new BackgroundFill(Paint.valueOf("white"), null, null)));
-							} else {
-								pane.setBackground(new Background(
-										new BackgroundFill(Paint.valueOf("brown"), null, null)));
+				//this colors the cards
+				int k = 0;
+				for (int i = 0; i<cards.length; i++) {
+					for (int j = 0; j<cards.length; j++) {
+						GridPane tinyGrid = new GridPane();
+						for (int l = 0; l < 3; l++) {
+							for (int m = 0; m < 3; m++) {
+								Pane pane = new Pane();
+								if (cards[i][j].getCardMatrix()[l][m] == 0) {
+									pane.setBackground(new Background(
+											new BackgroundFill(Paint.valueOf("white"), null, null)));
+								} else {
+									pane.setBackground(new Background(
+											new BackgroundFill(Paint.valueOf("brown"), null, null)));
+								}
+								tinyGrid.addRow(l, new Text("     "));
+								tinyGrid.add(pane, m, l);
 							}
-							//ask in class!!!!
-							tinyGrid.addRow(i, new Text("     "));
-							tinyGrid.add(pane, j, i);
 						}
+						panes.get(k).getChildren().add(tinyGrid);
+						k++;
 					}
-					panes.get(k).getChildren().add(tinyGrid);
 				}
 				
 				board_grid.setMaxHeight(494);
@@ -150,5 +83,6 @@ public class Controller {
 				board_grid.setMinHeight(494);
 				board_grid.setMinWidth(550);
 				board_grid.setPadding(new Insets(0,0,0,30));
+
 	}
 }

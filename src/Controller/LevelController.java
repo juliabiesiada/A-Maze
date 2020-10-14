@@ -2,13 +2,18 @@ package Controller;
 
 import java.io.IOException;
 
+import Model.Level;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class levelController {
+public class LevelController {
+
+	Level difficulty;
+	//TODO you should make the mouse event change this variable.
+	// Then the controller should have access to the variable.
 	
 	int size;
 

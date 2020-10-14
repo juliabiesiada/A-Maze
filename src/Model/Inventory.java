@@ -5,10 +5,10 @@ public class Inventory {
     private int bufferCollected;
     private int debufferCollected;
 
-    public Inventory(int gemsCollected, int bufferCollected, int debufferCollected) {
-        this.gemsCollected = gemsCollected;
-        this.bufferCollected = bufferCollected;
-        this.debufferCollected = debufferCollected;
+    public Inventory() {
+        this.gemsCollected = 0;
+        this.bufferCollected = 0;
+        this.debufferCollected = 0;
     }
 
     public int getGemsCollected() {

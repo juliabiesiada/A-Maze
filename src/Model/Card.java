@@ -1,44 +1,34 @@
 package Model;
 
 public class Card {
-    private int idNumber;
-    private int row;
+    private Position position;
+    private CardType type;
+    private int[][] cardMatrix;
+    private Rotation rotation;
+    private OnCard onCard;
 
-    public int getRow() {
-        return row;
+    public OnCard getOnCard() {
+        return onCard;
     }
 
-    public void setRow(int row) {
-        this.row = row;
+    public void setOnCard(OnCard onCard) {
+        this.onCard = onCard;
     }
 
-    public int getColumn() {
-        return column;
+    public Position getPosition() {
+        return position;
     }
 
-    public void setColumn(int column) {
-        this.column = column;
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public void setRotation(Rotation rotation) {
         this.rotation = rotation;
     }
 
-    private int column;
-    private CardType type;
-    private int[][] cardMatrix;
-    private Rotation rotation;
-
     public Rotation getRotation() {
         return rotation;
-    }
-
-    public int getIdNumber() {
-        return idNumber;
-    }
-
-    public void setIdNumber(int idNumber) {
-        this.idNumber = idNumber;
     }
 
     public CardType getType() {
@@ -57,15 +47,13 @@ public class Card {
         this.cardMatrix = cardMatrix;
     }
 
-    public Card(int idNumber, int row, int column, CardType type, Rotation rotation) {
-        this.idNumber = idNumber;
-        this.row = row;
-        this.column = column;
+    public Card(Position position, CardType type, Rotation rotation) {
+        this.position = position;
         this.type = type;
         this.rotation = rotation;
+        this.onCard = OnCard.NOTHING;
 
         //Matrixs of all the type of cards we have:
-
         int[][] tPathMatrix = {
                 {1, 1, 1},
                 {0, 0, 0},

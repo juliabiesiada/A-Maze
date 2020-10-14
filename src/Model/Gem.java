@@ -4,9 +4,9 @@ import java.awt.*;
 
 public class Gem {
     private Color color;
-    private int[][] position;
+    private Position position;
 
-    public Gem(Color color, int[][] position) {
+    public Gem(Color color, Position position) {
         this.color = color;
         this.position = position;
     }
@@ -15,7 +15,7 @@ public class Gem {
         this.color = color;
     }
 
-    public void setPosition(int[][] position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 
@@ -23,7 +23,7 @@ public class Gem {
         return color;
     }
 
-    public int[][] getPosition() {
+    public Position getPosition() {
         return position;
     }
 }

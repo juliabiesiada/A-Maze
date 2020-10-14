@@ -1,15 +1,11 @@
 package Application;
 	
-import Controller.Controller;
-import Controller.levelController;
-import Model.Gem;
+import Controller.LevelController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-
-import java.awt.*;
 
 
 public class Main extends Application {
@@ -26,7 +22,7 @@ public class Main extends Application {
 			//loader.setController(myController);
 			//loader.load();
 
-			levelController controller = new levelController();
+			LevelController controller = new LevelController();
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/Levels.fxml"));
 			loader.setController(controller);
 			loader.load();

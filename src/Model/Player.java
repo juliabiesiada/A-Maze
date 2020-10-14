@@ -4,13 +4,11 @@ import java.awt.*;
 
 public class Player {
     private Color color;
-    private int[][] position;
+    private Position position;
     private String name;
     private Inventory inventory;
-    //does he have an icon?
 
-
-    public Player(Color color, int[][] position, String name, Inventory inventory) {
+    public Player(Color color, Position position, String name, Inventory inventory) {
         this.color = color;
         this.position = position;
         this.name = name;
@@ -25,11 +23,11 @@ public class Player {
         this.color = color;
     }
 
-    public int[][] getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(int[][] position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 

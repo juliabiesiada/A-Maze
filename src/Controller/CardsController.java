@@ -2,57 +2,79 @@ package Controller;
 
 import Model.Card;
 import Model.CardType;
+import Model.Position;
 import Model.Rotation;
 
 public class CardsController {
 
-    private Card[] cards;
+    private static final int NUM_OF_TYPES = 4;
+    private static final int NUM_OF_ROT = 4;
+
+    private Card[][] cards;
     private int value;
+
+    // Constructor, Getters and Setters:
 
     public CardsController(int value) {
         this.value = value;
         this.cards = cardsCreator();
     }
 
-    public Card[] cardsCreator() {
+    public Card[][] getCards() {
+        return cards;
+    }
 
-        int numOfCards = value * value;
-        int k = 0;
-        Card[] cardsArray = new Card[numOfCards];
+    // Methods:
+
+    /**
+     * This method generate a matrix of cards to initialize the board
+     * @return the Matrix of cards.
+     */
+    public Card[][] cardsCreator() {
+        Card[][] cardsMatrix = new Card[value][value];
         for (int i = 0; i<value; i++) {
             for (int j = 0; j<value; j++) {
+                Position pos = new Position(i,j);
                 if (i == 0 && j == 0) {
-                    cardsArray[k] = new Card(k, i, j, CardType.ANGLEPATH, Rotation.TWO);
+                    cardsMatrix[i][j] = new Card(pos, CardType.ANGLEPATH, Rotation.TWO);
                 } else if (i == 0 && j == value-1) {
-                    cardsArray[k] = new Card(k, i, j, CardType.ANGLEPATH, Rotation.THREE);
+                    cardsMatrix[i][j] = new Card(pos, CardType.ANGLEPATH, Rotation.THREE);
                 } else if (i == value-1 && j == 0) {
-                    cardsArray[k] = new Card(k, i, j, CardType.ANGLEPATH, Rotation.ONE);
+                    cardsMatrix[i][j] = new Card(pos, CardType.ANGLEPATH, Rotation.ONE);
                 } else if (i == value-1 && j == value-1) {
-                    cardsArray[k] = new Card(k, i, j, CardType.ANGLEPATH, Rotation.FOUR);
+                    cardsMatrix[i][j] = new Card(pos, CardType.ANGLEPATH, Rotation.FOUR);
                 } else if (i == value/2 && j == value/2) {
-                    cardsArray[k] = new Card(k, i, j, CardType.CROSSPATH, Rotation.ONE);
+                    cardsMatrix[i][j] = new Card(pos, CardType.CROSSPATH, Rotation.ONE);
                 } else {
-                    int type = randomizer();
-                    int rot = randomizer();
-                    cardsArray[k] = new Card(k, i, j, cardTypeCreator(type), rotationCreator(rot));
+                    int type = randomizer(NUM_OF_TYPES);
+                    int rot = randomizer(NUM_OF_ROT);
+                    cardsMatrix[i][j] = new Card(pos, cardTypeCreator(type), rotationCreator(rot));
                 }
-                k++;
+                int[][] rotatedMatrix = initialRotator(cardsMatrix[i][j].getCardMatrix(), cardsMatrix[i][j].getRotation());
+                cardsMatrix[i][j].setCardMatrix(rotatedMatrix);
             }
         }
 
-        for (int i = 0; i<cardsArray.length; i++) {
-        int[][] rotatedMatrix = initialRotator(cardsArray[i].getCardMatrix(), cardsArray[i].getRotation());
-        cardsArray[i].setCardMatrix(rotatedMatrix);
-        }
-    return cardsArray;
+    return cardsMatrix;
     }
 
-    public int randomizer() {
-        int n = (int) (Math.random() * 4);
+    /**
+     * It gives back a random number in an interval from 0 to val (excluded)
+     * @param val - the limit of the interval
+     * @return a random number
+     */
+    public int randomizer(int val) {
+        int n = (int) (Math.random() * val);
         return n;
     }
 
+    /**
+     * This method associate a random number to a type of card
+     * @param type a random number in a given interval
+     * @return a CardType associated to that number
+     */
     public CardType cardTypeCreator(int type) {
+
         CardType cardType = CardType.ANGLEPATH;
         switch (type) {
             case 0:
@@ -70,6 +92,11 @@ public class CardsController {
         return cardType;
     }
 
+    /**
+     * This method associate a random number to a rotation of the card
+     * @param rot a random number in a given interval
+     * @return a Rotation associated to that number
+     */
     public Rotation rotationCreator(int rot) {
         Rotation rotation = Rotation.ONE;
         switch (rot) {
@@ -88,7 +115,14 @@ public class CardsController {
         return rotation;
     }
 
+    /**
+     * Spin the cards baby! This method just rotates the cards based on them rotation type
+     * @param matrix it's the matrix of the single card
+     * @param rotationType it's a rotation type
+     * @return the matrix of cards, rotated
+     */
     public int[][] initialRotator(int[][] matrix, Rotation rotationType) {
+        //TODO Extract from this method a clockWiseRotation method
         int rot = 0;
         switch (rotationType) {
             case ONE:
@@ -136,24 +170,30 @@ public class CardsController {
             return tmp;
     }
 
-    public Card[] cardsSlider(Card[] cards, int prevCol, int prevRow, int newCol, int newRow, int value) {
+
+    //TODO check if this method works
+    //Ok I honestly feel so bad about how this method is written that I'll do it again.
+    /*
+    public Card[] cardsSlider(Card[][] cards, Position prevPos, Position newPos, int value) {
         int newPositionId = 0;
         int oldPositionID = 0;
         for (int i = 0; i<cards.length; i++) {
-            if (newCol == cards[i].getColumn() && newRow == cards[i].getRow()) {
-                newPositionId = cards[i].getIdNumber();
-            } else if (prevCol == cards[i].getColumn() && prevRow == cards[i].getRow()) {
-                oldPositionID = cards[i].getIdNumber();
+            for (int j = 0; j<cards.length; j++) {
+                if (newPos.getColumn() == cards[i][j].getPosition().getColumn() && newPos.getRow() == cards[i][j].getPosition().getRow()) {
+                    newPositionId = cards[i].getIdNumber();
+                } else if (prevCol == cards[i].getPosition().getColumn() && prevRow == cards[i].getPosition().getRow()) {
+                    oldPositionID = cards[i].getIdNumber();
+                }
             }
         }
         Card[] toBeMoved = new Card[value];
         Card [] moved = new Card[value];
 
         //For vertical sliding:
-        if (prevCol == newCol && (prevRow == 0 && newRow == value || prevRow == value && newRow == 0)) {
+        if (prevCol == newPos.getColumn() && (prevRow == 0 && newPos.getRow() == value || prevRow == value && newPos.getRow() == 0)) {
             int k = 0;
             for (int i = 0; i<cards.length; i++) {
-                if (cards[i].getColumn() == newCol) {
+                if (cards[i].getPosition().getColumn() == newPos.getColumn()) {
                     toBeMoved[k] = cards[i];
                     k++;
                 }
@@ -162,10 +202,10 @@ public class CardsController {
         }
 
         //For horizontal sliding:
-        else if (prevRow == newRow && (prevCol == 0 && newCol == value || prevCol == value && newCol == 0)) {
+        else if (prevRow == newPos.getRow() && (prevCol == 0 && newPos.getColumn() == value || prevCol == value && newPos.getColumn() == 0)) {
             int k = 0;
             for (int i = 0; i<cards.length; i++) {
-                if (cards[i].getRow() == newRow) {
+                if (cards[i].getPosition().getRow() == newPos.getRow()) {
                     toBeMoved[k] = cards[i];
                     k++;
                 }
@@ -176,8 +216,8 @@ public class CardsController {
         for (int i = 0; i<value; i++) {
             for (int j = 0; j<cards.length; j++) {
                 if (cards[j].getIdNumber() == moved[i].getIdNumber()) {
-                    moved[i].setColumn(cards[j].getColumn());
-                    moved[i].setRow(cards[j].getRow());
+                    moved[i].setColumn(cards[j].getPosition().getColumn());
+                    moved[i].setRow(cards[j].getPosition().getRow());
                     cards[j] = moved[i];
                 }
             }
@@ -206,21 +246,6 @@ public class CardsController {
             moved[0] = toBeMoved[0];
         }
         return moved;
-    }
+    }*/
 
-    public Card[] getCards() {
-        return cards;
-    }
-
-    public void setCards(Card[] cards) {
-        this.cards = cards;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
-    }
 }
