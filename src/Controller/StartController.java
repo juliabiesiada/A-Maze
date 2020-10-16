@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import Model.Game;
 import Model.Player;
-import Application.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

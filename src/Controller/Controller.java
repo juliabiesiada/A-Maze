@@ -8,7 +8,8 @@ import Model.Card;
 import Model.Game;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
@@ -22,8 +23,11 @@ public class Controller {
 	private List<Pane> panes;
 	@FXML
 	private GridPane littleGrid;
+
 	//for level choosing
 	int size;
+	int tileDimension;
+	int levelSize;
 	
 	public void onClicked(MouseEvent mouseEvent) {
 		//code for ending turn
@@ -36,7 +40,8 @@ public class Controller {
 
 	public void createBoard(Game game) {
 		
-		int levelSize = checkLevel(game);
+		levelSize = checkLevel(game);
+		setTileDimension(game);
 		
 		CardsController cardsController = new CardsController(levelSize);
 		Card[][] cards = cardsController.getCards();
@@ -66,13 +71,18 @@ public class Controller {
 							for (int m = 0; m < 3; m++) {
 								Pane pane = new Pane();
 								if (cards[i][j].getCardMatrix()[l][m] == 0) {
-									pane.setBackground(new Background(
-											new BackgroundFill(Paint.valueOf("white"), null, null)));
+									Image path = new Image("/Assets/path.png");
+									ImageView pathImageView = new ImageView(path);
+									pathImageView.setFitWidth(tileDimension);
+									pathImageView.setFitHeight(tileDimension);
+									pane.getChildren().add(pathImageView);
 								} else {
-									pane.setBackground(new Background(
-											new BackgroundFill(Paint.valueOf("brown"), null, null)));
+									Image wall = new Image("/Assets/wall.png");
+									ImageView wallImageView = new ImageView(wall);
+									wallImageView.setFitWidth(tileDimension);
+									wallImageView.setFitHeight(tileDimension);
+									pane.getChildren().add(wallImageView);
 								}
-								tinyGrid.addRow(l, new Text("     "));
 								tinyGrid.add(pane, m, l);
 							}
 						}
@@ -87,6 +97,18 @@ public class Controller {
 				board_grid.setMinWidth(550);
 				board_grid.setPadding(new Insets(0,0,0,30));
 
+	}
+
+	private void setTileDimension(Game game) {
+
+	switch (game.getLevel()) {
+		case EASY: tileDimension = 25;
+		break;
+		case MEDIUM: tileDimension = 20;
+		break;
+		case HARD: tileDimension = 15;
+		break;
+	}
 	}
 
 	private int checkLevel(Game game) {
