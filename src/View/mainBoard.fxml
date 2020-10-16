@@ -54,6 +54,22 @@
                         <Font size="18.0" />
                      </font>
                      <HBox.margin>
+                        <Insets right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="85.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Assets/poison_icon.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets right="10.0" top="5.0" />
+                     </HBox.margin>
+                  </ImageView>
+                  <Label fx:id="labelPoisons" layoutX="130.0" layoutY="20.0" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
                         <Insets top="10.0" />
                      </HBox.margin>
                   </Label>

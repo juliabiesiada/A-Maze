@@ -1,6 +1,9 @@
 package Application;
 	
+import Controller.CharacterController;
 import Controller.LevelController;
+import Controller.StartController;
+import Application.Main;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,13 +25,15 @@ public class Main extends Application {
 			//loader.setController(myController);
 			//loader.load();
 
-			LevelController controller = new LevelController();
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/Levels.fxml"));
+			StartController controller = new StartController();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/startScreen.fxml"));
 			loader.setController(controller);
 			loader.load();
 			
 			Parent root = loader.getRoot();
-			primaryStage.setScene(new Scene(root,400, 400));
+			Scene scene = new Scene(root, 400, 400);
+			scene.getStylesheets().add("View/application.css");
+			primaryStage.setScene(scene);
 			primaryStage.setTitle("A-Maze");
 
 			primaryStage.setHeight(450);

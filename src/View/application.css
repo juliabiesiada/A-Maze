@@ -1,1 +1,32 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+.player-indiana {
+	 -fx-border-radius: 30.0;
+	 -fx-background-image: url(../Assets/indy.png);
+	 -fx-background-size: 120.0px 120.0px;
+	 -fx-background-repeat: no-repeat;
+	 -fx-background-position: center;
+}
+
+.player-lara {
+	 -fx-border-radius: 30.0;
+	 -fx-background-image: url(../Assets/lara.png);
+	 -fx-background-size: 120.0px 120.0px;
+	 -fx-background-repeat: no-repeat;
+	 -fx-background-position: center;
+}
+
+.player-alan {
+	 -fx-border-radius: 30.0;
+	 -fx-background-image: url(../Assets/alan.png);
+	 -fx-background-size: 120.0px 120.0px;
+	 -fx-background-repeat: no-repeat;
+	 -fx-background-position: center;
+}
+
+player-someone {
+	 -fx-border-radius: 30.0;
+	 -fx-background-image: url(../Assets/someone.png);
+	 -fx-background-size: 120.0px 120.0px;
+	 -fx-background-repeat: no-repeat;
+	 -fx-background-position: center;
+}

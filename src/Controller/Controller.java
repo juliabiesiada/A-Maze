@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Model.Card;
+import Model.Game;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -33,7 +34,9 @@ public class Controller {
 
 	}
 
-	public void createBoard(int levelSize) {
+	public void createBoard(Game game) {
+		
+		int levelSize = checkLevel(game);
 		
 		CardsController cardsController = new CardsController(levelSize);
 		Card[][] cards = cardsController.getCards();
@@ -84,5 +87,24 @@ public class Controller {
 				board_grid.setMinWidth(550);
 				board_grid.setPadding(new Insets(0,0,0,30));
 
+	}
+
+	private int checkLevel(Game game) {
+		
+		int levelSize = 0;
+		
+		switch (game.getLevel()) {
+			case EASY:
+				levelSize = 7;
+				break;
+			case MEDIUM:
+				levelSize = 9;
+				break;
+			case HARD:
+				levelSize = 11;
+				break;
+		}
+		
+		return levelSize;
 	}
 }

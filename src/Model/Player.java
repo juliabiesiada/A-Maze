@@ -7,15 +7,29 @@ public class Player {
     private Position position;
     private String name;
     private Inventory inventory;
+    private String iconURL;
 
-    public Player(Color color, Position position, String name, Inventory inventory) {
+    public Player(Color color, Position position, String name, Inventory inventory, String iconURL) {
         this.color = color;
         this.position = position;
         this.name = name;
         this.inventory = inventory;
+        this.iconURL = iconURL;
+    }
+    
+    public Player() {
+    	super();
     }
 
-    public Color getColor() {
+    public String getIconURL() {
+		return iconURL;
+	}
+
+	public void setIconURL(String iconURL) {
+		this.iconURL = iconURL;
+	}
+
+	public Color getColor() {
         return color;
     }
 
