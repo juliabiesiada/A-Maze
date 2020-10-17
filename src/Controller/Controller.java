@@ -1,19 +1,28 @@
 package Controller;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import Model.Card;
 import Model.Game;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Controller {
 	
@@ -29,9 +38,8 @@ public class Controller {
 	int tileDimension;
 	int levelSize;
 	
-	public void onClicked(MouseEvent mouseEvent) {
-		//code for ending turn
-		System.out.println("test");
+	public void onClicked(MouseEvent mouseEvent) throws IOException {
+		showPopup();
 	}
 	
 	public void initialize() {
@@ -127,5 +135,44 @@ public class Controller {
 		}
 		
 		return levelSize;
+	}
+	
+private void showPopup() throws IOException {
+		
+		Stage popup = new Stage();
+		popup.initModality(Modality.APPLICATION_MODAL);
+		popup.setTitle("Collect the potion!");
+	
+		FXMLLoader popupLoader = new FXMLLoader(getClass().getResource("/View/popupCollect.fxml"));
+		CollectController collectController = new CollectController();
+		popupLoader.setController(collectController);
+		
+		popupLoader.load();
+		
+		
+		Parent root = popupLoader.getRoot();
+		
+		Scene scene = new Scene(root, 400, 400);
+		//kind of a stupid solution but well, couldn't get scene in initialize
+		collectController.assignListeners();
+		scene.getStylesheets().add("View/application.css");
+		popup.setScene(scene);
+		popup.show();
+		
+		//to stop user from closing the window
+		Platform.setImplicitExit(false);
+		popup.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		    @Override
+		    public void handle(WindowEvent event) {
+		        event.consume();
+		    }
+		});
+	
+		popup.setHeight(200);
+		popup.setWidth(400);
+		
+		popup.setMinHeight(200);
+		popup.setMinWidth(400);
+		
 	}
 }
