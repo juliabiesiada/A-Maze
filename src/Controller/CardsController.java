@@ -1,9 +1,6 @@
 package Controller;
 
-import Model.Card;
-import Model.CardType;
-import Model.Position;
-import Model.Rotation;
+import Model.*;
 
 public class CardsController {
 
@@ -37,17 +34,21 @@ public class CardsController {
                 Position pos = new Position(i,j);
                 if (i == 0 && j == 0) {
                     cardsMatrix[i][j] = new Card(pos, CardType.ANGLEPATH, Rotation.TWO);
+                    cardsMatrix[i][j].setAvailable(false);
                 } else if (i == 0 && j == value-1) {
                     cardsMatrix[i][j] = new Card(pos, CardType.ANGLEPATH, Rotation.THREE);
+                    cardsMatrix[i][j].setAvailable(false);
                 } else if (i == value-1 && j == 0) {
                     cardsMatrix[i][j] = new Card(pos, CardType.ANGLEPATH, Rotation.ONE);
+                    cardsMatrix[i][j].setAvailable(false);
                 } else if (i == value-1 && j == value-1) {
                     cardsMatrix[i][j] = new Card(pos, CardType.ANGLEPATH, Rotation.FOUR);
+                    cardsMatrix[i][j].setAvailable(false);
                 } else if (i == value/2 && j == value/2) {
                     cardsMatrix[i][j] = new Card(pos, CardType.CROSSPATH, Rotation.ONE);
                 } else {
-                    int type = randomizer(NUM_OF_TYPES);
-                    int rot = randomizer(NUM_OF_ROT);
+                    int type = new Randomizer().randomize(NUM_OF_TYPES);
+                    int rot = new Randomizer().randomize(NUM_OF_ROT);
                     cardsMatrix[i][j] = new Card(pos, cardTypeCreator(type), rotationCreator(rot));
                 }
                 int[][] rotatedMatrix = initialRotator(cardsMatrix[i][j].getCardMatrix(), cardsMatrix[i][j].getRotation());
@@ -56,16 +57,6 @@ public class CardsController {
         }
 
     return cardsMatrix;
-    }
-
-    /**
-     * It gives back a random number in an interval from 0 to val (excluded)
-     * @param val - the limit of the interval
-     * @return a random number
-     */
-    public int randomizer(int val) {
-        int n = (int) (Math.random() * val);
-        return n;
     }
 
     /**

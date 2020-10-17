@@ -43,6 +43,7 @@ public class StartController {
 	    	case "fourPlayers":
 	    		game.setPlayers(setPlayers(4));
 	    	}
+
 	    	
 	    	try {
 				

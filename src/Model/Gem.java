@@ -1,26 +1,24 @@
 package Model;
 
-import java.awt.*;
-
 public class Gem {
-    private Color color;
+    private PlayerColor playerColor;
     private Position position;
 
-    public Gem(Color color, Position position) {
-        this.color = color;
+    public Gem(PlayerColor playerColor, Position position) {
+        this.playerColor = playerColor;
         this.position = position;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void setPlayerColor(PlayerColor playerColor) {
+        this.playerColor = playerColor;
     }
 
     public void setPosition(Position position) {
         this.position = position;
     }
 
-    public Color getColor() {
-        return color;
+    public PlayerColor getPlayerColor() {
+        return playerColor;
     }
 
     public Position getPosition() {

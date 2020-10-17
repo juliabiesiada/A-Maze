@@ -6,6 +6,7 @@ public class Card {
     private int[][] cardMatrix;
     private Rotation rotation;
     private OnCard onCard;
+    private boolean available;
 
     public OnCard getOnCard() {
         return onCard;
@@ -47,11 +48,20 @@ public class Card {
         this.cardMatrix = cardMatrix;
     }
 
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
     public Card(Position position, CardType type, Rotation rotation) {
         this.position = position;
         this.type = type;
         this.rotation = rotation;
         this.onCard = OnCard.NOTHING;
+        this.available = true;
 
         //Matrixs of all the type of cards we have:
         int[][] tPathMatrix = {

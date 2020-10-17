@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 public class Game {
     private Player[] players;
-    private Board board;
+    private Card[][] cardsOnBoard;
     private Turn[] turns;
     private Level level;
+    private ArrayList<Gem> gems;
 
     public Player[] getPlayers() {
         return players;
@@ -16,12 +17,12 @@ public class Game {
         this.players = players;
     }
 
-    public Board getBoard() {
-        return board;
+    public Card[][] getCardsOnBoard() {
+        return cardsOnBoard;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
+    public void setCardsOnBoard(Card[][] cardsOnBoard) {
+        this.cardsOnBoard = cardsOnBoard;
     }
 
     public Turn[] getTurns() {
