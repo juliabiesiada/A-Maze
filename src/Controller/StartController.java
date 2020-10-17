@@ -70,9 +70,9 @@ public class StartController {
 	    }
 
 
-		private Player[] setPlayers(int i) {
-			
-			if (i == 2) {
+        private Player[] setPlayers(int i) {
+
+            if (i == 2) {
 				Player[] players = {new Player(), new Player()};
 				return players;
 			} else if (i == 3) {
