@@ -90,7 +90,6 @@ public class Controller {
 						k++;
 					}
 				}
-				
 				board_grid.setMaxHeight(494);
 				board_grid.setPrefHeight(494);
 				board_grid.setMinHeight(494);
