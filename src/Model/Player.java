@@ -1,16 +1,16 @@
 package Model;
 
-import javafx.scene.paint.Color;
+import java.awt.*;
 
 public class Player {
-    private Color color;
+    private PlayerColor playerColor;
     private Position position;
     private String name;
     private Inventory inventory;
     private String iconURL;
 
-    public Player(Color color, Position position, String name, Inventory inventory, String iconURL) {
-        this.color = color;
+    public Player(PlayerColor playerColor, Position position, String name, Inventory inventory, String iconURL) {
+        this.playerColor = playerColor;
         this.position = position;
         this.name = name;
         this.inventory = inventory;
@@ -29,12 +29,12 @@ public class Player {
 		this.iconURL = iconURL;
 	}
 
-	public Color getColor() {
-        return color;
+	public PlayerColor getPlayerColor() {
+        return playerColor;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void setPlayerColor(PlayerColor playerColor) {
+        this.playerColor = playerColor;
     }
 
     public Position getPosition() {

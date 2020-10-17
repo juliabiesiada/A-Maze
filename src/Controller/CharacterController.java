@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import Model.Game;
 import Model.Player;
+import Model.PlayerColor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -164,7 +165,7 @@ public class CharacterController {
 			if (player1active) {
 				game.getPlayers()[0].setIconURL(urlPlayer(characterIndex));
 				game.getPlayers()[0].setName(namePlayer());
-				game.getPlayers()[0].setColor(Color.BLUE);
+				game.getPlayers()[0].setPlayerColor(PlayerColor.BLUE);
 				
 				setPreview(urlPlayer(characterIndex), namePlayer(), 1);
 				player1active = false;
@@ -173,7 +174,7 @@ public class CharacterController {
 			}else if (player2active) {
 				game.getPlayers()[1].setIconURL(urlPlayer(characterIndex));
 				game.getPlayers()[1].setName(namePlayer());
-				game.getPlayers()[1].setColor(Color.GREEN);
+				game.getPlayers()[1].setPlayerColor(PlayerColor.GREEN);
 				
 				setPreview(urlPlayer(characterIndex), namePlayer(), 2);
 				player2active = false;
@@ -186,7 +187,7 @@ public class CharacterController {
 			}else if (player3active) {
 				game.getPlayers()[2].setIconURL(urlPlayer(characterIndex));
 				game.getPlayers()[2].setName(namePlayer());
-				game.getPlayers()[2].setColor(Color.YELLOW);
+				game.getPlayers()[2].setPlayerColor(PlayerColor.YELLOW);
 				
 				setPreview(urlPlayer(characterIndex), namePlayer(), 3);
 				player3active = false;
@@ -199,7 +200,7 @@ public class CharacterController {
 			}else if (player4active) {
 	    			game.getPlayers()[3].setIconURL(urlPlayer(characterIndex));
 	    			game.getPlayers()[3].setName(namePlayer());
-	    			game.getPlayers()[3].setColor(Color.RED);
+	    			game.getPlayers()[3].setPlayerColor(PlayerColor.RED);
 	    			
 	    			setPreview(urlPlayer(characterIndex), namePlayer(), 4);
 	    			player4active = false;

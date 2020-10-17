@@ -25,6 +25,14 @@ public class Game {
         this.cardsOnBoard = cardsOnBoard;
     }
 
+    public ArrayList<Gem> getGems() {
+        return gems;
+    }
+
+    public void setGems(ArrayList<Gem> gems) {
+        this.gems = gems;
+    }
+
     public Turn[] getTurns() {
         return turns;
     }
