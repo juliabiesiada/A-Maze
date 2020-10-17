@@ -222,7 +222,8 @@ public class CharacterController {
     			FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/mainBoard.fxml"));
     			Parent root = (Parent) loader.load();
     			Controller mainController = loader.getController(); 
-    			mainController.createBoard(game);
+    			mainController.setGame(game);
+    			mainController.createBoard();
     			
     			Stage stage = new Stage(); 
     			stage.setScene(new Scene(root));

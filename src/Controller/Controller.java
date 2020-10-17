@@ -13,11 +13,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
@@ -35,12 +42,34 @@ public class Controller {
 	private List<Pane> panes;
 	@FXML
 	private GridPane littleGrid;
+	@FXML 
+	private ImageView iconGems;
+	@FXML
+	private ImageView iconBuff;
+	@FXML
+	private ImageView iconDebuff;
+	@FXML
+	private Label lblGems;
+	@FXML
+	private Label lblBuff;
+	@FXML 
+	private Label lblDebuff;
 
+	GridPane board_grid;
 	//for level choosing
 	int size;
 	int tileDimension;
 	int levelSize;
 	int numOfGems;
+	Game game;
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
 
 	public void onClicked(MouseEvent mouseEvent) throws IOException {
 		showPopup();
@@ -49,7 +78,7 @@ public class Controller {
 	public void initialize() {
 	}
 
-	public void createBoard(Game game) {
+	public void createBoard() {
 		
 		levelSize = checkLevel(game);
 		setVariables(game);
@@ -59,7 +88,7 @@ public class Controller {
 		game.setCardsOnBoard(cards);
 
 		//root is pane, contains a grid, allows us to be flexible with the size
-		GridPane board_grid = new GridPane();
+		board_grid = new GridPane();
 		board_root.getChildren().add(board_grid);
 
 		//this creates a pane inside each cell of the grid
@@ -155,7 +184,7 @@ public class Controller {
 
 			}
 		}
-
+		
 	}
 
 
@@ -259,4 +288,58 @@ public class Controller {
 		popup.setMinWidth(400);
 
 	}
+    
+    @FXML
+    private void handleIconDragOver(DragEvent event) {
+    	event.acceptTransferModes(TransferMode.ANY);
+    }
+    
+    @FXML
+    private void handleIconDragDropped(DragEvent event) {
+		/*
+		 * Node node = event.getPickResult().getIntersectedNode(); Integer cIndex =
+		 * board_grid.getColumnIndex(node); Integer rIndex =
+		 * board_grid.getRowIndex(node); Dragboard db = event.getDragboard();
+		 * 
+		 * for (int i = 0; i<game.getPlayers().length; i++) {
+		 * 
+		 * if (game.getPlayers()[i].getPosition().getColumn() == cIndex &&
+		 * game.getPlayers()[i].getPosition().getRow() == rIndex) {
+		 * 
+		 * Player selectedPlayer = game.getPlayers()[i]; Turn currentTurn =
+		 * game.getTurns()[game.getTurns().length - 1]; if (db.getImage() ==
+		 * iconBuff.getImage()) {
+		 * 
+		 * //add turn }else if (db.getImage() == iconDebuff.getImage()) {
+		 * 
+		 * if (currentTurn.getTurns().get(0) != selectedPlayer) { //skip turns } } } }
+		 */
+    }
+    
+    @FXML 
+    private void  handleIconDragDetected(MouseEvent event) {
+    	
+    	String imgID = ((ImageView) event.getSource()).getId();
+    	switch (imgID) {
+    	case "iconBuff":
+    		if (Integer.parseInt(lblBuff.getText()) > 0) {
+    			Dragboard db = iconBuff.startDragAndDrop(TransferMode.ANY);
+    	        ClipboardContent cb = new ClipboardContent();
+    	        cb.putImage(iconBuff.getImage());
+    	        db.setContent(cb);
+    	        event.consume();
+    		}
+    		break;
+    	case "iconDebuff":
+    		if (Integer.parseInt(lblDebuff.getText()) > 0) {
+    			Dragboard db = iconDebuff.startDragAndDrop(TransferMode.ANY);
+    	        ClipboardContent cb = new ClipboardContent();
+    	        cb.putImage(iconDebuff.getImage());
+    	        db.setContent(cb);
+    	        event.consume();
+    		}
+    		break;
+    	}
+    	
+    }
 }

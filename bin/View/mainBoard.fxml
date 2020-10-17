@@ -25,7 +25,7 @@
             </Label>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="iconGems" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets left="10.0" right="10.0" top="5.0" />
                      </HBox.margin>
@@ -33,7 +33,7 @@
                         <Image url="@../Assets/gem_icon.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="labelGems" text="0">
+                  <Label fx:id="lblGems" text="0">
                      <HBox.margin>
                         <Insets top="10.0" />
                      </HBox.margin>
@@ -41,7 +41,7 @@
                         <Font size="17.0" />
                      </font>
                   </Label>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="iconBuff" fitHeight="35.0" fitWidth="35.0" onDragDetected="#handleIconDragDetected" onDragDropped="#handleIconDragDropped" onDragOver="#handleIconDragOver" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets left="10.0" right="10.0" top="5.0" />
                      </HBox.margin>
@@ -49,7 +49,7 @@
                         <Image url="@../Assets/potion_icon.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="labelPotions" text="0">
+                  <Label fx:id="lblBuff" text="1">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -57,7 +57,7 @@
                         <Insets right="10.0" top="10.0" />
                      </HBox.margin>
                   </Label>
-                  <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="85.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="iconDebuff" fitHeight="32.0" fitWidth="32.0" layoutX="85.0" layoutY="15.0" onDragDetected="#handleIconDragDetected" onDragDropped="#handleIconDragDropped" onDragOver="#handleIconDragOver" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Assets/poison_icon.png" />
                      </image>
@@ -65,7 +65,7 @@
                         <Insets right="10.0" top="5.0" />
                      </HBox.margin>
                   </ImageView>
-                  <Label fx:id="labelPoisons" layoutX="130.0" layoutY="20.0" text="0">
+                  <Label fx:id="lblDebuff" layoutX="130.0" layoutY="20.0" text="0">
                      <font>
                         <Font size="18.0" />
                      </font>
