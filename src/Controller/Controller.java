@@ -2,12 +2,14 @@ package Controller;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import Model.*;
 import Model.Card;
 import Model.Game;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -66,7 +68,10 @@ public class Controller {
 	private EventHandler<MouseEvent> onPaneDragDetected;
 	private EventHandler<DragEvent> onPaneDragDone;
     private EventHandler<DragEvent> onPaneDragOver;
-    private EventHandler<MouseEvent> onPaneDblClick;
+    private EventHandler<MouseEvent> onPaneClick;
+    Image playerImage;
+    ImageView playerImageView;
+    StackPane[][] sPanes;
 
 	public Game getGame() {
 		return game;
@@ -98,7 +103,7 @@ public class Controller {
 		board_root.getChildren().add(board_grid);
 
 		//this creates a pane inside each cell of the grid
-		StackPane[][] sPanes = new StackPane[levelSize][levelSize];
+		sPanes = new StackPane[levelSize][levelSize];
 		for (int i = 0; i < levelSize; i++) {
 			for (int j = 0; j < levelSize; j++) {
 				StackPane sPane = new StackPane();
@@ -106,7 +111,7 @@ public class Controller {
 				sPane.setOnDragDetected(onPaneDragDetected);
 				sPane.setOnDragOver(onPaneDragOver);
 				sPane.setOnDragDropped(onPaneDragDone);
-				sPane.setOnMouseClicked(onPaneDblClick);
+				sPane.setOnMouseClicked(onPaneClick);
 				sPanes[i][j] = sPane;
 				board_grid.add(sPane, j, i);
 			}
@@ -148,8 +153,8 @@ public class Controller {
 		//this put players on the board
         setPlayerInitialPosition(game);
         for (Player player : game.getPlayers()) {
-            Image playerImage = new Image(player.getIconURL());
-            ImageView playerImageView = new ImageView(playerImage);
+            playerImage = new Image(player.getIconURL());
+            playerImageView = new ImageView(playerImage);
             playerImageView.setFitHeight(tileDimension);
             playerImageView.setFitWidth(tileDimension);
             sPanes[player.getPosition().getRow()][player.getPosition().getColumn()].getChildren().add(playerImageView);
@@ -409,7 +414,7 @@ public class Controller {
         	
         };
         
-        onPaneDblClick = new EventHandler<MouseEvent>() {
+        onPaneClick = new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
@@ -424,12 +429,118 @@ public class Controller {
 						int c = Integer.parseInt(cStr);
 		            	
 		                System.out.println(r+""+c+" double clicked");
-		            }
-		        }
+		            }else {
+		            	
+		            	Position startPosition = game.getPlayers()[0].getPosition();
+		            	int rStart = startPosition.getRow();
+		            	int cStart = startPosition.getColumn();
+		            	
+		            	String paneID = ((Pane)event.getSource()).getId();
+						String rStr = "" + paneID.charAt(1);
+						String cStr = "" + paneID.charAt(3);
+						int rEnd = Integer.parseInt(rStr);
+						int cEnd = Integer.parseInt(cStr);
+						
+						String direction = getDirection(rStart, cStart, rEnd, cEnd);
+						
+						if (!direction.equals("")) {
+							
+							Card startCard = game.getCardsOnBoard()[rStart][cStart];
+							Card endCard = game.getCardsOnBoard()[rEnd][cEnd];
+							int elStart;
+							int elEnd;
+							
+							switch (direction) {
+							case "up":
+								elStart = startCard.getCardMatrix()[0][1];
+								elEnd = endCard.getCardMatrix()[2][1];
+								if (elStart == 0 && elEnd == 0) {
+									movePlayer(rStart, cStart, rEnd, cEnd);
+								}
+								break;
+							case "down":
+								elStart = startCard.getCardMatrix()[2][1];
+								elEnd = endCard.getCardMatrix()[0][1];
+								if (elStart == 0 && elEnd == 0) {
+									movePlayer(rStart, cStart, rEnd, cEnd);
+								}
+								break;
+							case "left":
+								elStart = startCard.getCardMatrix()[1][0];
+								elEnd = endCard.getCardMatrix()[1][2];
+								if (elStart == 0 && elEnd == 0) {
+									movePlayer(rStart, cStart, rEnd, cEnd);
+								}
+								break;
+							case "right":
+								elStart = startCard.getCardMatrix()[1][2];
+								elEnd = endCard.getCardMatrix()[1][0];
+								if (elStart == 0 && elEnd == 0) {
+									movePlayer(rStart, cStart, rEnd, cEnd);
+								}
+								break;
+							}
+						}
+					}
+	            }
 				
 			}
         	
         };
     	
+    }
+    
+    private String getDirection(int rStart, int cStart, int rEnd, int cEnd) {
+    	
+    	String direction = "";
+    	if(rEnd == rStart+1 && cEnd == cStart) {
+    		direction = "down";
+    	}
+    	
+    	if (rEnd == rStart-1 && cEnd == cStart) {
+    		direction = "up";
+    	}
+    	
+    	if (rEnd == rStart && cEnd == cStart+1) {
+    		direction = "right";
+    	}
+    	if (rEnd == rStart && cEnd == cStart-1) {
+    		direction = "left";
+    	}
+     		
+    	return direction;
+    }
+    
+    private void movePlayer(int rStart, int cStart, int rEnd, int cEnd) {
+    	
+    	OnCard onCardStart = game.getCardsOnBoard()[rStart][cStart].getOnCard();
+    	OnCard onCardEnd = game.getCardsOnBoard()[rEnd][cEnd].getOnCard();
+    	
+    	if(onCardEnd != OnCard.PLAYER) {
+    		
+    		game.getPlayers()[0].setPosition(new Position(rEnd, cEnd));
+    		
+            ObservableList<Node> paneContent = sPanes[rStart][cStart].getChildren();
+            Node playerImageView;
+            //see later with collecting of gems if it disappears first
+            if (onCardStart == OnCard.PLAYER_AND_GEM) {
+            	playerImageView = paneContent.get(2);
+            	game.getCardsOnBoard()[rStart][cStart].setOnCard(OnCard.GEM);
+            }else {
+            	playerImageView = paneContent.get(1);
+            	game.getCardsOnBoard()[rStart][cStart].setOnCard(OnCard.NOTHING);
+            }
+   
+            sPanes[rStart][cStart].getChildren().remove(playerImageView);
+            sPanes[rEnd][cEnd].getChildren().add(playerImageView);
+            sPanes[rEnd][cEnd].setAlignment(playerImageView, Pos.CENTER);
+            game.getCardsOnBoard()[rEnd][cEnd].setAvailable(false);
+            
+            if(onCardEnd == OnCard.GEM) {
+            	game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER_AND_GEM);
+            } else {
+                game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER);
+            }
+    	}
     }
 }
