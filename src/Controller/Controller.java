@@ -112,7 +112,6 @@ public class Controller {
 		//this put diamons on the board
 		for (Player player : game.getPlayers()) {
 			String urlGem = new String();
-            if (player.getPlayerColor() == PlayerColor.BLUE)
             switch (player.getPlayerColor()) {
 				case RED:
 					urlGem = "/Assets/gem_red.png";
@@ -189,7 +188,13 @@ public class Controller {
 		return levelSize;
 	}
 
-private void showPopup() throws IOException {
+	private void setPlayerInitialPosition(Game game) {
+	    for (Player player : game.getPlayers()) {
+
+        }
+    }
+
+    private void showPopup() throws IOException {
 
 		Stage popup = new Stage();
 		popup.initModality(Modality.APPLICATION_MODAL);

@@ -9,6 +9,10 @@ public class Game {
     private Level level;
     private ArrayList<Gem> gems;
 
+    public Game() {
+        this.gems = new ArrayList<Gem>();
+    }
+
     public Player[] getPlayers() {
         return players;
     }
