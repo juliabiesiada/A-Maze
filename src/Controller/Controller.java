@@ -108,6 +108,16 @@ public class Controller {
 		board_grid.setPadding(new Insets(0,0,0,30));
 
 		//this put players on the board
+        setPlayerInitialPosition(game);
+        for (Player player : game.getPlayers()) {
+            Image playerImage = new Image(player.getIconURL());
+            ImageView playerImageView = new ImageView(playerImage);
+            playerImageView.setFitHeight(tileDimension);
+            playerImageView.setFitWidth(tileDimension);
+            sPanes[player.getPosition().getRow()][player.getPosition().getColumn()].getChildren().add(playerImageView);
+            sPanes[player.getPosition().getRow()][player.getPosition().getColumn()].setAlignment(playerImageView, Pos.CENTER);
+            game.getCardsOnBoard()[player.getPosition().getRow()][player.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
+        }
 
 		//this put diamons on the board
 		for (Player player : game.getPlayers()) {
@@ -188,9 +198,26 @@ public class Controller {
 		return levelSize;
 	}
 
+    /**
+     * This method sets the initial position of each player
+     * @param game to check the player color
+     */
 	private void setPlayerInitialPosition(Game game) {
 	    for (Player player : game.getPlayers()) {
-
+            switch (player.getPlayerColor()) {
+                case BLUE:
+                    player.setPosition(new Position(0,0));
+                    break;
+                case GREEN:
+                    player.setPosition(new Position(0,levelSize-1));
+                    break;
+                case YELLOW:
+                    player.setPosition(new Position(levelSize-1,0));
+                    break;
+                case RED:
+                    player.setPosition(new Position(levelSize-1,levelSize-1));
+                    break;
+            }
         }
     }
 
