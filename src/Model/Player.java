@@ -1,6 +1,6 @@
 package Model;
 
-import java.awt.*;
+import javafx.scene.paint.Color;
 
 public class Player {
     private Color color;

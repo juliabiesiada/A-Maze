@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -163,34 +164,46 @@ public class CharacterController {
 			if (player1active) {
 				game.getPlayers()[0].setIconURL(urlPlayer(characterIndex));
 				game.getPlayers()[0].setName(namePlayer());
+				game.getPlayers()[0].setColor(Color.BLUE);
 				
 				setPreview(urlPlayer(characterIndex), namePlayer(), 1);
 				player1active = false;
-				labelOrder.setText("Player 1, choose your character:");
+				labelOrder.setText("Player 2, choose your character:");
 				
 			}else if (player2active) {
 				game.getPlayers()[1].setIconURL(urlPlayer(characterIndex));
 				game.getPlayers()[1].setName(namePlayer());
+				game.getPlayers()[1].setColor(Color.GREEN);
 				
 				setPreview(urlPlayer(characterIndex), namePlayer(), 2);
 				player2active = false;
-				labelOrder.setText("Player 3, choose your character:");
+				if (player3active) {
+					labelOrder.setText("Player 3, choose your character:");
+				}else {
+					labelOrder.setText("All set! Press confirm button to start.");
+				}
 				
 			}else if (player3active) {
 				game.getPlayers()[2].setIconURL(urlPlayer(characterIndex));
 				game.getPlayers()[2].setName(namePlayer());
+				game.getPlayers()[2].setColor(Color.YELLOW);
 				
 				setPreview(urlPlayer(characterIndex), namePlayer(), 3);
 				player3active = false;
-				labelOrder.setText("Player 4, choose your character:");
+				if (player4active) {
+					labelOrder.setText("Player 4, choose your character:");
+				}else {
+					labelOrder.setText("All set! Press confirm button to start.");
+				}
 				
 			}else if (player4active) {
 	    			game.getPlayers()[3].setIconURL(urlPlayer(characterIndex));
 	    			game.getPlayers()[3].setName(namePlayer());
+	    			game.getPlayers()[3].setColor(Color.RED);
 	    			
 	    			setPreview(urlPlayer(characterIndex), namePlayer(), 4);
 	    			player4active = false;
-	    			
+	    			labelOrder.setText("All set! Press confirm button to start.");
 	    		}
     		}
     	}
