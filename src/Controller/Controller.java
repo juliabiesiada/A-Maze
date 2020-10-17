@@ -62,6 +62,9 @@ public class Controller {
 	int levelSize;
 	int numOfGems;
 	Game game;
+	private EventHandler<MouseEvent> onPaneDragDetected;
+	private EventHandler<DragEvent> onPaneDragDone;
+    private EventHandler<DragEvent> onPaneDragOver;
 
 	public Game getGame() {
 		return game;
@@ -76,6 +79,7 @@ public class Controller {
 	}
 	
 	public void initialize() {
+		initHandlers();
 	}
 
 	public void createBoard() {
@@ -97,9 +101,11 @@ public class Controller {
 			for (int j = 0; j < levelSize; j++) {
 				StackPane sPane = new StackPane();
 				sPane.setId("r"+i+"c"+j);
+				sPane.setOnDragDetected(onPaneDragDetected);
+				sPane.setOnDragOver(onPaneDragOver);
+				sPane.setOnDragDropped(onPaneDragDone);
 				sPanes[i][j] = sPane;
 				board_grid.add(sPane, j, i);
-				//sPane.setPadding(new Insets(1,1,1,1));
 			}
 		}
 		board_grid.setGridLinesVisible(true);
@@ -148,7 +154,7 @@ public class Controller {
             game.getCardsOnBoard()[player.getPosition().getRow()][player.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
         }
 
-		//this put diamons on the board
+		//this put diamonds on the board
 		for (Player player : game.getPlayers()) {
 			String urlGem = new String();
             switch (player.getPlayerColor()) {
@@ -292,11 +298,13 @@ public class Controller {
     @FXML
     private void handleIconDragOver(DragEvent event) {
     	event.acceptTransferModes(TransferMode.ANY);
+    	event.consume();
     }
     
     @FXML
     private void handleIconDragDropped(DragEvent event) {
 		/*
+		 * ADD EVENT CONSUME!
 		 * Node node = event.getPickResult().getIntersectedNode(); Integer cIndex =
 		 * board_grid.getColumnIndex(node); Integer rIndex =
 		 * board_grid.getRowIndex(node); Dragboard db = event.getDragboard();
@@ -340,6 +348,63 @@ public class Controller {
     		}
     		break;
     	}
+    	
+    }
+    
+    private void initHandlers() {
+    	//for panes
+    	onPaneDragDetected = new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				
+				//need to check to what the constraints are applied in slider method
+				String paneID = ((Pane)event.getSource()).getId();
+				String rStr = "" + paneID.charAt(1);
+				String cStr = "" + paneID.charAt(3);
+				int r = Integer.parseInt(rStr);
+				int c = Integer.parseInt(cStr);
+				
+				Dragboard db = ((Pane)event.getSource()).startDragAndDrop(TransferMode.ANY);
+    	        ClipboardContent cb = new ClipboardContent();
+    	        cb.putString(rStr + cStr);
+    	        db.setContent(cb);
+				
+				System.out.println(r+c+" start drag");
+				event.consume();
+			}
+    		
+    	};
+    	
+        onPaneDragOver = new EventHandler<DragEvent>() {
+
+			@Override
+			public void handle(DragEvent event) {
+				event.acceptTransferModes(TransferMode.ANY);
+				event.consume();
+			}
+        	
+        };
+        
+        onPaneDragDone = new EventHandler<DragEvent>() {
+
+			@Override
+			public void handle(DragEvent event) {
+				
+				Dragboard db = event.getDragboard();
+				String rcStart = db.getString();
+				
+				String paneID = ((Pane)event.getSource()).getId();
+				String rStr = "" + paneID.charAt(1);
+				String cStr = "" + paneID.charAt(3);
+				int r = Integer.parseInt(rStr);
+				int c = Integer.parseInt(cStr);
+				
+				System.out.println(r+c+" finished from " + rcStart);
+				
+			}
+        	
+        };
     	
     }
 }
