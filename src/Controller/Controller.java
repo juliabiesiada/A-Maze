@@ -23,6 +23,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
@@ -65,6 +66,7 @@ public class Controller {
 	private EventHandler<MouseEvent> onPaneDragDetected;
 	private EventHandler<DragEvent> onPaneDragDone;
     private EventHandler<DragEvent> onPaneDragOver;
+    private EventHandler<MouseEvent> onPaneDblClick;
 
 	public Game getGame() {
 		return game;
@@ -104,6 +106,7 @@ public class Controller {
 				sPane.setOnDragDetected(onPaneDragDetected);
 				sPane.setOnDragOver(onPaneDragOver);
 				sPane.setOnDragDropped(onPaneDragDone);
+				sPane.setOnMouseClicked(onPaneDblClick);
 				sPanes[i][j] = sPane;
 				board_grid.add(sPane, j, i);
 			}
@@ -370,7 +373,7 @@ public class Controller {
     	        cb.putString(rStr + cStr);
     	        db.setContent(cb);
 				
-				System.out.println(r+c+" start drag");
+				System.out.println(r+""+c+" start drag");
 				event.consume();
 			}
     		
@@ -400,7 +403,29 @@ public class Controller {
 				int r = Integer.parseInt(rStr);
 				int c = Integer.parseInt(cStr);
 				
-				System.out.println(r+c+" finished from " + rcStart);
+				System.out.println(r+""+c+" finished from " + rcStart);
+				
+			}
+        	
+        };
+        
+        onPaneDblClick = new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				
+				if(event.getButton().equals(MouseButton.PRIMARY)){
+		            if(event.getClickCount() == 2){
+		            	
+		            	String paneID = ((Pane)event.getSource()).getId();
+						String rStr = "" + paneID.charAt(1);
+						String cStr = "" + paneID.charAt(3);
+						int r = Integer.parseInt(rStr);
+						int c = Integer.parseInt(cStr);
+		            	
+		                System.out.println(r+""+c+" double clicked");
+		            }
+		        }
 				
 			}
         	
