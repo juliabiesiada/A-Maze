@@ -175,9 +175,8 @@ public class CardsController {
 
 
     //TODO check if this method works
-    //Ok I honestly feel so bad about how this method is written that I'll do it again.
-    /*
-    public Card[] cardsSlider(Card[][] cards, Position prevPos, Position newPos, int value) {
+
+    /*public Card[] cardsSlider(Card[][] cards, Position prevPos, Position newPos, int value) {
         int newPositionId = 0;
         int oldPositionID = 0;
         for (int i = 0; i<cards.length; i++) {
@@ -227,6 +226,13 @@ public class CardsController {
         }
 
         return cards;
+    }*/
+
+    public Card[] hello(Card[][] cards, Position prevPos, Position newPos, int value) {
+        //VERTICAL SLIDE:
+
+        Card[] line = new Card[value];
+        return line;
     }
 
     private Card[] cardsMover(int value, int newPositionId, int oldPositionID, Card[] toBeMoved, Card[] moved) {
@@ -249,6 +255,6 @@ public class CardsController {
             moved[0] = toBeMoved[0];
         }
         return moved;
-    }*/
+    }
 
 }

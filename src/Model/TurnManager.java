@@ -13,6 +13,8 @@ public class TurnManager {
         turnInitializer();
     }
 
+    //This is to force the pull <3
+
     /**
      * This method initialize the first 3 turns of the game
      */
