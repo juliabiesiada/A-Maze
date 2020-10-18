@@ -66,7 +66,7 @@ public class Controller {
 	int numOfGems;
 	Game game;
 	private EventHandler<MouseEvent> onPaneDragDetected;
-	private EventHandler<DragEvent> onPaneDragDone;
+	private EventHandler<DragEvent> onDragDropped;
     private EventHandler<DragEvent> onPaneDragOver;
     private EventHandler<MouseEvent> onPaneClick;
     Image playerImage;
@@ -112,7 +112,7 @@ public class Controller {
 				sPane.setId("r"+i+"c"+j);
 				sPane.setOnDragDetected(onPaneDragDetected);
 				sPane.setOnDragOver(onPaneDragOver);
-				sPane.setOnDragDropped(onPaneDragDone);
+				sPane.setOnDragDropped(onDragDropped);
 				sPane.setOnMouseClicked(onPaneClick);
 				sPanes[i][j] = sPane;
 				board_grid.add(sPane, j, i);
@@ -398,7 +398,7 @@ public class Controller {
         	
         };
         
-        onPaneDragDone = new EventHandler<DragEvent>() {
+        onDragDropped = new EventHandler<DragEvent>() {
 
 			@Override
 			public void handle(DragEvent event) {
@@ -407,15 +407,37 @@ public class Controller {
 				String rcStart = db.getString();
 				
 				String paneID = ((Pane)event.getSource()).getId();
-            	paneID = paneID.replaceAll("\\D+"," ");
-            	String[] splited = paneID.split("\\s+");
-				String rStr = splited[1];
-				String cStr = splited[2];
-				int r = Integer.parseInt(rStr);
-				int c = Integer.parseInt(cStr);
-				
-				System.out.println(r+""+c+" finished from " + rcStart);
-				
+
+				if (db.hasImage()) {
+
+					Node node = (Node)event.getSource();
+					Integer cIndex = board_grid.getColumnIndex(node);
+					Integer rIndex = board_grid.getRowIndex(node);
+					
+					for (int i = 0; i<game.getPlayers().length; i++) {
+						if (game.getPlayers()[i].getPosition().getColumn() == cIndex &&
+								game.getPlayers()[i].getPosition().getRow() == rIndex) {
+
+							Player selectedPlayer = game.getPlayers()[i];
+							if (db.getImage() == iconBuff.getImage()) {
+								//add turn
+							} else if (db.getImage() == iconDebuff.getImage()) {
+								//if not the same player
+							}
+						}
+					}
+					event.consume();
+				} else {
+
+					paneID = paneID.replaceAll("\\D+"," ");
+					String[] splited = paneID.split("\\s+");
+					String rStr = splited[1];
+					String cStr = splited[2];
+					int r = Integer.parseInt(rStr);
+					int c = Integer.parseInt(cStr);
+
+					System.out.println(r+""+c+" finished from " + rcStart);
+				}
 			}
         	
         };
