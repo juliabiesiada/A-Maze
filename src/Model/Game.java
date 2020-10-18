@@ -8,9 +8,11 @@ public class Game {
     private TurnManager turnsOrder;
     private Level level;
     private ArrayList<Gem> gems;
+    private Status status;
 
     public Game() {
         this.gems = new ArrayList<Gem>();
+        this.status = new Status();
     }
 
     public Player[] getPlayers() {
@@ -31,14 +33,6 @@ public class Game {
 
     public ArrayList<Gem> getGems() {
         return gems;
-    }
-
-    public void setGems(ArrayList<Gem> gems) {
-        this.gems = gems;
-    }
-
-    public TurnManager getTurnsOrders() {
-        return turnsOrder;
     }
 
     public void setTurnsOrders(TurnManager turns) {
