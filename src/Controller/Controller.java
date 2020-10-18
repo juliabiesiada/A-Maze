@@ -93,7 +93,7 @@ public class Controller {
 		
 		levelSize = checkLevel(game);
 		setVariables(game);
-		Turn turnManager = new Turn(game.getPlayers());
+		TurnManager turnManager = new TurnManager(game.getPlayers());
 		game.setTurnsOrders(turnManager);
 		
 		CardsController cardsController = new CardsController(levelSize);
@@ -324,7 +324,7 @@ public class Controller {
 		 * if (game.getPlayers()[i].getPosition().getColumn() == cIndex &&
 		 * game.getPlayers()[i].getPosition().getRow() == rIndex) {
 		 * 
-		 * Player selectedPlayer = game.getPlayers()[i]; Turn currentTurn =
+		 * Player selectedPlayer = game.getPlayers()[i]; TurnManager currentTurn =
 		 * game.getTurns()[game.getTurns().length - 1]; if (db.getImage() ==
 		 * iconBuff.getImage()) {
 		 * 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Game {
     private Player[] players;
     private Card[][] cardsOnBoard;
-    private Turn turnsOrder;
+    private TurnManager turnsOrder;
     private Level level;
     private ArrayList<Gem> gems;
 
@@ -37,11 +37,11 @@ public class Game {
         this.gems = gems;
     }
 
-    public Turn getTurnsOrders() {
+    public TurnManager getTurnsOrders() {
         return turnsOrder;
     }
 
-    public void setTurnsOrders(Turn turns) {
+    public void setTurnsOrders(TurnManager turns) {
         this.turnsOrder = turns;
     }
 
