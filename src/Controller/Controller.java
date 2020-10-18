@@ -427,6 +427,12 @@ public class Controller {
 						String cStr = "" + paneID.charAt(3);
 						int r = Integer.parseInt(rStr);
 						int c = Integer.parseInt(cStr);
+
+						//Clock Wise Rotation
+						int[][] rotMatrix = game.getCardsOnBoard()[r][c].getCardMatrix();
+						rotMatrix = CardsController.clockWiseRotation(rotMatrix);
+						game.getCardsOnBoard()[r][c].setCardMatrix(rotMatrix);
+						//TODO make the tinyGrid redrawn
 		            	
 		                System.out.println(r+""+c+" double clicked");
 		            }else {

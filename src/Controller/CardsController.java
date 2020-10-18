@@ -107,7 +107,7 @@ public class CardsController {
     }
 
     /**
-     * Spin the cards baby! This method just rotates the cards based on them rotation type
+     * Spin the cards baby! This method just rotates the cards based on their rotation type
      * @param matrix it's the matrix of the single card
      * @param rotationType it's a rotation type
      * @return the matrix of cards, rotated
@@ -128,37 +128,49 @@ public class CardsController {
             case FOUR:
                 rot = 4;
         }
+
+        int[][] rotatedMatrix = matrix;
+        if (rot == 1) {
+          return matrix;
+        } else {
+            for (int k = 0; k<rot-1; k++) {
+                rotatedMatrix = clockWiseRotation(rotatedMatrix);
+            }
+          return rotatedMatrix;
+        }
+    }
+
+    /**
+     * This method does just a clock wise rotation
+     * @param matrix the matrix to be rotated
+     * @return the matrix rotated
+     */
+    public static int[][] clockWiseRotation(int[][] matrix) {
         int[][] tmp = new int[3][3];
         int[][] tmp2 = matrix;
         int newCol = 0;
-
-        for (int k = 0; k<rot-1; k++) {
-            for (int i = 0; i<3; i++) {
-                switch(i) {
-                    case 0:
-                        newCol = 2;
-                        break;
-                    case 1:
-                        newCol = 1;
-                        break;
-                    case 2:
-                        newCol = 0;
-                        break;
-                }
-                for (int j = 0; j<3; j++) {
-                    tmp[j][newCol] = tmp2[i][j];
-                }
+        for (int i = 0; i<3; i++) {
+            switch(i) {
+                case 0:
+                    newCol = 2;
+                    break;
+                case 1:
+                    newCol = 1;
+                    break;
+                case 2:
+                    newCol = 0;
+                    break;
             }
-            for (int i = 0; i < tmp.length; i++) {
-                for (int j = 0; j < tmp.length; j++) {
-                    tmp2[i][j]=tmp[i][j];
-                }
+            for (int j = 0; j<3; j++) {
+                tmp[j][newCol] = tmp2[i][j];
             }
         }
-        if (rot == 1) {
-            return matrix;
-        } else
-            return tmp;
+        for (int i = 0; i < tmp.length; i++) {
+            for (int j = 0; j < tmp.length; j++) {
+                tmp2[i][j]=tmp[i][j];
+            }
+        }
+        return tmp;
     }
 
 
