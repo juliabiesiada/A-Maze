@@ -93,6 +93,8 @@ public class Controller {
 		
 		levelSize = checkLevel(game);
 		setVariables(game);
+		Turn turnManager = new Turn(game.getPlayers());
+		game.setTurnsOrders(turnManager);
 		
 		CardsController cardsController = new CardsController(levelSize);
 		Card[][] cards = cardsController.getCards();
