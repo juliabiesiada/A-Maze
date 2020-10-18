@@ -6,11 +6,18 @@ public class TurnManager {
 
     private Player[] players;
     private ArrayList<String> turns;
+    int counter;
 
     public TurnManager(Player[] players) {
         this.players = players;
         this.turns = new ArrayList<>();
         turnInitializer();
+        this.counter = 0;
+    }
+
+    //GETTER
+    public int getCounter() {
+        return counter;
     }
 
     /**
@@ -74,7 +81,7 @@ public class TurnManager {
         if (turns.get(0) == player.getName()) {
             turns.remove(0);
             turns.add(player.getName());
+            counter++;
         }
     }
-
 }
