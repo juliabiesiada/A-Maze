@@ -370,8 +370,10 @@ public class Controller {
 				
 				//need to check to what the constraints are applied in slider method
 				String paneID = ((Pane)event.getSource()).getId();
-				String rStr = "" + paneID.charAt(1);
-				String cStr = "" + paneID.charAt(3);
+            	paneID = paneID.replaceAll("\\D+"," ");
+            	String[] splited = paneID.split("\\s+");
+				String rStr = splited[1];
+				String cStr = splited[2];
 				int r = Integer.parseInt(rStr);
 				int c = Integer.parseInt(cStr);
 				
@@ -405,8 +407,10 @@ public class Controller {
 				String rcStart = db.getString();
 				
 				String paneID = ((Pane)event.getSource()).getId();
-				String rStr = "" + paneID.charAt(1);
-				String cStr = "" + paneID.charAt(3);
+            	paneID = paneID.replaceAll("\\D+"," ");
+            	String[] splited = paneID.split("\\s+");
+				String rStr = splited[1];
+				String cStr = splited[2];
 				int r = Integer.parseInt(rStr);
 				int c = Integer.parseInt(cStr);
 				
@@ -421,75 +425,73 @@ public class Controller {
 			@Override
 			public void handle(MouseEvent event) {
 				
-				if(event.getButton().equals(MouseButton.PRIMARY)){
-		            if(event.getClickCount() == 2){
-		            	
-		            	String paneID = ((Pane)event.getSource()).getId();
-						String rStr = "" + paneID.charAt(1);
-						String cStr = "" + paneID.charAt(3);
-						int r = Integer.parseInt(rStr);
-						int c = Integer.parseInt(cStr);
+				String paneID = ((Pane)event.getSource()).getId();
+            	paneID = paneID.replaceAll("\\D+"," ");
+            	String[] splited = paneID.split("\\s+");
+				String rStr = splited[1];
+				String cStr = splited[2];
+				int r = Integer.parseInt(rStr);
+				int c = Integer.parseInt(cStr);
+				
+				if(event.getButton().equals(MouseButton.SECONDARY)){
 
-						//Clock Wise Rotation
-						int[][] rotMatrix = game.getCardsOnBoard()[r][c].getCardMatrix();
-						rotMatrix = CardsController.clockWiseRotation(rotMatrix);
-						game.getCardsOnBoard()[r][c].setCardMatrix(rotMatrix);
-						//TODO make the tinyGrid redrawn
+					//Clock Wise Rotation
+					int[][] rotMatrix = game.getCardsOnBoard()[r][c].getCardMatrix();
+					rotMatrix = CardsController.clockWiseRotation(rotMatrix);
+					game.getCardsOnBoard()[r][c].setCardMatrix(rotMatrix);
+					//TODO make the tinyGrid redrawn
+	            	
+	                System.out.println(r+""+c+" double clicked");
+	                
+	            }else if (event.getButton().equals(MouseButton.PRIMARY)){
 		            	
-		                System.out.println(r+""+c+" double clicked");
-		            }else {
-		            	
-		            	Position startPosition = game.getPlayers()[0].getPosition();
-		            	int rStart = startPosition.getRow();
-		            	int cStart = startPosition.getColumn();
-		            	
-		            	String paneID = ((Pane)event.getSource()).getId();
-						String rStr = "" + paneID.charAt(1);
-						String cStr = "" + paneID.charAt(3);
-						int rEnd = Integer.parseInt(rStr);
-						int cEnd = Integer.parseInt(cStr);
+	            	Position startPosition = game.getPlayers()[0].getPosition();
+	            	int rStart = startPosition.getRow();
+	            	int cStart = startPosition.getColumn();
+					int rEnd = r;
+					int cEnd = c;
+					
+					String direction = getDirection(rStart, cStart, rEnd, cEnd);
+					
+					if (!direction.equals("")) {
 						
-						String direction = getDirection(rStart, cStart, rEnd, cEnd);
+						Card startCard = game.getCardsOnBoard()[rStart][cStart];
+						Card endCard = game.getCardsOnBoard()[rEnd][cEnd];
+						int elStart;
+						int elEnd;
 						
-						if (!direction.equals("")) {
-							
-							Card startCard = game.getCardsOnBoard()[rStart][cStart];
-							Card endCard = game.getCardsOnBoard()[rEnd][cEnd];
-							int elStart;
-							int elEnd;
-							
-							switch (direction) {
-							case "up":
-								elStart = startCard.getCardMatrix()[0][1];
-								elEnd = endCard.getCardMatrix()[2][1];
-								if (elStart == 0 && elEnd == 0) {
-									movePlayer(rStart, cStart, rEnd, cEnd);
-								}
-								break;
-							case "down":
-								elStart = startCard.getCardMatrix()[2][1];
-								elEnd = endCard.getCardMatrix()[0][1];
-								if (elStart == 0 && elEnd == 0) {
-									movePlayer(rStart, cStart, rEnd, cEnd);
-								}
-								break;
-							case "left":
-								elStart = startCard.getCardMatrix()[1][0];
-								elEnd = endCard.getCardMatrix()[1][2];
-								if (elStart == 0 && elEnd == 0) {
-									movePlayer(rStart, cStart, rEnd, cEnd);
-								}
-								break;
-							case "right":
-								elStart = startCard.getCardMatrix()[1][2];
-								elEnd = endCard.getCardMatrix()[1][0];
-								if (elStart == 0 && elEnd == 0) {
-									movePlayer(rStart, cStart, rEnd, cEnd);
-								}
-								break;
+						switch (direction) {
+						case "up":
+							elStart = startCard.getCardMatrix()[0][1];
+							elEnd = endCard.getCardMatrix()[2][1];
+							if (elStart == 0 && elEnd == 0) {
+								movePlayer(rStart, cStart, rEnd, cEnd);
 							}
+							break;
+						case "down":
+							elStart = startCard.getCardMatrix()[2][1];
+							elEnd = endCard.getCardMatrix()[0][1];
+							if (elStart == 0 && elEnd == 0) {
+								movePlayer(rStart, cStart, rEnd, cEnd);
+							}
+							break;
+						case "left":
+							elStart = startCard.getCardMatrix()[1][0];
+							elEnd = endCard.getCardMatrix()[1][2];
+							if (elStart == 0 && elEnd == 0) {
+								movePlayer(rStart, cStart, rEnd, cEnd);
+							}
+							break;
+						case "right":
+							elStart = startCard.getCardMatrix()[1][2];
+							elEnd = endCard.getCardMatrix()[1][0];
+							if (elStart == 0 && elEnd == 0) {
+								movePlayer(rStart, cStart, rEnd, cEnd);
+							}
+							break;
 						}
 					}
+					
 	            }
 				
 			}
