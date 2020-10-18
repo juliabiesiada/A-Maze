@@ -2,6 +2,8 @@ package Controller;
 
 import Model.*;
 
+import java.util.concurrent.Callable;
+
 public class CardsController {
 
     private static final int NUM_OF_TYPES = 4;
@@ -174,87 +176,64 @@ public class CardsController {
     }
 
 
-    //TODO check if this method works
-
-    /*public Card[] cardsSlider(Card[][] cards, Position prevPos, Position newPos, int value) {
-        int newPositionId = 0;
-        int oldPositionID = 0;
-        for (int i = 0; i<cards.length; i++) {
-            for (int j = 0; j<cards.length; j++) {
-                if (newPos.getColumn() == cards[i][j].getPosition().getColumn() && newPos.getRow() == cards[i][j].getPosition().getRow()) {
-                    newPositionId = cards[i].getIdNumber();
-                } else if (prevCol == cards[i].getPosition().getColumn() && prevRow == cards[i].getPosition().getRow()) {
-                    oldPositionID = cards[i].getIdNumber();
-                }
-            }
-        }
-        Card[] toBeMoved = new Card[value];
-        Card [] moved = new Card[value];
-
-        //For vertical sliding:
-        if (prevCol == newPos.getColumn() && (prevRow == 0 && newPos.getRow() == value || prevRow == value && newPos.getRow() == 0)) {
-            int k = 0;
-            for (int i = 0; i<cards.length; i++) {
-                if (cards[i].getPosition().getColumn() == newPos.getColumn()) {
-                    toBeMoved[k] = cards[i];
-                    k++;
-                }
-            }
-            cardsMover(value, newPositionId, oldPositionID, toBeMoved, moved);
-        }
-
-        //For horizontal sliding:
-        else if (prevRow == newPos.getRow() && (prevCol == 0 && newPos.getColumn() == value || prevCol == value && newPos.getColumn() == 0)) {
-            int k = 0;
-            for (int i = 0; i<cards.length; i++) {
-                if (cards[i].getPosition().getRow() == newPos.getRow()) {
-                    toBeMoved[k] = cards[i];
-                    k++;
-                }
-            }
-            moved = cardsMover(value, newPositionId, oldPositionID, toBeMoved, moved);
-        }
-        // Final cycle to move cards
-        for (int i = 0; i<value; i++) {
-            for (int j = 0; j<cards.length; j++) {
-                if (cards[j].getIdNumber() == moved[i].getIdNumber()) {
-                    moved[i].setColumn(cards[j].getPosition().getColumn());
-                    moved[i].setRow(cards[j].getPosition().getRow());
-                    cards[j] = moved[i];
-                }
-            }
-        }
-
-        return cards;
-    }*/
-
-    public Card[] hello(Card[][] cards, Position prevPos, Position newPos, int value) {
+    /**
+     * This precios method, is the most clear I've ever written and I'm so proud of it. I doubt that somebody is
+     * reading all the JavaDoc so.. by the way, this method slide an entire column or row
+     * @param cards the cards matrix
+     * @param prevPos the position where the drag has started
+     * @param newPos the position where the drop landed
+     * @param value the grid dimension
+     * @return the changed cards matrix
+     */
+    public static Card[][] cardsSlider(Card[][] cards, Position prevPos, Position newPos, int value) {
+        Card[] slidedLine = new Card[value];
         //VERTICAL SLIDE:
-
-        Card[] line = new Card[value];
-        return line;
-    }
-
-    private Card[] cardsMover(int value, int newPositionId, int oldPositionID, Card[] toBeMoved, Card[] moved) {
-        if (newPositionId < oldPositionID) {
-            int j = 1;
-            for (int i = 0; i<value; i++) {
-                if (j == value -1) {
-                    j = 0;
+        if (prevPos.getColumn() == newPos.getColumn()) {
+            if ((prevPos.getRow() == 0 && newPos.getRow() == value) || (prevPos.getRow() == value && newPos.getRow() == 0)) {
+                //top to bottom
+                if (prevPos.getRow() < newPos.getRow()) {
+                    slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];
+                    for (int i = 0; i < value - 1; i++) {
+                        slidedLine[i + 1] = cards[i][prevPos.getColumn()];
+                    }
                 }
-                moved[j] = toBeMoved[i];
-                j++;
+                //bottom to top
+                else {
+                    slidedLine[0] = cards[newPos.getRow()][newPos.getColumn()];
+                    for (int i = 1; i < value; i++) {
+                        slidedLine[i - 1] = cards[i][prevPos.getColumn()];
+                    }
+                }
+                for (int i = 0; i<value; i++) {
+                    cards[i][prevPos.getColumn()] = slidedLine[i];
+                }
             }
         }
-        else {
-            int j = 0;
-            for (int i = 1; i<value; i++) {
-                moved[j] = toBeMoved[i];
-                j++;
+
+        //HORIZONTAL SLIDE
+        else if (prevPos.getRow() == newPos.getRow()) {
+            if ((prevPos.getColumn() == 0 && newPos.getColumn() == value) || (prevPos.getColumn() == value && newPos.getColumn() == 0)) {
+                //left to right
+                if (prevPos.getColumn() < newPos.getColumn()) {
+                    slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];
+                    for (int i = 0; i < value - 1; i++) {
+                        slidedLine[i + 1] = cards[prevPos.getRow()][i];
+                    }
+                }
+                //right to left
+                else {
+                    slidedLine[0] = cards[newPos.getRow()][newPos.getColumn()];
+                    for (int i = 1; i < value; i++) {
+                        slidedLine[i - 1] = cards[prevPos.getRow()][i];
+                    }
+                }
+                for (int i = 0; i<value; i++) {
+                    cards[prevPos.getRow()][i] = slidedLine[i];
+                }
             }
-            moved[0] = toBeMoved[0];
         }
-        return moved;
+        return cards;
     }
+
 
 }
