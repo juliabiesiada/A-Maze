@@ -167,7 +167,34 @@ public class Controller {
 							pathImageView.setFitHeight(tileDimension);
 							pane.getChildren().add(pathImageView);
 						} else {
-							Image wall = new Image("/Assets/wall.png");
+							String url = new String();
+							switch (cards[i][j].getCardMatrix()[l][m]) {
+								case 1:
+									url = "/Assets/wall1.png";
+									break;
+								case 2:
+									url = "/Assets/wall2.png";
+									break;
+								case 3:
+									url = "/Assets/wall3.png";
+									break;
+								case 4:
+									url = "/Assets/wall4.png";
+									break;
+								case 5:
+									url = "/Assets/wall5.png";
+									break;
+								case 6:
+									url = "/Assets/wall6.png";
+									break;
+								case 7:
+									url = "/Assets/wall7.png";
+									break;
+								case 8:
+									url = "/Assets/wall8.png";
+									break;
+							}
+							Image wall = new Image(url);
 							ImageView wallImageView = new ImageView(wall);
 							wallImageView.setFitWidth(tileDimension);
 							wallImageView.setFitHeight(tileDimension);

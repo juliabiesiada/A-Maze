@@ -65,24 +65,24 @@ public class Card {
 
         //Matrixs of all the type of cards we have:
         int[][] tPathMatrix = {
-                {1, 1, 1},
+                {4, 1, 2},
                 {0, 0, 0},
-                {1, 0, 1}
+                {6, 0, 7}
         };
         int[][] linePathMatrix = {
-                {1, 1, 1},
+                {1, 3, 6},
                 {0, 0, 0},
-                {1, 1, 1}
+                {8, 5, 4}
         };
         int[][] anglePathMatrix = {
-                {1, 0, 1},
-                {1, 0, 0},
-                {1, 1, 1}
+                {4, 0, 1},
+                {7, 0, 0},
+                {6, 5, 8}
         };
         int[][] crossPathMatrix = {
-                {1, 0, 1},
+                {3, 0, 2},
                 {0, 0, 0},
-                {1, 0, 1}
+                {4, 0, 7}
         };
 
         //This fullfill the matrix based on the type of the card:
