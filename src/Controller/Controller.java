@@ -38,7 +38,7 @@ public class Controller {
 
 	private static final int NUM_OF_COLORS = 4;
 	@FXML
-	private Pane board_root;
+	private StackPane board_root;
 	@FXML
 	private List<Pane> panes;
 	@FXML
@@ -149,6 +149,7 @@ public class Controller {
 		//root is pane, contains a grid, allows us to be flexible with the size
 		board_grid = new GridPane();
 		board_root.getChildren().add(board_grid);
+		board_grid.setAlignment(Pos.CENTER);
 		Card[][] cards = game.getCardsOnBoard();
 		levelSize = cards.length;
 
@@ -221,11 +222,6 @@ public class Controller {
 				sPanes[i][j].getChildren().add(tinyGrid);
 			}
 		}
-		board_grid.setMaxHeight(494);
-		board_grid.setPrefHeight(494);
-		board_grid.setMinHeight(494);
-		board_grid.setMinWidth(550);
-		board_grid.setPadding(new Insets(0,0,0,30));
 	}
 
 	public void spawnPlayers() {

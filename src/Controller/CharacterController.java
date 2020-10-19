@@ -233,8 +233,8 @@ public class CharacterController {
     			mainController.setGame(game);
     			mainController.createBoard();
     			
-    			Stage stage = new Stage(); 
-    			stage.setScene(new Scene(root));
+    			Stage stage = new Stage();
+    			stage.setScene(new Scene(root, 600, 670));
     			
     			
     			stage.setTitle("A-maze");
@@ -260,7 +260,7 @@ public class CharacterController {
     private void setPreview(int index) {
 
     	previewImageViews.get(index).setImage(new Image(characters.get(characterIndex).getImageURL()));
-		previewImageViews.get(index).setFitHeight(30);
+		previewImageViews.get(index).setFitHeight(25);
 		previewImageViews.get(index).setFitWidth(30);
 		previewLabels.get(index).setText(namePlayer());
 		previewVBoxs.get(index).setPadding(new Insets(0, 20, 0, 10));
