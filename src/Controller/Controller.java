@@ -29,6 +29,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -99,10 +100,19 @@ public class Controller {
 		CardsController cardsController = new CardsController(levelSize);
 		Card[][] cards = cardsController.getCards();
 		game.setCardsOnBoard(cards);
+		setPlayerInitialPosition(game);
 
+		drawBoard();
+        spawnPlayers();
+        spawnGems();
+	}
+
+	public void drawBoard() {
 		//root is pane, contains a grid, allows us to be flexible with the size
 		board_grid = new GridPane();
 		board_root.getChildren().add(board_grid);
+		Card[][] cards = game.getCardsOnBoard();
+		levelSize = cards.length;
 
 		//this creates a pane inside each cell of the grid
 		sPanes = new StackPane[levelSize][levelSize];
@@ -119,7 +129,7 @@ public class Controller {
 			}
 		}
 		board_grid.setGridLinesVisible(true);
-				
+
 		//this colors the cards
 		for (int i = 0; i<cards.length; i++) {
 			for (int j = 0; j<cards.length; j++) {
@@ -151,36 +161,29 @@ public class Controller {
 		board_grid.setMinHeight(494);
 		board_grid.setMinWidth(550);
 		board_grid.setPadding(new Insets(0,0,0,30));
+	}
+
+	public void spawnPlayers() {
 
 		//this put players on the board
-        setPlayerInitialPosition(game);
-        for (Player player : game.getPlayers()) {
-            playerImage = new Image(player.getIconURL());
-            playerImageView = new ImageView(playerImage);
-            playerImageView.setFitHeight(tileDimension);
-            playerImageView.setFitWidth(tileDimension);
-            sPanes[player.getPosition().getRow()][player.getPosition().getColumn()].getChildren().add(playerImageView);
-            sPanes[player.getPosition().getRow()][player.getPosition().getColumn()].setAlignment(playerImageView, Pos.CENTER);
-            game.getCardsOnBoard()[player.getPosition().getRow()][player.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
-        }
+
+		for (Player player : game.getPlayers()) {
+			playerImage = new Image(player.getIconURL());
+			playerImageView = new ImageView(playerImage);
+			playerImageView.setFitHeight(tileDimension);
+			playerImageView.setFitWidth(tileDimension);
+			sPanes[player.getPosition().getRow()][player.getPosition().getColumn()].getChildren().add(playerImageView);
+			sPanes[player.getPosition().getRow()][player.getPosition().getColumn()].setAlignment(playerImageView, Pos.CENTER);
+			game.getCardsOnBoard()[player.getPosition().getRow()][player.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
+		}
+	}
+
+	public void spawnGems() {
 
 		//this put diamonds on the board
 		for (Player player : game.getPlayers()) {
-			String urlGem = new String();
-            switch (player.getPlayerColor()) {
-				case RED:
-					urlGem = "/Assets/gem_red.png";
-					break;
-				case BLUE:
-					urlGem = "/Assets/gem_icon.png";
-					break;
-				case YELLOW:
-					urlGem = "/Assets/gem_yellow.png";
-					break;
-				case GREEN:
-					urlGem = "/Assets/gem_green.png";
-					break;
-			}
+			String urlGem = colorToGemURL(player.getPlayerColor());
+
 			for (int i = 0; i<numOfGems; i++) {
 				int randomRow = new Randomizer().randomize(levelSize);
 				int randomCol = new Randomizer().randomize(levelSize);
@@ -200,7 +203,40 @@ public class Controller {
 
 			}
 		}
-		
+	}
+
+	public void respawnGems() {
+
+		for (int i = 0; i<(numOfGems*game.getPlayers().length); i++) {
+			int row = game.getGems().get(i).getPosition().getRow();
+			int col = game.getGems().get(i).getPosition().getColumn();
+			Image gemImage = new Image(colorToGemURL(game.getGems().get(i).getPlayerColor()));
+			ImageView gemImageView = new ImageView(gemImage);
+			gemImageView.setFitHeight(tileDimension);
+			gemImageView.setFitWidth(tileDimension);
+			sPanes[row][col].getChildren().add(gemImageView);
+			sPanes[row][col].setAlignment(gemImageView, Pos.CENTER);
+		}
+
+	}
+
+	public String colorToGemURL(PlayerColor color) {
+		String urlGem = "";
+		switch (color) {
+			case RED:
+				urlGem = "/Assets/gem_red.png";
+				break;
+			case BLUE:
+				urlGem = "/Assets/gem_icon.png";
+				break;
+			case YELLOW:
+				urlGem = "/Assets/gem_yellow.png";
+				break;
+			case GREEN:
+				urlGem = "/Assets/gem_green.png";
+				break;
+		}
+		return urlGem;
 	}
 
 
@@ -309,29 +345,6 @@ public class Controller {
     private void handleIconDragOver(DragEvent event) {
     	event.acceptTransferModes(TransferMode.ANY);
     	event.consume();
-    }
-    
-    @FXML
-    private void handleIconDragDropped(DragEvent event) {
-		/*
-		 * ADD EVENT CONSUME!
-		 * Node node = event.getPickResult().getIntersectedNode(); Integer cIndex =
-		 * board_grid.getColumnIndex(node); Integer rIndex =
-		 * board_grid.getRowIndex(node); Dragboard db = event.getDragboard();
-		 * 
-		 * for (int i = 0; i<game.getPlayers().length; i++) {
-		 * 
-		 * if (game.getPlayers()[i].getPosition().getColumn() == cIndex &&
-		 * game.getPlayers()[i].getPosition().getRow() == rIndex) {
-		 * 
-		 * Player selectedPlayer = game.getPlayers()[i]; TurnManager currentTurn =
-		 * game.getTurns()[game.getTurns().length - 1]; if (db.getImage() ==
-		 * iconBuff.getImage()) {
-		 * 
-		 * //add turn }else if (db.getImage() == iconDebuff.getImage()) {
-		 * 
-		 * if (currentTurn.getTurns().get(0) != selectedPlayer) { //skip turns } } } }
-		 */
     }
     
     @FXML 
@@ -455,13 +468,15 @@ public class Controller {
 				int r = Integer.parseInt(rStr);
 				int c = Integer.parseInt(cStr);
 				
-				if(event.getButton().equals(MouseButton.SECONDARY)){
+				if(event.getButton().equals(MouseButton.SECONDARY) && event.isShiftDown()){
 
-					//Clock Wise Rotation
+					//Clock Wise Rotationssss
 					int[][] rotMatrix = game.getCardsOnBoard()[r][c].getCardMatrix();
 					rotMatrix = CardsController.clockWiseRotation(rotMatrix);
 					game.getCardsOnBoard()[r][c].setCardMatrix(rotMatrix);
-					//TODO make the tinyGrid redrawn
+					drawBoard();
+					spawnPlayers();
+					respawnGems();
 	            	
 	                System.out.println(r+""+c+" double clicked");
 	                

@@ -41,7 +41,7 @@
                         <Font size="17.0" />
                      </font>
                   </Label>
-                  <ImageView fx:id="iconBuff" fitHeight="35.0" fitWidth="35.0" onDragDetected="#handleIconDragDetected" onDragDropped="#handleIconDragDropped" onDragOver="#handleIconDragOver" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="iconBuff" fitHeight="35.0" fitWidth="35.0" onDragDetected="#handleIconDragDetected" onDragOver="#handleIconDragOver" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets left="10.0" right="10.0" top="5.0" />
                      </HBox.margin>
@@ -57,7 +57,7 @@
                         <Insets right="10.0" top="10.0" />
                      </HBox.margin>
                   </Label>
-                  <ImageView fx:id="iconDebuff" fitHeight="32.0" fitWidth="32.0" layoutX="85.0" layoutY="15.0" onDragDetected="#handleIconDragDetected" onDragDropped="#handleIconDragDropped" onDragOver="#handleIconDragOver" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="iconDebuff" fitHeight="32.0" fitWidth="32.0" layoutX="85.0" layoutY="15.0" onDragDetected="#handleIconDragDetected" onDragOver="#handleIconDragOver" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Assets/poison_icon.png" />
                      </image>
