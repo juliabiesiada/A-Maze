@@ -161,6 +161,60 @@ public class Controller {
 		board_grid.setMinHeight(494);
 		board_grid.setMinWidth(550);
 		board_grid.setPadding(new Insets(0,0,0,30));
+
+		//handles buffer and debuffer
+		int numOfDebuff = 0;
+		int numOfBuff = 0;
+		int val = game.getTurnsOrder().getCounter() % 10;
+		if (val == 0) {
+			for (int i = 0; i<levelSize; i++) {
+				for (int j = 0; j<levelSize; j++) {
+					if (cards[i][j].getOnCard() == OnCard.BUFFER) {
+						numOfBuff++;
+					} else if (cards[i][j].getOnCard() == OnCard.DEBUFFER) {
+						numOfDebuff++;
+					}
+				}
+			}
+			while (numOfBuff < 2 || numOfDebuff < 2) {
+				System.out.println("hello");
+				int row = new Randomizer().randomize(levelSize);
+				int col = new Randomizer().randomize(levelSize);
+				if (cards[row][col].getOnCard() == OnCard.NOTHING) {
+					if (numOfBuff <= 1) {
+						cards[row][col].setOnCard(OnCard.BUFFER);
+						numOfBuff++;
+						game.getBuffPositions().add(new Position(row, col));
+					} else if (numOfDebuff <= 1) {
+						cards[row][col].setOnCard(OnCard.DEBUFFER);
+						numOfDebuff++;
+						game.getDebuffPositions().add(new Position(row, col));
+					}
+				}
+			}
+
+			for (int i = 0; i<levelSize; i++) {
+				for (int j = 0; j<levelSize; j++) {
+					if (cards[i][j].getOnCard() == OnCard.BUFFER) {
+						Image buffImage = new Image("/Assets/potion_icon.png");
+						ImageView buffImageView = new ImageView(buffImage);
+						buffImageView.setFitHeight(tileDimension);
+						buffImageView.setFitWidth(tileDimension);
+						sPanes[i][j].getChildren().add(buffImageView);
+						sPanes[i][j].setAlignment(buffImageView, Pos.CENTER);
+					}
+					else if (cards[i][j].getOnCard() == OnCard.DEBUFFER) {
+						Image debuffImage = new Image("/Assets/poison_icon.png");
+						ImageView debuffImageView = new ImageView(debuffImage);
+						debuffImageView.setFitHeight(tileDimension);
+						debuffImageView.setFitWidth(tileDimension);
+						sPanes[i][j].getChildren().add(debuffImageView);
+						sPanes[i][j].setAlignment(debuffImageView, Pos.CENTER);
+					}
+				}
+			}
+
+		}
 	}
 
 	public void spawnPlayers() {
@@ -187,7 +241,7 @@ public class Controller {
 			for (int i = 0; i<numOfGems; i++) {
 				int randomRow = new Randomizer().randomize(levelSize);
 				int randomCol = new Randomizer().randomize(levelSize);
-				if (game.getCardsOnBoard()[randomRow][randomCol].isAvailable()) {
+				if (game.getCardsOnBoard()[randomRow][randomCol].getOnCard() == OnCard.NOTHING) {
 					Image gemImage = new Image(urlGem);
 					ImageView gemImageView = new ImageView(gemImage);
 					gemImageView.setFitHeight(tileDimension);
@@ -468,7 +522,7 @@ public class Controller {
 				int r = Integer.parseInt(rStr);
 				int c = Integer.parseInt(cStr);
 				
-				if(event.getButton().equals(MouseButton.SECONDARY) && event.isShiftDown()){
+				if(event.getButton().equals(MouseButton.PRIMARY) && event.isShiftDown()){
 
 					//Clock Wise Rotationssss
 					int[][] rotMatrix = game.getCardsOnBoard()[r][c].getCardMatrix();

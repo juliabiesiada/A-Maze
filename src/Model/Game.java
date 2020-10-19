@@ -9,11 +9,32 @@ public class Game {
     private Level level;
     private ArrayList<Gem> gems;
     private Status status;
+    private ArrayList<Position> buffPositions;
+    private ArrayList<Position> debuffPositions;
 
     public Game() {
         this.gems = new ArrayList<Gem>();
         this.status = new Status();
+        this.buffPositions = new ArrayList<Position>();
+        this.debuffPositions = new ArrayList<Position>();
     }
+
+    public ArrayList<Position> getBuffPositions() {
+        return buffPositions;
+    }
+
+    public ArrayList<Position> getDebuffPositions() {
+        return debuffPositions;
+    }
+
+    public TurnManager getTurnsOrder() {
+        return turnsOrder;
+    }
+
+    public void setTurnsOrder(TurnManager turnsOrder) {
+        this.turnsOrder = turnsOrder;
+    }
+
 
     public Player[] getPlayers() {
         return players;
