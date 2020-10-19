@@ -91,6 +91,7 @@ public class Controller {
 	public void onClicked(MouseEvent mouseEvent) throws IOException {
 		//End Turn
 		//allowing player to move
+		rotationMove = false;
 		moveAllowed = true;
 		buffDebuffAlreadySpawn = false;
 		//resetting history for rotation
@@ -117,6 +118,7 @@ public class Controller {
 		initHandlers();
 		//to allow only one movement per turn
 		moveAllowed = true;
+		rotationMove = false;
 	}
 
 	public void createBoard() {
@@ -432,13 +434,14 @@ public class Controller {
 	void easterEggMagic(MouseEvent event) {
 		System.out.println("magic");
 		for (Player player : game.getPlayers()) {
-			if (player.getName() == "Raphael" || player.getName() == "raphael" || player.getName() == "Raphaël") {
+			if (player.getName().equals("Raphael") || player.getName().equals("raphael") || player.getName().equals("Raphaël")) {
 				player.setIconURL("/Assets/umbreon.gif");
 			}
-			else if (player.getName() == "Mehdi" || player.getName() == "mehdi") {
+			else if (player.getName().equals("Mehdi") || player.getName().equals("mehdi")) {
 				player.setIconURL("/Assets/cyndaquil.gif");
 			}
 		}
+		spawnPlayers();
 	}
     
     @FXML 
