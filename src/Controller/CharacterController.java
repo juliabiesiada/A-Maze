@@ -74,10 +74,10 @@ public class CharacterController {
     	player3active = false;
     	player4active = false;
 
-		characters.add(new Character("Assets/indy.png", "Indiana"));
+		characters.add(new Character("Assets/indiana.png", "Indiana"));
 		characters.add(new Character("/Assets/lara.png", "Lara"));
-		characters.add(new Character("/Assets/alan.png", "Alan"));
-		characters.add(new Character("/Assets/someone.png", "Alex"));
+		characters.add(new Character("/Assets/sophia.png", "Sophia"));
+		characters.add(new Character("/Assets/marcello.png", "Marcello"));
     	
     	imgCharacter.setImage(new Image(characters.get(characterIndex).getImageURL()));
     	txtName.setText(characters.get(characterIndex).getName());
