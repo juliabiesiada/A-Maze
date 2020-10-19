@@ -62,6 +62,7 @@ public class Controller {
 	int tileDimension;
 	int levelSize;
 	int numOfGems;
+	boolean buffDebuffAlreadySpawn = false;
 	Game game;
 	private EventHandler<MouseEvent> onPaneDragDetected;
 	private EventHandler<DragEvent> onDragDropped;
@@ -88,9 +89,10 @@ public class Controller {
 	}
 
 	public void onClicked(MouseEvent mouseEvent) throws IOException {
-
+		//End Turn
 		//allowing player to move
 		moveAllowed = true;
+		buffDebuffAlreadySpawn = false;
 		//resetting history for rotation
 		historyMatrix.clear();
 		historyPosition.clear();
@@ -275,8 +277,9 @@ public class Controller {
 	public void spawnBufferDebuffer() {
 		//handles buffer and debuffer
 		int val = game.getTurnsOrder().getCounter() % 10;
-		if (val == 0) {
+		if (val == 0 && buffDebuffAlreadySpawn == false) {
 			game.updateBuffDebuff();
+			buffDebuffAlreadySpawn = true;
 		}
 		for (int i = 0; i<game.getBuffPositions().size(); i++) {
 			Image buffImage = new Image("/Assets/potion_icon.png");
@@ -424,6 +427,19 @@ public class Controller {
     	event.acceptTransferModes(TransferMode.ANY);
     	event.consume();
     }
+
+    @FXML
+	void easterEggMagic(MouseEvent event) {
+		System.out.println("magic");
+		for (Player player : game.getPlayers()) {
+			if (player.getName() == "Raphael" || player.getName() == "raphael" || player.getName() == "Raphaël") {
+				player.setIconURL("/Assets/umbreon.gif");
+			}
+			else if (player.getName() == "Mehdi" || player.getName() == "mehdi") {
+				player.setIconURL("/Assets/cyndaquil.gif");
+			}
+		}
+	}
     
     @FXML 
     private void  handleIconDragDetected(MouseEvent event) {
