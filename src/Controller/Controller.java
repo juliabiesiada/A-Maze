@@ -19,6 +19,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -55,6 +56,10 @@ public class Controller {
 	private Label lblBuff;
 	@FXML 
 	private Label lblDebuff;
+	@FXML
+	Button btnEndTurn;
+	@FXML
+	Label labelStatus;
 
 	GridPane board_grid;
 	//for level choosing
@@ -132,6 +137,9 @@ public class Controller {
 		Card[][] cards = cardsController.getCards();
 		game.setCardsOnBoard(cards);
 		setPlayerInitialPosition(game);
+
+		//game.getStatus().getStatusList().add(game.getPlayers()[0].getName() + " is playing");
+		//labelStatus.setText(game.getStatus().getStatusList().get(0));
 
 		spawnGems();
 		drawEverything();
@@ -706,6 +714,12 @@ public class Controller {
     	Player thisPlayer = game.getTurnsOrder().whosPlaying();
 		destination = game.getCardsOnBoard()[rEnd][cEnd];
 
+		if(onCardEnd == OnCard.STAIRS && isGameWon()) {
+			btnEndTurn.setDisable(true);
+			for (int i=0; i<sPanes.length; i++) {
+				victory();
+			}
+		}
     	
     	if(onCardEnd != OnCard.PLAYER) {
     		
@@ -759,7 +773,7 @@ public class Controller {
 		drawEverything();
 		game.getCardsOnBoard()[thisPlayer.getPosition().getRow()][thisPlayer.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
 
-		if (isGameWon()) {
+		if (isGameWon() && !stairsSpawned) {
 			spawnStairs();
 		}
 
@@ -840,6 +854,10 @@ public class Controller {
 		//add imageView with stairs
 		//cardsAvailable.get(randomIndex).add
 		stairsSpawned = true;
+	}
+
+	private void victory() {
+		Player winner = game.getTurnsOrder().whosPlaying();
 	}
 
 }

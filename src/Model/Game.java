@@ -19,6 +19,14 @@ public class Game {
         this.debuffPositions = new ArrayList<Position>();
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public void updateBuffDebuff() {
         int numOfBuff = buffPositions.size();
         int numOfDebuff = debuffPositions.size();
