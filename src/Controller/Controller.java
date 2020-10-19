@@ -2,7 +2,6 @@ package Controller;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import Model.*;
@@ -15,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,9 +27,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -127,9 +122,16 @@ public class Controller {
 		game.setCardsOnBoard(cards);
 		setPlayerInitialPosition(game);
 
+		spawnGems();
+		drawEverything();
+
+	}
+
+	public void drawEverything() {
 		drawBoard();
-        spawnPlayers();
-        spawnGems();
+		spawnPlayers();
+		drawGems();
+		spawnBufferDebuffer();
 	}
 
 	public void drawBoard() {
@@ -213,66 +215,11 @@ public class Controller {
 		board_grid.setMinHeight(494);
 		board_grid.setMinWidth(550);
 		board_grid.setPadding(new Insets(0,0,0,30));
-
-		//handles buffer and debuffer
-		int numOfDebuff = 0;
-		int numOfBuff = 0;
-		int val = game.getTurnsOrder().getCounter() % 10;
-		if (val == 0) {
-			for (int i = 0; i<levelSize; i++) {
-				for (int j = 0; j<levelSize; j++) {
-					if (cards[i][j].getOnCard() == OnCard.BUFFER) {
-						numOfBuff++;
-					} else if (cards[i][j].getOnCard() == OnCard.DEBUFFER) {
-						numOfDebuff++;
-					}
-				}
-			}
-			while (numOfBuff < 2 || numOfDebuff < 2) {
-				System.out.println("hello");
-				int row = new Randomizer().randomize(levelSize);
-				int col = new Randomizer().randomize(levelSize);
-				if (cards[row][col].getOnCard() == OnCard.NOTHING) {
-					if (numOfBuff <= 1) {
-						cards[row][col].setOnCard(OnCard.BUFFER);
-						numOfBuff++;
-						game.getBuffPositions().add(new Position(row, col));
-					} else if (numOfDebuff <= 1) {
-						cards[row][col].setOnCard(OnCard.DEBUFFER);
-						numOfDebuff++;
-						game.getDebuffPositions().add(new Position(row, col));
-					}
-				}
-			}
-
-			for (int i = 0; i<levelSize; i++) {
-				for (int j = 0; j<levelSize; j++) {
-					if (cards[i][j].getOnCard() == OnCard.BUFFER) {
-						Image buffImage = new Image("/Assets/potion_icon.png");
-						ImageView buffImageView = new ImageView(buffImage);
-						buffImageView.setFitHeight(tileDimension);
-						buffImageView.setFitWidth(tileDimension);
-						sPanes[i][j].getChildren().add(buffImageView);
-						sPanes[i][j].setAlignment(buffImageView, Pos.CENTER);
-					}
-					else if (cards[i][j].getOnCard() == OnCard.DEBUFFER) {
-						Image debuffImage = new Image("/Assets/poison_icon.png");
-						ImageView debuffImageView = new ImageView(debuffImage);
-						debuffImageView.setFitHeight(tileDimension);
-						debuffImageView.setFitWidth(tileDimension);
-						sPanes[i][j].getChildren().add(debuffImageView);
-						sPanes[i][j].setAlignment(debuffImageView, Pos.CENTER);
-					}
-				}
-			}
-
-		}
 	}
 
 	public void spawnPlayers() {
 
 		//this put players on the board
-
 		for (Player player : game.getPlayers()) {
 			playerImage = new Image(player.getIconURL());
 			playerImageView = new ImageView(playerImage);
@@ -293,15 +240,9 @@ public class Controller {
 			for (int i = 0; i<numOfGems; i++) {
 				int randomRow = new Randomizer().randomize(levelSize);
 				int randomCol = new Randomizer().randomize(levelSize);
-				if (game.getCardsOnBoard()[randomRow][randomCol].getOnCard() == OnCard.NOTHING) {
-					Image gemImage = new Image(urlGem);
-					ImageView gemImageView = new ImageView(gemImage);
-					gemImageView.setFitHeight(tileDimension);
-					gemImageView.setFitWidth(tileDimension);
+				if (game.getCardsOnBoard()[randomRow][randomCol].getOnCard() == OnCard.NOTHING &&
+						game.getCardsOnBoard()[randomRow][randomCol].isAvailable() == true) {
 					game.getCardsOnBoard()[randomRow][randomCol].setOnCard(OnCard.GEM);
-					game.getCardsOnBoard()[randomRow][randomCol].setAvailable(false);
-					sPanes[randomRow][randomCol].getChildren().add(gemImageView);
-					sPanes[randomRow][randomCol].setAlignment(gemImageView, Pos.CENTER);
 					game.getGems().add(new Gem(player.getPlayerColor(), new Position(randomRow,randomCol)));
 				} else {
 					i--;
@@ -311,8 +252,7 @@ public class Controller {
 		}
 	}
 
-	public void respawnGems() {
-
+	public void drawGems() {
 		for (int i = 0; i<game.getGems().size(); i++) {
 			int row = game.getGems().get(i).getPosition().getRow();
 			int col = game.getGems().get(i).getPosition().getColumn();
@@ -323,7 +263,30 @@ public class Controller {
 			sPanes[row][col].getChildren().add(gemImageView);
 			sPanes[row][col].setAlignment(gemImageView, Pos.CENTER);
 		}
+	}
 
+	public void spawnBufferDebuffer() {
+		//handles buffer and debuffer
+		int val = game.getTurnsOrder().getCounter() % 10;
+		if (val == 0) {
+			game.updateBuffDebuff();
+		}
+		for (int i = 0; i<game.getBuffPositions().size(); i++) {
+			Image buffImage = new Image("/Assets/potion_icon.png");
+			ImageView buffImageView = new ImageView(buffImage);
+			buffImageView.setFitHeight(tileDimension);
+			buffImageView.setFitWidth(tileDimension);
+			sPanes[game.getBuffPositions().get(i).getRow()][game.getBuffPositions().get(i).getColumn()].getChildren().add(buffImageView);
+			sPanes[game.getBuffPositions().get(i).getRow()][game.getBuffPositions().get(i).getColumn()].setAlignment(buffImageView, Pos.CENTER);
+		}
+		for (int i = 0; i<game.getDebuffPositions().size(); i++) {
+			Image debuffImage = new Image("/Assets/poison_icon.png");
+			ImageView debuffImageView = new ImageView(debuffImage);
+			debuffImageView.setFitHeight(tileDimension);
+			debuffImageView.setFitWidth(tileDimension);
+			sPanes[game.getDebuffPositions().get(i).getRow()][game.getDebuffPositions().get(i).getColumn()].getChildren().add(debuffImageView);
+			sPanes[game.getDebuffPositions().get(i).getRow()][game.getDebuffPositions().get(i).getColumn()].setAlignment(debuffImageView, Pos.CENTER);
+		}
 	}
 
 	public String colorToGemURL(PlayerColor color) {
@@ -565,9 +528,7 @@ public class Controller {
 					slideMatrix = CardsController.cardsSlider(slideMatrix, startPos, endPos, slideMatrix.length);
 					game.setCardsOnBoard(slideMatrix);
 
-					drawBoard();
-					spawnPlayers();
-					respawnGems();
+					drawEverything();
 				}
 			}
         	
@@ -592,9 +553,7 @@ public class Controller {
 					int[][] rotMatrix = game.getCardsOnBoard()[r][c].getCardMatrix();
 					rotMatrix = CardsController.clockWiseRotation(rotMatrix);
 					game.getCardsOnBoard()[r][c].setCardMatrix(rotMatrix);
-					drawBoard();
-					spawnPlayers();
-					respawnGems();
+					drawEverything();
 	                
 	            }else if (event.getButton().equals(MouseButton.PRIMARY)){
 		            	
@@ -713,7 +672,7 @@ public class Controller {
             	game.getCardsOnBoard()[rStart][cStart].setOnCard(OnCard.NOTHING);
             }
 
-			game.getCardsOnBoard()[rEnd][cEnd].setAvailable(false);
+			//game.getCardsOnBoard()[rEnd][cEnd].setAvailable(false);
             
             if(onCardEnd == OnCard.GEM) {
             	if (findGemByPosition(rEnd, cEnd).getPlayerColor() == game.getTurnsOrder().whosPlaying().getPlayerColor()) {
@@ -726,9 +685,7 @@ public class Controller {
             }else {
 				game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER);
 			}
-            drawBoard();
-            respawnGems();
-            spawnPlayers();
+            drawEverything();
     	}
     }
 
@@ -751,9 +708,7 @@ public class Controller {
 		thisPlayer.getInventory().setGemsCollected(thisPlayer.getInventory().getGemsCollected() + 1);
 		lblGems.setText(""+thisPlayer.getInventory().getGemsCollected());
 		game.getGems().remove(gem);
-		drawBoard();
-		spawnPlayers();
-		respawnGems();
+		drawEverything();
 		game.getCardsOnBoard()[thisPlayer.getPosition().getRow()][thisPlayer.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
 
 	}
