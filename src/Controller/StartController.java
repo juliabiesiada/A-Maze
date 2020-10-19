@@ -56,12 +56,13 @@ public class StartController {
 				lvlController.startChoosing(game);
 				
 				Stage stage = new Stage(); 
-				Scene scene = new Scene(root, 400, 400);
+				Scene scene = new Scene(root, 750, 500);
 				scene.getStylesheets().add("View/application.css");
 				stage.setScene(scene);
+				stage.setResizable(false);
 				
 				
-				stage.setTitle("A-maze");
+				stage.setTitle("A-Maze");
 				
 				stage.show();
 				

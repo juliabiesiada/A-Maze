@@ -23,10 +23,33 @@
 	 -fx-background-position: center;
 }
 
-player-someone {
+.player-someone {
 	 -fx-border-radius: 30.0;
 	 -fx-background-image: url(../Assets/someone.png);
 	 -fx-background-size: 120.0px 120.0px;
 	 -fx-background-repeat: no-repeat;
 	 -fx-background-position: center;
+}
+
+.screen1 {
+	-fx-background-image: url(../Assets/screen1.png);
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+}
+
+.screen2 {
+	-fx-background-image: url(../Assets/screen2.png);
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+}
+
+.screen3 {
+	-fx-background-image: url(../Assets/screen3.png);
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+}
+
+.text {
+	-fx-background-color: rgba(255,255,255,0.6);
+	-fx-background-repeat: repeat;
 }

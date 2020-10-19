@@ -30,7 +30,7 @@ public class CharacterController {
     private TextField txtName;
     
     @FXML
-    private Text labelOrder;
+    private Label labelOrder;
 
     @FXML
     private ImageView btnLeft;
@@ -48,7 +48,7 @@ public class CharacterController {
     private Button btnStart;
     
     @FXML
-    private Text txtError;
+    private Label txtError;
     
     Player player1 = new Player();
     Player player2 = new Player();

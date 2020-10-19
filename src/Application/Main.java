@@ -19,30 +19,17 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
 
-            //Controller myController = new Controller();
-
-            //FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/mainBoard.fxml"));
-            //loader.setController(myController);
-            //loader.load();
-
             StartController controller = new StartController();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/startScreen.fxml"));
             loader.setController(controller);
             loader.load();
 
             Parent root = loader.getRoot();
-            Scene scene = new Scene(root, 400, 400);
+            Scene scene = new Scene(root, 300, 225);
             scene.getStylesheets().add("View/application.css");
             primaryStage.setScene(scene);
             primaryStage.setTitle("A-Maze");
-
-            primaryStage.setHeight(450);
-            primaryStage.setMaxHeight(500);
-            primaryStage.setMinHeight(400);
-
-            primaryStage.setWidth(700);
-            primaryStage.setMaxWidth(700);
-            primaryStage.setMinWidth(530);
+            primaryStage.setResizable(false);
 
             primaryStage.toFront();
             primaryStage.show();

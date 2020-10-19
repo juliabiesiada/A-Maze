@@ -57,9 +57,6 @@ public class LevelController {
 			scene.getStylesheets().add("View/application.css");
 			stage.setScene(scene);
 			
-			stage.setWidth(420);
-			stage.setHeight(500);
-			
 			
 			stage.setTitle("A-maze");
 			
