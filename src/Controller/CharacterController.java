@@ -1,7 +1,9 @@
 package Controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import Model.Character;
 import Model.Game;
 import Model.Player;
 import Model.PlayerColor;
@@ -58,44 +60,44 @@ public class CharacterController {
     boolean player2active;
     boolean player3active;
     boolean player4active;
-    Image indy;
-    Image lara;
-    Image alan;
-    Image someone;
-    VBox preview1;
-    VBox preview2;
-    VBox preview3;
-    VBox preview4;
-    Label player1preview = new Label ("Player 1");
-    Label player2preview = new Label ("Player 2");
-    Label player3preview = new Label ("Player 3");
-    Label player4preview = new Label ("Player 4");
-    Label name1preview;
-    Label name2preview;
-    Label name3preview;
-    Label name4preview;
-    ImageView imgPreview1;
-    ImageView imgPreview2;
-    ImageView imgPreview3;
-    ImageView imgPreview4;
+    ArrayList<Character> characters = new ArrayList<Character>();
+    ArrayList<VBox> previewVBoxs = new ArrayList<VBox>();
+    ArrayList<Label> previewLabels = new ArrayList<Label>();
+    ArrayList<Label> previewLabelsSet = new ArrayList<Label>();
+    ArrayList<ImageView> previewImageViews = new ArrayList<ImageView>();
     
     public void initialize() {
-    	
-    	txtName.setText("Indiana");
-    	characterIndex  = 1;
+
+    	characterIndex  = 0;
     	player1active = true;
     	player2active = true;
     	player3active = false;
     	player4active = false;
+
+		characters.add(new Character("Assets/indy.png", "Indiana"));
+		characters.add(new Character("/Assets/lara.png", "Lara"));
+		characters.add(new Character("/Assets/alan.png", "Alan"));
+		characters.add(new Character("/Assets/someone.png", "Alex"));
     	
-    	indy = new Image("Assets/indy.png");
-    	lara = new Image("/Assets/lara.png");
-    	alan = new Image("/Assets/alan.png");
-    	someone = new Image ("/Assets/someone.png");
-    	
-    	imgCharacter.setImage(indy);
-    	
-    	
+    	imgCharacter.setImage(new Image(characters.get(characterIndex).getImageURL()));
+    	txtName.setText(characters.get(characterIndex).getName());
+
+		previewVBoxs.add(new VBox());
+		previewVBoxs.add(new VBox());
+		previewVBoxs.add(new VBox());
+		previewVBoxs.add(new VBox());
+		previewLabelsSet.add(new Label ("Player 1"));
+		previewLabelsSet.add(new Label ("Player 2"));
+		previewLabelsSet.add(new Label ("Player 3"));
+		previewLabelsSet.add(new Label ("Player 4"));
+		previewLabels.add(new Label());
+		previewLabels.add(new Label());
+		previewLabels.add(new Label());
+		previewLabels.add(new Label());
+		previewImageViews.add(new ImageView());
+		previewImageViews.add(new ImageView());
+		previewImageViews.add(new ImageView());
+		previewImageViews.add(new ImageView());
     }
     
     public void startChoosing(Game game) {
@@ -114,70 +116,72 @@ public class CharacterController {
     void switchCharacter(MouseEvent event) {
     	
     	ImageView arrow = (ImageView) event.getSource();
-    	
+    	int delta = 0;
+
     	if(arrow.getId().equals("btnLeft")) {
-    		
-    		if (characterIndex == 1) {
-    			characterIndex = 4;
-    		}else {
-    			characterIndex -=1;
-    		}
+			delta = -1;
     		
     	}else if (arrow.getId().equals("btnRight")) {
-    		if (characterIndex == 4) {
-    			characterIndex = 1;
-    		}else {
-    			characterIndex +=1;
-    		}
+    		delta = 1;
     	}
-    	
-		  
-		switch (characterIndex) { 
-			case 1: 
-				imgCharacter.setImage(indy);
-				txtName.setText("Indiana"); 
-				break; 
-			case 2:
-				imgCharacter.setImage(lara); 
-				txtName.setText("Lara"); 
-				break; 
-			case 3: 
-				imgCharacter.setImage(alan); 
-				txtName.setText("Alan"); 
-				break;
-			case 4: 
-				imgCharacter.setImage(someone);
-				txtName.setText("Someone"); 
-				break;
-			}
-		 
+		switchView(delta);
     }
-    
-    @FXML
+
+	private void switchView(int delta) {
+		if (characterIndex + delta < 0) {
+			characterIndex = 3;
+		}else if (characterIndex + delta >= characters.size()) {
+			characterIndex = 0;
+		}else {
+			characterIndex += delta;
+		}
+		if (characters.size() > 0) {
+			imgCharacter.setImage(new Image(characters.get(characterIndex).getImageURL()));
+			txtName.setText(characters.get(characterIndex).getName());
+		}
+
+	}
+
+	private boolean isNameUsed() {
+    	boolean isUsed = false;
+    	for (int i = 0; i<game.getPlayers().length; i++) {
+    		if (namePlayer().equals(game.getPlayers()[i].getName())) {
+    			isUsed = true;
+    			return isUsed;
+			}
+		}
+    	return isUsed;
+	}
+
+	@FXML
     void chooseCharacter(MouseEvent event) {
     	
     	txtError.setText("");
     	
     	if (namePlayer().isEmpty()) {
     		txtError.setText("You know your hero needs a name, right?");
-    	}else {
+    	} else if (isNameUsed()) {
+    		txtError.setText("This name is already used");
+		}else {
     	
 			if (player1active) {
-				game.getPlayers()[0].setIconURL(urlPlayer(characterIndex));
+				game.getPlayers()[0].setIconURL(characters.get(characterIndex).getImageURL());
 				game.getPlayers()[0].setName(namePlayer());
 				game.getPlayers()[0].setPlayerColor(PlayerColor.BLUE);
 				
-				setPreview(urlPlayer(characterIndex), namePlayer(), 1);
+				setPreview(0);
 				player1active = false;
+				characters.remove(characterIndex);
 				labelOrder.setText("Player 2, choose your character:");
 				
 			}else if (player2active) {
-				game.getPlayers()[1].setIconURL(urlPlayer(characterIndex));
+				game.getPlayers()[1].setIconURL(characters.get(characterIndex).getImageURL());
 				game.getPlayers()[1].setName(namePlayer());
 				game.getPlayers()[1].setPlayerColor(PlayerColor.GREEN);
 				
-				setPreview(urlPlayer(characterIndex), namePlayer(), 2);
+				setPreview(1);
 				player2active = false;
+				characters.remove(characterIndex);
 				if (player3active) {
 					labelOrder.setText("Player 3, choose your character:");
 				}else {
@@ -185,12 +189,13 @@ public class CharacterController {
 				}
 				
 			}else if (player3active) {
-				game.getPlayers()[2].setIconURL(urlPlayer(characterIndex));
+				game.getPlayers()[2].setIconURL(characters.get(characterIndex).getImageURL());
 				game.getPlayers()[2].setName(namePlayer());
 				game.getPlayers()[2].setPlayerColor(PlayerColor.YELLOW);
 				
-				setPreview(urlPlayer(characterIndex), namePlayer(), 3);
+				setPreview(2);
 				player3active = false;
+				characters.remove(characterIndex);
 				if (player4active) {
 					labelOrder.setText("Player 4, choose your character:");
 				}else {
@@ -198,15 +203,18 @@ public class CharacterController {
 				}
 				
 			}else if (player4active) {
-	    			game.getPlayers()[3].setIconURL(urlPlayer(characterIndex));
-	    			game.getPlayers()[3].setName(namePlayer());
-	    			game.getPlayers()[3].setPlayerColor(PlayerColor.RED);
-	    			
-	    			setPreview(urlPlayer(characterIndex), namePlayer(), 4);
-	    			player4active = false;
-	    			labelOrder.setText("All set! Press confirm button to start.");
+				game.getPlayers()[3].setIconURL(characters.get(characterIndex).getImageURL());
+				game.getPlayers()[3].setName(namePlayer());
+				game.getPlayers()[3].setPlayerColor(PlayerColor.RED);
+
+				setPreview(3);
+				player4active = false;
+				characters.remove(characterIndex);
+				labelOrder.setText("All set! Press confirm button to start.");
 	    		}
+			switchView(1);
     		}
+
     	}
     
     @FXML
@@ -249,69 +257,17 @@ public class CharacterController {
     	return name;
     }
     
-    private String urlPlayer(int characterIndex) {
-    	String url = "";
-    	switch (characterIndex) {
-    	case 1:
-    		url = "/Assets/indy.png";
-    		break;
-    	case 2:
-    		url = "/Assets/lara.png";
-    		break;
-    	case 3:
-    		url = "/Assets/alan.png";
-    		break;
-    	case 4:
-    		url = "/Assets/someone.png";
-    		break;
-    	}
-    	return url;
-    }
-    
-    private void setPreview(String urlPlayer, String namePlayer, int index) {
-		
-		switch (index) {
-			case 1:
-				imgPreview1 = new ImageView(new Image(urlPlayer));
-				imgPreview1.setFitHeight(30);
-				imgPreview1.setFitWidth(30);
-				name1preview = new Label(namePlayer);
-				preview1 = new VBox();
-				preview1.setPadding(new Insets(0, 20, 0, 10));
-				preview1.getChildren().addAll(player1preview, imgPreview1, name1preview);
-				chosenCharacters.getChildren().add(preview1);
-				break;
-			case 2:
-				imgPreview2 = new ImageView(new Image(urlPlayer));
-				imgPreview2.setFitHeight(30);
-				imgPreview2.setFitWidth(30);
-				name2preview = new Label(namePlayer);
-				preview2 = new VBox();
-				preview2.setPadding(new Insets(0, 20, 0, 0));
-				preview2.getChildren().addAll(player2preview, imgPreview2, name2preview);
-				chosenCharacters.getChildren().add(preview2);
-				break;
-			case 3:
-				imgPreview3 = new ImageView(new Image(urlPlayer));
-				imgPreview3.setFitHeight(30);
-				imgPreview3.setFitWidth(30);
-				name3preview = new Label(namePlayer);
-				preview3 = new VBox();
-				preview3.setPadding(new Insets(0, 20, 0, 0));
-				preview3.getChildren().addAll(player3preview, imgPreview3, name3preview);
-				chosenCharacters.getChildren().add(preview3);
-				break;
-			case 4:
-				imgPreview4 = new ImageView(new Image(urlPlayer));
-				imgPreview4.setFitHeight(30);
-				imgPreview4.setFitWidth(30);
-				name4preview = new Label(namePlayer);
-				preview4 = new VBox();
-				preview4.setPadding(new Insets(0, 20, 0, 0));
-				preview4.getChildren().addAll(player4preview, imgPreview4, name4preview);
-				chosenCharacters.getChildren().add(preview4);
-				break;
-		}
+    private void setPreview(int index) {
+
+    	previewImageViews.get(index).setImage(new Image(characters.get(characterIndex).getImageURL()));
+		previewImageViews.get(index).setFitHeight(30);
+		previewImageViews.get(index).setFitWidth(30);
+		previewLabels.get(index).setText(namePlayer());
+		previewVBoxs.get(index).setPadding(new Insets(0, 20, 0, 10));
+		previewVBoxs.get(index).getChildren().addAll(previewLabelsSet.get(index), previewImageViews.get(index),
+				previewLabels.get(index));
+		chosenCharacters.getChildren().add(previewVBoxs.get(index));
+
 	}
 	
 }
