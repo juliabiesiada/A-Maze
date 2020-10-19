@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import Model.Game;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -58,6 +59,9 @@ public class CollectController {
     private Timeline timeline;
     Scene thisScene;
     EventHandler<KeyEvent> keyHandler;
+    boolean success;
+    Game currentGame;
+    Controller mainController;
 
 	public void initialize() {
 		
@@ -131,14 +135,17 @@ public class CollectController {
 				Stage stage = (Stage) lblTimer.getScene().getWindow();
 		    	stage.close();
 		    	timeline.stop();
-			}	
+		    	mainController.removeBuffDebuff();
+			}
 		};
 		timeline.setOnFinished(onFinished);
 		timeline.playFromStart();
 	}
-	
-	public void assignListeners() {
+
+	public void assignListeners(Game game, Controller controller) {
 		popupRoot.getScene().setOnKeyPressed(keyHandler);
+		currentGame = game;
+		mainController = controller;
 	}
 	
 	private void initListeners() {
@@ -164,8 +171,10 @@ public class CollectController {
 						
 						if (keyOrder.get(0) == pressedKeys.get(x-3) && keyOrder.get(1) == pressedKeys.get(x-2) &&
 								keyOrder.get(2) == pressedKeys.get(x-1) && keyOrder.get(3) == event.getCode()) {
-							
-							System.out.println("success!");
+							Stage stage = (Stage) lblTimer.getScene().getWindow();
+							stage.close();
+							timeline.stop();
+							mainController.collectBuffDebuff();
 							
 						}
 						

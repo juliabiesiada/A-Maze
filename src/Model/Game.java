@@ -35,7 +35,6 @@ public class Game {
         this.turnsOrder = turnsOrder;
     }
 
-
     public Player[] getPlayers() {
         return players;
     }

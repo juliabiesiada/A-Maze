@@ -177,8 +177,9 @@ public class CardsController {
 
 
     /**
-     * This precios method, is the most clear I've ever written and I'm so proud of it. I doubt that somebody is
+     * This precious method, is the most clear I've ever written and I'm so proud of it. I doubt that somebody is
      * reading all the JavaDoc so.. by the way, this method slide an entire column or row
+     * (I'm reading, proud of you!)
      * @param cards the cards matrix
      * @param prevPos the position where the drag has started
      * @param newPos the position where the drop landed
@@ -189,7 +190,7 @@ public class CardsController {
         Card[] slidedLine = new Card[value];
         //VERTICAL SLIDE:
         if (prevPos.getColumn() == newPos.getColumn()) {
-            if ((prevPos.getRow() == 0 && newPos.getRow() == value) || (prevPos.getRow() == value && newPos.getRow() == 0)) {
+            if ((prevPos.getRow() == 0 && newPos.getRow() == value-1) || (prevPos.getRow() == value-1 && newPos.getRow() == 0)) {
                 //top to bottom
                 if (prevPos.getRow() < newPos.getRow()) {
                     slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];

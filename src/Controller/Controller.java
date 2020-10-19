@@ -73,6 +73,8 @@ public class Controller {
     Image playerImage;
     ImageView playerImageView;
     StackPane[][] sPanes;
+    OnCard onCardEnd;
+    Card destination;
 
 	public Game getGame() {
 		return game;
@@ -423,7 +425,7 @@ public class Controller {
 
 		Scene scene = new Scene(root, 400, 400);
 		//kind of a stupid solution but well, couldn't get scene in initialize
-		collectController.assignListeners();
+		collectController.assignListeners(game, this);
 		scene.getStylesheets().add("View/application.css");
 		popup.setScene(scene);
 		popup.show();
@@ -521,7 +523,6 @@ public class Controller {
 			public void handle(DragEvent event) {
 				
 				Dragboard db = event.getDragboard();
-				String rcStart = db.getString();
 				
 				String paneID = ((Pane)event.getSource()).getId();
 
@@ -546,14 +547,27 @@ public class Controller {
 					event.consume();
 				} else {
 
+					String rcStart = db.getString();
+					int rStart = Integer.parseInt(""+rcStart.charAt(0));
+					int cStart = Integer.parseInt(""+rcStart.charAt(1));
+
 					paneID = paneID.replaceAll("\\D+"," ");
 					String[] splited = paneID.split("\\s+");
 					String rStr = splited[1];
 					String cStr = splited[2];
-					int r = Integer.parseInt(rStr);
-					int c = Integer.parseInt(cStr);
+					int rEnd = Integer.parseInt(rStr);
+					int cEnd = Integer.parseInt(cStr);
 
-					System.out.println(r+""+c+" finished from " + rcStart);
+					Position startPos = new Position(rStart, cStart);
+					Position endPos = new Position(rEnd, cEnd);
+
+					Card[][] slideMatrix = game.getCardsOnBoard();
+					slideMatrix = CardsController.cardsSlider(slideMatrix, startPos, endPos, slideMatrix.length);
+					game.setCardsOnBoard(slideMatrix);
+
+					drawBoard();
+					spawnPlayers();
+					respawnGems();
 				}
 			}
         	
@@ -584,7 +598,7 @@ public class Controller {
 	                
 	            }else if (event.getButton().equals(MouseButton.PRIMARY)){
 		            	
-	            	Position startPosition = game.getPlayers()[0].getPosition();
+	            	Position startPosition = game.getTurnsOrder().whosPlaying().getPosition();
 	            	int rStart = startPosition.getRow();
 	            	int cStart = startPosition.getColumn();
 					int rEnd = r;
@@ -604,28 +618,44 @@ public class Controller {
 							elStart = startCard.getCardMatrix()[0][1];
 							elEnd = endCard.getCardMatrix()[2][1];
 							if (elStart == 0 && elEnd == 0) {
-								movePlayer(rStart, cStart, rEnd, cEnd);
+								try {
+									movePlayer(rStart, cStart, rEnd, cEnd);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 							}
 							break;
 						case "down":
 							elStart = startCard.getCardMatrix()[2][1];
 							elEnd = endCard.getCardMatrix()[0][1];
 							if (elStart == 0 && elEnd == 0) {
-								movePlayer(rStart, cStart, rEnd, cEnd);
+								try {
+									movePlayer(rStart, cStart, rEnd, cEnd);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 							}
 							break;
 						case "left":
 							elStart = startCard.getCardMatrix()[1][0];
 							elEnd = endCard.getCardMatrix()[1][2];
 							if (elStart == 0 && elEnd == 0) {
-								movePlayer(rStart, cStart, rEnd, cEnd);
+								try {
+									movePlayer(rStart, cStart, rEnd, cEnd);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 							}
 							break;
 						case "right":
 							elStart = startCard.getCardMatrix()[1][2];
 							elEnd = endCard.getCardMatrix()[1][0];
 							if (elStart == 0 && elEnd == 0) {
-								movePlayer(rStart, cStart, rEnd, cEnd);
+								try {
+									movePlayer(rStart, cStart, rEnd, cEnd);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 							}
 							break;
 						}
@@ -660,14 +690,17 @@ public class Controller {
     	return direction;
     }
     
-    private void movePlayer(int rStart, int cStart, int rEnd, int cEnd) {
-    	
+    private void movePlayer(int rStart, int cStart, int rEnd, int cEnd) throws IOException {
+
     	OnCard onCardStart = game.getCardsOnBoard()[rStart][cStart].getOnCard();
-    	OnCard onCardEnd = game.getCardsOnBoard()[rEnd][cEnd].getOnCard();
+    	onCardEnd = game.getCardsOnBoard()[rEnd][cEnd].getOnCard();
+    	Player thisPlayer = game.getTurnsOrder().whosPlaying();
+		destination = game.getCardsOnBoard()[rEnd][cEnd];
+
     	
     	if(onCardEnd != OnCard.PLAYER) {
     		
-    		game.getPlayers()[0].setPosition(new Position(rEnd, cEnd));
+    		thisPlayer.setPosition(new Position(rEnd, cEnd));
     		
             ObservableList<Node> paneContent = sPanes[rStart][cStart].getChildren();
             Node playerImageView;
@@ -679,11 +712,8 @@ public class Controller {
             	playerImageView = paneContent.get(1);
             	game.getCardsOnBoard()[rStart][cStart].setOnCard(OnCard.NOTHING);
             }
-   
-            sPanes[rStart][cStart].getChildren().remove(playerImageView);
-            sPanes[rEnd][cEnd].getChildren().add(playerImageView);
-            sPanes[rEnd][cEnd].setAlignment(playerImageView, Pos.CENTER);
-            game.getCardsOnBoard()[rEnd][cEnd].setAvailable(false);
+
+			game.getCardsOnBoard()[rEnd][cEnd].setAvailable(false);
             
             if(onCardEnd == OnCard.GEM) {
             	if (findGemByPosition(rEnd, cEnd).getPlayerColor() == game.getTurnsOrder().whosPlaying().getPlayerColor()) {
@@ -691,9 +721,14 @@ public class Controller {
 				}else {
 					game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER_AND_GEM);
 				}
-            } else {
-                game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER);
-            }
+            } else if (onCardEnd == OnCard.BUFFER || onCardEnd == OnCard.DEBUFFER){
+                showPopup();
+            }else {
+				game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER);
+			}
+            drawBoard();
+            respawnGems();
+            spawnPlayers();
     	}
     }
 
@@ -721,5 +756,31 @@ public class Controller {
 		respawnGems();
 		game.getCardsOnBoard()[thisPlayer.getPosition().getRow()][thisPlayer.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
 
+	}
+
+	public void collectBuffDebuff() {
+		Player thisPlayer = game.getTurnsOrder().whosPlaying();
+		if (thisPlayer.getInventory() == null) {
+			thisPlayer.setInventory(new Inventory());
+		}
+		if (onCardEnd == OnCard.BUFFER) {
+			thisPlayer.getInventory().setGemsCollected(thisPlayer.getInventory().getBufferCollected() + 1);
+			lblBuff.setText(""+thisPlayer.getInventory().getBufferCollected());
+		}else if (onCardEnd == OnCard.DEBUFFER) {
+			thisPlayer.getInventory().setGemsCollected(thisPlayer.getInventory().getDebufferCollected() + 1);
+			lblDebuff.setText(""+thisPlayer.getInventory().getDebufferCollected());
+		}
+
+		removeBuffDebuff();
+	}
+
+	public void removeBuffDebuff() {
+		int row = destination.getPosition().getRow();
+		int col = destination.getPosition().getColumn();
+		StackPane thisPane = sPanes[row][col];
+		ObservableList<Node> paneContent = sPanes[row][col].getChildren();
+		ImageView imageBD = (ImageView)paneContent.get(1);
+		thisPane.getChildren().remove(imageBD);
+		destination.setOnCard(OnCard.PLAYER);
 	}
 }
