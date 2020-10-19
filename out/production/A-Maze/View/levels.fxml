@@ -51,10 +51,10 @@
                   </GridPane>
                </children>
                <HBox.margin>
-                  <Insets left="10.0" top="80.0" />
+                  <Insets top="80.0" />
                </HBox.margin>
             </VBox>
-            <VBox alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="526.0" prefWidth="230.0">
+            <VBox alignment="TOP_CENTER" prefHeight="526.0">
                <children>
                   <Label styleClass="text" text="Advanced (9x9)">
                      <font>
@@ -93,10 +93,10 @@
                   </GridPane>
                </children>
                <HBox.margin>
-                  <Insets left="10.0" top="80.0" />
+                  <Insets left="30.0" top="80.0" />
                </HBox.margin>
             </VBox>
-            <VBox alignment="TOP_CENTER" layoutX="110.0" layoutY="10.0" prefHeight="200.0" prefWidth="230.0">
+            <VBox alignment="TOP_CENTER" prefHeight="200.0">
                <children>
                   <Label alignment="TOP_CENTER" styleClass="text" text="Expert (11x11)">
                      <font>
@@ -136,7 +136,7 @@
                   </GridPane>
                </children>
                <HBox.margin>
-                  <Insets left="10.0" top="80.0" />
+                  <Insets left="30.0" top="80.0" />
                </HBox.margin>
             </VBox>
          </children>

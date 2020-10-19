@@ -234,7 +234,7 @@ public class CharacterController {
     			mainController.createBoard();
     			
     			Stage stage = new Stage();
-    			stage.setScene(new Scene(root, 600, 670));
+    			stage.setScene(new Scene(root, 600, 620));
     			
     			
     			stage.setTitle("A-maze");

@@ -331,10 +331,10 @@ public class Controller {
 	 */
 	private void setVariables(Game game) {
 	switch (game.getLevel()) {
-		case EASY: tileDimension = 25;
+		case EASY: tileDimension = 22;
 			numOfGems = 4;
 		break;
-		case MEDIUM: tileDimension = 20;
+		case MEDIUM: tileDimension = 18;
 			numOfGems = 7;
 		break;
 		case HARD: tileDimension = 15;
