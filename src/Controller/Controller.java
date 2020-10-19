@@ -83,7 +83,30 @@ public class Controller {
 	}
 
 	public void onClicked(MouseEvent mouseEvent) throws IOException {
-		showPopup();
+		//showPopup();
+		game.getTurnsOrder().turnCompleted(game.getTurnsOrder().whosPlaying());
+		String gemURL = colorToGemURL(game.getTurnsOrder().whosPlaying().getPlayerColor());
+		iconGems.setImage(new Image(gemURL));
+		if (game.getTurnsOrder().whosPlaying().getInventory() != null) {
+			if(game.getTurnsOrder().whosPlaying().getInventory().getGemsCollected() > 0) {
+				lblGems.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getGemsCollected());
+			}else {
+				lblGems.setText("0");
+			}
+			if (game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected() > 0) {
+				lblBuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected());
+			}else {
+				lblBuff.setText("0");
+			}
+			if (game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected() > 0) {
+				lblDebuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected());
+			}
+		}else {
+			lblBuff.setText("0");
+			lblDebuff.setText("0");
+			lblGems.setText("0");
+		}
+
 	}
 	
 	public void initialize() {
@@ -261,7 +284,7 @@ public class Controller {
 
 	public void respawnGems() {
 
-		for (int i = 0; i<(numOfGems*game.getPlayers().length); i++) {
+		for (int i = 0; i<game.getGems().size(); i++) {
 			int row = game.getGems().get(i).getPosition().getRow();
 			int col = game.getGems().get(i).getPosition().getColumn();
 			Image gemImage = new Image(colorToGemURL(game.getGems().get(i).getPlayerColor()));
@@ -531,8 +554,6 @@ public class Controller {
 					drawBoard();
 					spawnPlayers();
 					respawnGems();
-	            	
-	                System.out.println(r+""+c+" double clicked");
 	                
 	            }else if (event.getButton().equals(MouseButton.PRIMARY)){
 		            	
@@ -638,10 +659,40 @@ public class Controller {
             game.getCardsOnBoard()[rEnd][cEnd].setAvailable(false);
             
             if(onCardEnd == OnCard.GEM) {
-            	game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER_AND_GEM);
+            	if (findGemByPosition(rEnd, cEnd).getPlayerColor() == game.getTurnsOrder().whosPlaying().getPlayerColor()) {
+					collectGem(findGemByPosition(rEnd, cEnd));
+				}else {
+					game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER_AND_GEM);
+				}
             } else {
                 game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER);
             }
     	}
     }
+
+	public Gem findGemByPosition(int row, int col) {
+		Gem thisGem = null;
+		for (int i = 0; i<game.getGems().size(); i++) {
+			if (game.getGems().get(i).getPosition().getRow() == row &&
+					game.getGems().get(i).getPosition().getColumn() == col) {
+				thisGem = game.getGems().get(i);
+			}
+		}
+		return thisGem;
+	}
+
+	public void collectGem(Gem gem) {
+		Player thisPlayer = game.getTurnsOrder().whosPlaying();
+		if (thisPlayer.getInventory() == null) {
+			thisPlayer.setInventory(new Inventory());
+		}
+		thisPlayer.getInventory().setGemsCollected(thisPlayer.getInventory().getGemsCollected() + 1);
+		lblGems.setText(""+thisPlayer.getInventory().getGemsCollected());
+		game.getGems().remove(gem);
+		drawBoard();
+		spawnPlayers();
+		respawnGems();
+		game.getCardsOnBoard()[thisPlayer.getPosition().getRow()][thisPlayer.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
+
+	}
 }

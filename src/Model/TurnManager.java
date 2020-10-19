@@ -84,4 +84,14 @@ public class TurnManager {
             counter++;
         }
     }
+
+    public Player whosPlaying() {
+        Player currentPlayer = null;
+        for(Player player: players) {
+            if (player.getName() == turns.get(0)){
+                currentPlayer = player;
+            }
+        }
+        return currentPlayer;
+    }
 }
