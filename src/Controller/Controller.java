@@ -4,6 +4,7 @@ package Controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import Model.*;
 import Model.Card;
@@ -74,6 +75,9 @@ public class Controller {
     boolean moveAllowed;
 	List<int[][]> historyMatrix = new ArrayList<int[][]>();
 	List<Position> historyPosition = new ArrayList<Position>();
+	String imgID;
+	Boolean rotationMove;
+	Boolean stairsSpawned;
 
 	public Game getGame() {
 		return game;
@@ -94,19 +98,11 @@ public class Controller {
 		String gemURL = colorToGemURL(game.getTurnsOrder().whosPlaying().getPlayerColor());
 		iconGems.setImage(new Image(gemURL));
 		if (game.getTurnsOrder().whosPlaying().getInventory() != null) {
-			if(game.getTurnsOrder().whosPlaying().getInventory().getGemsCollected() > 0) {
+
 				lblGems.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getGemsCollected());
-			}else {
-				lblGems.setText("0");
-			}
-			if (game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected() > 0) {
 				lblBuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected());
-			}else {
-				lblBuff.setText("0");
-			}
-			if (game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected() > 0) {
 				lblDebuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected());
-			}
+
 		}else {
 			lblBuff.setText("0");
 			lblDebuff.setText("0");
@@ -432,13 +428,15 @@ public class Controller {
     @FXML 
     private void  handleIconDragDetected(MouseEvent event) {
     	
-    	String imgID = ((ImageView) event.getSource()).getId();
+    	imgID = ((ImageView) event.getSource()).getId();
+    	Image img;
     	switch (imgID) {
     	case "iconBuff":
     		if (Integer.parseInt(lblBuff.getText()) > 0) {
     			Dragboard db = iconBuff.startDragAndDrop(TransferMode.ANY);
     	        ClipboardContent cb = new ClipboardContent();
-    	        cb.putImage(iconBuff.getImage());
+    	        img = new Image("/Assets/potion_icon.png", 50, 50, false, false);
+    	        cb.putImage(img);
     	        db.setContent(cb);
     	        event.consume();
     		}
@@ -447,7 +445,8 @@ public class Controller {
     		if (Integer.parseInt(lblDebuff.getText()) > 0) {
     			Dragboard db = iconDebuff.startDragAndDrop(TransferMode.ANY);
     	        ClipboardContent cb = new ClipboardContent();
-    	        cb.putImage(iconDebuff.getImage());
+				img = new Image("/Assets/poison_icon.png", 50, 50, false, false);
+    	        cb.putImage(img);
     	        db.setContent(cb);
     	        event.consume();
     		}
@@ -507,19 +506,35 @@ public class Controller {
 					Node node = (Node)event.getSource();
 					Integer cIndex = board_grid.getColumnIndex(node);
 					Integer rIndex = board_grid.getRowIndex(node);
-					
+					Player selectedPlayer = null;
+
 					for (int i = 0; i<game.getPlayers().length; i++) {
 						if (game.getPlayers()[i].getPosition().getColumn() == cIndex &&
 								game.getPlayers()[i].getPosition().getRow() == rIndex) {
 
-							Player selectedPlayer = game.getPlayers()[i];
-							if (db.getImage() == iconBuff.getImage()) {
-								//add turn
-							} else if (db.getImage() == iconDebuff.getImage()) {
-								//if not the same player
+							selectedPlayer = game.getPlayers()[i];
+
+						}
+					}
+					if (selectedPlayer != null) {
+
+						//check if the same images
+
+						if (imgID.equals(iconBuff.getId())) {
+							game.getTurnsOrder().bufferReceived(selectedPlayer);
+							game.getTurnsOrder().whosPlaying().getInventory().setBufferCollected
+									(game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected()-1);
+							lblBuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected());
+						} else if (imgID.equals(iconDebuff.getId())) {
+							if (!selectedPlayer.equals(game.getTurnsOrder().whosPlaying())) {
+								game.getTurnsOrder().debufferReceived(selectedPlayer);
+								game.getTurnsOrder().whosPlaying().getInventory().setDebufferCollected
+										(game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected()-1);
+								lblDebuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected());
 							}
 						}
 					}
+
 					event.consume();
 				} else {
 
@@ -564,13 +579,14 @@ public class Controller {
 
 					//Clock Wise Rotationssss
 					//make history
+					rotationMove = true;
 					history(game.getCardsOnBoard()[r][c].getCardMatrix(), r, c);
 					int[][] rotMatrix = game.getCardsOnBoard()[r][c].getCardMatrix();
 					rotMatrix = CardsController.clockWiseRotation(rotMatrix);
 					game.getCardsOnBoard()[r][c].setCardMatrix(rotMatrix);
 					drawEverything();
 	                
-	            }else if (event.getButton().equals(MouseButton.PRIMARY) && moveAllowed){
+	            }else if (event.getButton().equals(MouseButton.PRIMARY) && moveAllowed && !rotationMove){
 		            	
 	            	Position startPosition = game.getTurnsOrder().whosPlaying().getPosition();
 	            	int rStart = startPosition.getRow();
@@ -728,6 +744,10 @@ public class Controller {
 		drawEverything();
 		game.getCardsOnBoard()[thisPlayer.getPosition().getRow()][thisPlayer.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
 
+		if (isGameWon()) {
+			spawnStairs();
+		}
+
 	}
 
 	public void collectBuffDebuff() {
@@ -768,5 +788,43 @@ public class Controller {
 
 			historyMatrix.add(thisMatrix);
 		}
+
+
 	}
+
+	public boolean isGameWon() {
+
+		int counter = 0;
+
+		for (Gem gem: game.getGems()) {
+			if (gem.getPlayerColor() == game.getTurnsOrder().whosPlaying().getPlayerColor()) {
+				counter +=1;
+			}
+		}
+
+		if(counter == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public void spawnStairs() {
+		//stairs have to appear
+		ArrayList<Card> cardsAvailable = new ArrayList<Card>();
+		for (int i = 0; i<game.getCardsOnBoard().length; i++) {
+			for (int j = 0; j<game.getCardsOnBoard().length; j++) {
+				if (game.getCardsOnBoard()[i][j].getOnCard() == OnCard.NOTHING) {
+					cardsAvailable.add(game.getCardsOnBoard()[i][j]);
+				}
+			}
+		}
+		Random rand = new Random();
+		int randomIndex = rand.nextInt(cardsAvailable.size());
+		game.getCardsOnBoard()[cardsAvailable.get(randomIndex).getPosition().getRow()]
+				[cardsAvailable.get(randomIndex).getPosition().getColumn()].setOnCard(OnCard.STAIRS);
+		//add imageView with stairs
+		//cardsAvailable.get(randomIndex).add
+		stairsSpawned = true;
+	}
+
 }

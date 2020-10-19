@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
@@ -10,13 +15,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="557.0" prefWidth="660.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.LevelController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" styleClass="screen2" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.LevelController">
    <center>
-      <HBox prefHeight="277.0" prefWidth="665.0" BorderPane.alignment="CENTER">
+      <HBox maxHeight="-Infinity" maxWidth="-Infinity" BorderPane.alignment="CENTER">
          <children>
-            <VBox prefHeight="526.0" prefWidth="230.0">
+            <VBox alignment="TOP_CENTER">
                <children>
-                  <Label text="Beginner (7x7)">
+                  <Label alignment="CENTER" styleClass="text" text="Beginner (7x7)">
                      <font>
                         <Font name="Consolas" size="16.0" />
                      </font>
@@ -24,7 +29,7 @@
                         <Insets bottom="20.0" />
                      </VBox.margin>
                   </Label>
-                  <GridPane fx:id="boardBeginner" gridLinesVisible="true" maxHeight="200.0" maxWidth="200.0" minHeight="70.0" minWidth="70.0" onMouseClicked="#chooseBeginner" prefHeight="200.0" prefWidth="200.0">
+                  <GridPane fx:id="boardBeginner" gridLinesVisible="true" maxHeight="200.0" maxWidth="200.0" minHeight="70.0" minWidth="70.0" onMouseClicked="#chooseBeginner" prefHeight="200.0" prefWidth="200.0" styleClass="text">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -46,12 +51,12 @@
                   </GridPane>
                </children>
                <HBox.margin>
-                  <Insets left="10.0" top="120.0" />
+                  <Insets left="10.0" top="80.0" />
                </HBox.margin>
             </VBox>
-            <VBox layoutX="10.0" layoutY="10.0" prefHeight="526.0" prefWidth="230.0">
+            <VBox alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="526.0" prefWidth="230.0">
                <children>
-                  <Label text="Advanced (9x9)">
+                  <Label styleClass="text" text="Advanced (9x9)">
                      <font>
                         <Font name="Consolas" size="16.0" />
                      </font>
@@ -59,7 +64,7 @@
                         <Insets bottom="20.0" />
                      </VBox.margin>
                   </Label>
-                  <GridPane fx:id="boardAdvanced" gridLinesVisible="true" maxHeight="200.0" maxWidth="200.0" minHeight="70.0" minWidth="70.0" onMouseClicked="#chooseAdvanced" prefHeight="200.0" prefWidth="200.0">
+                  <GridPane fx:id="boardAdvanced" gridLinesVisible="true" maxHeight="200.0" maxWidth="200.0" minHeight="70.0" minWidth="70.0" onMouseClicked="#chooseAdvanced" prefHeight="200.0" prefWidth="200.0" styleClass="text">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -87,24 +92,21 @@
                      </VBox.margin>
                   </GridPane>
                </children>
-               <padding>
-                  <Insets top="120.0" />
-               </padding>
                <HBox.margin>
-                  <Insets left="10.0" />
+                  <Insets left="10.0" top="80.0" />
                </HBox.margin>
             </VBox>
-            <VBox layoutX="110.0" layoutY="10.0" prefHeight="200.0" prefWidth="230.0">
+            <VBox alignment="TOP_CENTER" layoutX="110.0" layoutY="10.0" prefHeight="200.0" prefWidth="230.0">
                <children>
-                  <Label text="Expert (11x11)">
+                  <Label alignment="TOP_CENTER" styleClass="text" text="Expert (11x11)">
                      <font>
                         <Font name="Consolas" size="16.0" />
                      </font>
-                     <padding>
+                     <VBox.margin>
                         <Insets bottom="20.0" />
-                     </padding>
+                     </VBox.margin>
                   </Label>
-                  <GridPane fx:id="boardExpert" gridLinesVisible="true" maxHeight="200.0" maxWidth="200.0" minHeight="70.0" minWidth="70.0" onMouseClicked="#chooseExpert" prefHeight="200.0" prefWidth="200.0">
+                  <GridPane fx:id="boardExpert" gridLinesVisible="true" maxHeight="200.0" maxWidth="200.0" minHeight="70.0" minWidth="70.0" onMouseClicked="#chooseExpert" prefHeight="200.0" prefWidth="200.0" styleClass="text">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -133,11 +135,8 @@
                      </rowConstraints>
                   </GridPane>
                </children>
-               <padding>
-                  <Insets top="120.0" />
-               </padding>
                <HBox.margin>
-                  <Insets left="10.0" />
+                  <Insets left="10.0" top="80.0" />
                </HBox.margin>
             </VBox>
          </children>
@@ -147,10 +146,13 @@
       </HBox>
    </center>
    <top>
-      <Label text="Choose difficulty level:" BorderPane.alignment="CENTER">
+      <Label styleClass="text" stylesheets="@application.css" text="Choose difficulty level:" BorderPane.alignment="CENTER">
          <font>
             <Font name="Consolas" size="27.0" />
          </font>
+         <BorderPane.margin>
+            <Insets top="40.0" />
+         </BorderPane.margin>
       </Label>
    </top>
 </BorderPane>
