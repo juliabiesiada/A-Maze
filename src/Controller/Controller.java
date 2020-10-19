@@ -2,6 +2,7 @@ package Controller;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import Model.*;
@@ -70,6 +71,9 @@ public class Controller {
     StackPane[][] sPanes;
     OnCard onCardEnd;
     Card destination;
+    boolean moveAllowed;
+	List<int[][]> historyMatrix = new ArrayList<int[][]>();
+	List<Position> historyPosition = new ArrayList<Position>();
 
 	public Game getGame() {
 		return game;
@@ -80,7 +84,12 @@ public class Controller {
 	}
 
 	public void onClicked(MouseEvent mouseEvent) throws IOException {
-		//showPopup();
+
+		//allowing player to move
+		moveAllowed = true;
+		//resetting history for rotation
+		historyMatrix.clear();
+		historyPosition.clear();
 		game.getTurnsOrder().turnCompleted(game.getTurnsOrder().whosPlaying());
 		String gemURL = colorToGemURL(game.getTurnsOrder().whosPlaying().getPlayerColor());
 		iconGems.setImage(new Image(gemURL));
@@ -108,6 +117,8 @@ public class Controller {
 	
 	public void initialize() {
 		initHandlers();
+		//to allow only one movement per turn
+		moveAllowed = true;
 	}
 
 	public void createBoard() {
@@ -379,6 +390,8 @@ public class Controller {
 
 		FXMLLoader popupLoader = new FXMLLoader(getClass().getResource("/View/popupCollect.fxml"));
 		CollectController collectController = new CollectController();
+		collectController.setPosition(destination.getPosition());
+		collectController.setOnCard(onCardEnd);
 		popupLoader.setController(collectController);
 
 		popupLoader.load();
@@ -547,15 +560,17 @@ public class Controller {
 				int r = Integer.parseInt(rStr);
 				int c = Integer.parseInt(cStr);
 				
-				if(event.getButton().equals(MouseButton.PRIMARY) && event.isShiftDown()){
+				if(event.getButton().equals(MouseButton.PRIMARY) && event.isShiftDown() && moveAllowed){
 
 					//Clock Wise Rotationssss
+					//make history
+					history(game.getCardsOnBoard()[r][c].getCardMatrix(), r, c);
 					int[][] rotMatrix = game.getCardsOnBoard()[r][c].getCardMatrix();
 					rotMatrix = CardsController.clockWiseRotation(rotMatrix);
 					game.getCardsOnBoard()[r][c].setCardMatrix(rotMatrix);
 					drawEverything();
 	                
-	            }else if (event.getButton().equals(MouseButton.PRIMARY)){
+	            }else if (event.getButton().equals(MouseButton.PRIMARY) && moveAllowed){
 		            	
 	            	Position startPosition = game.getTurnsOrder().whosPlaying().getPosition();
 	            	int rStart = startPosition.getRow();
@@ -579,6 +594,7 @@ public class Controller {
 							if (elStart == 0 && elEnd == 0) {
 								try {
 									movePlayer(rStart, cStart, rEnd, cEnd);
+									moveAllowed = false;
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
@@ -590,6 +606,7 @@ public class Controller {
 							if (elStart == 0 && elEnd == 0) {
 								try {
 									movePlayer(rStart, cStart, rEnd, cEnd);
+									moveAllowed = false;
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
@@ -601,6 +618,7 @@ public class Controller {
 							if (elStart == 0 && elEnd == 0) {
 								try {
 									movePlayer(rStart, cStart, rEnd, cEnd);
+									moveAllowed = false;
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
@@ -612,6 +630,7 @@ public class Controller {
 							if (elStart == 0 && elEnd == 0) {
 								try {
 									movePlayer(rStart, cStart, rEnd, cEnd);
+									moveAllowed = false;
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
@@ -671,8 +690,6 @@ public class Controller {
             	playerImageView = paneContent.get(1);
             	game.getCardsOnBoard()[rStart][cStart].setOnCard(OnCard.NOTHING);
             }
-
-			//game.getCardsOnBoard()[rEnd][cEnd].setAvailable(false);
             
             if(onCardEnd == OnCard.GEM) {
             	if (findGemByPosition(rEnd, cEnd).getPlayerColor() == game.getTurnsOrder().whosPlaying().getPlayerColor()) {
@@ -719,23 +736,37 @@ public class Controller {
 			thisPlayer.setInventory(new Inventory());
 		}
 		if (onCardEnd == OnCard.BUFFER) {
-			thisPlayer.getInventory().setGemsCollected(thisPlayer.getInventory().getBufferCollected() + 1);
+			thisPlayer.getInventory().setBufferCollected(thisPlayer.getInventory().getBufferCollected() + 1);
 			lblBuff.setText(""+thisPlayer.getInventory().getBufferCollected());
 		}else if (onCardEnd == OnCard.DEBUFFER) {
-			thisPlayer.getInventory().setGemsCollected(thisPlayer.getInventory().getDebufferCollected() + 1);
+			thisPlayer.getInventory().setDebufferCollected(thisPlayer.getInventory().getDebufferCollected() + 1);
 			lblDebuff.setText(""+thisPlayer.getInventory().getDebufferCollected());
 		}
 
-		removeBuffDebuff();
+		game.removeBuffDebuff(destination.getPosition(), onCardEnd);
 	}
 
-	public void removeBuffDebuff() {
-		int row = destination.getPosition().getRow();
-		int col = destination.getPosition().getColumn();
-		StackPane thisPane = sPanes[row][col];
-		ObservableList<Node> paneContent = sPanes[row][col].getChildren();
-		ImageView imageBD = (ImageView)paneContent.get(1);
-		thisPane.getChildren().remove(imageBD);
-		destination.setOnCard(OnCard.PLAYER);
+	public void history(int[][] matrix, int r, int c) {
+
+		boolean newPosition = true;
+		for (int i = 0; i<historyPosition.size(); i++) {
+			if (historyPosition.get(i).getRow() == r && historyPosition.get(i).getColumn() == c) {
+				newPosition = false;
+			}
+		}
+		if(newPosition) {
+			if (historyPosition.size() > 0) {
+				int previousRow = historyPosition.get(historyPosition.size()-1).getRow();
+				int previousCol = historyPosition.get(historyPosition.size()-1).getColumn();
+				int[][] previousMatrix = historyMatrix.get(historyMatrix.size()-1);
+				game.getCardsOnBoard()[previousRow][previousCol].setCardMatrix(previousMatrix);
+			}
+			historyPosition.add(new Position(r,c));
+			int[][] thisMatrix = new int[matrix.length][];
+			for (int i = 0; i < matrix.length; i++)
+				thisMatrix[i] = matrix[i].clone();
+
+			historyMatrix.add(thisMatrix);
+		}
 	}
 }

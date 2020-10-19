@@ -41,17 +41,17 @@ public class Game {
         }
     }
 
-    public void removeBuffDebuff(Position pos) {
-        if (cardsOnBoard[pos.getRow()][pos.getColumn()].getOnCard() == OnCard.BUFFER) {
-            cardsOnBoard[pos.getRow()][pos.getColumn()].setOnCard(OnCard.NOTHING);
+    public void removeBuffDebuff(Position pos, OnCard onCard) {
+        if (onCard == OnCard.BUFFER) {
+            //cardsOnBoard[pos.getRow()][pos.getColumn()].setOnCard(OnCard.NOTHING);
             for (int i = 0; i<buffPositions.size(); i++) {
                 if (buffPositions.get(i).getColumn() == pos.getColumn() && buffPositions.get(i).getRow() == pos.getRow()) {
                     buffPositions.remove(i);
                 }
             }
         }
-        else if (cardsOnBoard[pos.getRow()][pos.getColumn()].getOnCard() == OnCard.DEBUFFER) {
-            cardsOnBoard[pos.getRow()][pos.getColumn()].setOnCard(OnCard.NOTHING);
+        else if (onCard == OnCard.DEBUFFER) {
+            //cardsOnBoard[pos.getRow()][pos.getColumn()].setOnCard(OnCard.NOTHING);
             for (int i = 0; i<debuffPositions.size(); i++) {
                 if (debuffPositions.get(i).getColumn() == pos.getColumn() && debuffPositions.get(i).getRow() == pos.getRow()) {
                     debuffPositions.remove(i);

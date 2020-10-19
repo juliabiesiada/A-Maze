@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import Model.Game;
+import Model.OnCard;
+import Model.Position;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -62,6 +64,16 @@ public class CollectController {
     boolean success;
     Game currentGame;
     Controller mainController;
+    Position position;
+    OnCard onCard;
+
+    public void setOnCard(OnCard on) {
+    	this.onCard = on;
+	}
+
+	public void setPosition(Position position) {
+		this.position = position;
+	}
 
 	public void initialize() {
 		
@@ -135,7 +147,7 @@ public class CollectController {
 				Stage stage = (Stage) lblTimer.getScene().getWindow();
 		    	stage.close();
 		    	timeline.stop();
-		    	mainController.removeBuffDebuff();
+		    	currentGame.removeBuffDebuff(position, onCard);
 			}
 		};
 		timeline.setOnFinished(onFinished);
