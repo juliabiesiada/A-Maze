@@ -497,205 +497,183 @@ public class Controller {
     
     private void initHandlers() {
     	//for panes
-    	onPaneDragDetected = new EventHandler<MouseEvent>() {
+    	onPaneDragDetected = event -> {
 
-			@Override
-			public void handle(MouseEvent event) {
+			Position rc = strToID(((Pane)event.getSource()).getId());
+			Dragboard db = ((Pane)event.getSource()).startDragAndDrop(TransferMode.ANY);
+			ClipboardContent cb = new ClipboardContent();
+			cb.putString(""+rc.getRow()+""+rc.getColumn());
+			db.setContent(cb);
 
-				Position rc = strToID(((Pane)event.getSource()).getId());
-				Dragboard db = ((Pane)event.getSource()).startDragAndDrop(TransferMode.ANY);
-    	        ClipboardContent cb = new ClipboardContent();
-    	        cb.putString(""+rc.getRow()+""+rc.getColumn());
-    	        db.setContent(cb);
-
-				event.consume();
-			}
-    		
-    	};
+			event.consume();
+		};
     	
-        onPaneDragOver = new EventHandler<DragEvent>() {
-
-			@Override
-			public void handle(DragEvent event) {
-				event.acceptTransferModes(TransferMode.ANY);
-				event.consume();
-			}
-        	
-        };
+        onPaneDragOver = event -> {
+			event.acceptTransferModes(TransferMode.ANY);
+			event.consume();
+		};
         
-        onDragDropped = new EventHandler<DragEvent>() {
+        onDragDropped = event -> {
 
-			@Override
-			public void handle(DragEvent event) {
-				
-				Dragboard db = event.getDragboard();
-				
-				String paneID = ((Pane)event.getSource()).getId();
+			Dragboard db = event.getDragboard();
 
-				if (db.hasImage()) {
+			String paneID = ((Pane)event.getSource()).getId();
 
-					Node node = (Node)event.getSource();
-					Integer cIndex = board_grid.getColumnIndex(node);
-					Integer rIndex = board_grid.getRowIndex(node);
-					Player selectedPlayer = null;
+			if (db.hasImage()) {
 
-					for (int i = 0; i<game.getPlayers().length; i++) {
-						if (game.getPlayers()[i].getPosition().getColumn() == cIndex &&
-								game.getPlayers()[i].getPosition().getRow() == rIndex) {
+				Node node = (Node)event.getSource();
+				Integer cIndex = board_grid.getColumnIndex(node);
+				Integer rIndex = board_grid.getRowIndex(node);
+				Player selectedPlayer = null;
 
-							selectedPlayer = game.getPlayers()[i];
+				for (int i = 0; i<game.getPlayers().length; i++) {
+					if (game.getPlayers()[i].getPosition().getColumn() == cIndex &&
+							game.getPlayers()[i].getPosition().getRow() == rIndex) {
 
-						}
-					}
-					if (selectedPlayer != null) {
-
-						//check if the same images
-
-						if (imgID.equals(iconBuff.getId())) {
-							game.getTurnsOrder().bufferReceived(selectedPlayer);
-							game.getTurnsOrder().whosPlaying().getInventory().setBufferCollected
-									(game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected()-1);
-							lblBuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected());
-							game.getStatus().getStatusList().add(selectedPlayer.getName() + " has been buffed");
-						} else if (imgID.equals(iconDebuff.getId())) {
-							if (!selectedPlayer.equals(game.getTurnsOrder().whosPlaying())) {
-								game.getTurnsOrder().debufferReceived(selectedPlayer);
-								game.getTurnsOrder().whosPlaying().getInventory().setDebufferCollected
-										(game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected()-1);
-								lblDebuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected());
-								game.getStatus().getStatusList().add(selectedPlayer.getName() + " has been debuffed");
-							}
-						}
-						labelStatus.setText(game.getStatus().getStatusList().get(game.getStatus().getStatusList().size()-1));
-					}
-
-					event.consume();
-				} else if (moveAllowed){
-
-					Card[][] thisMatrix = new Card[game.getCardsOnBoard().length][];
-					for (int i = 0; i < game.getCardsOnBoard().length; i++) {
-						thisMatrix[i] = game.getCardsOnBoard()[i].clone();
-					}
-
-					String rcStart = db.getString();
-					int rStart = Integer.parseInt(""+rcStart.charAt(0));
-					int cStart = Integer.parseInt(""+rcStart.charAt(1));
-
-					Position rc = strToID(paneID);
-
-					Position startPos = new Position(rStart, cStart);
-					Position endPos = new Position(rc.getRow(), rc.getColumn());
-
-					Card[][] slideMatrix = game.getCardsOnBoard();
-					game = CardsController.cardsSlider(game, slideMatrix, startPos, endPos, slideMatrix.length);
-
-					drawEverything();
-					for (int i=0; i<thisMatrix.length; i++) {
-						for (int j=0; j<thisMatrix.length; j++) {
-							if (!thisMatrix[i][j].equals(game.getCardsOnBoard()[i][j])) {
-								moveAllowed = false;
-							}
-						}
+						selectedPlayer = game.getPlayers()[i];
 
 					}
 				}
-			}
-        	
-        };
-        
-        onPaneClick = new EventHandler<MouseEvent>() {
+				if (selectedPlayer != null) {
 
-			@Override
-			public void handle(MouseEvent event) {
-				
-				Position rc = strToID(((Pane)event.getSource()).getId());
-				int r = rc.getRow();
-				int c = rc.getColumn();
-				
-				if(event.getButton().equals(MouseButton.PRIMARY) && event.isShiftDown() && moveAllowed){
+					//check if the same images
 
-					//Clock Wise Rotations
-					rotationMove = true;
-					history(game.getCardsOnBoard()[r][c].getCardMatrix(), r, c);
-					int[][] rotMatrix = game.getCardsOnBoard()[r][c].getCardMatrix();
-					rotMatrix = CardsController.clockWiseRotation(rotMatrix);
-					game.getCardsOnBoard()[r][c].setCardMatrix(rotMatrix);
-					drawEverything();
-	                
-	            }else if (event.getButton().equals(MouseButton.PRIMARY) && moveAllowed && !rotationMove){
-		            	
-	            	Position startPosition = game.getTurnsOrder().whosPlaying().getPosition();
-	            	int rStart = startPosition.getRow();
-	            	int cStart = startPosition.getColumn();
-					int rEnd = r;
-					int cEnd = c;
-					
-					String direction = getDirection(rStart, cStart, rEnd, cEnd);
-					
-					if (!direction.equals("")) {
-						
-						Card startCard = game.getCardsOnBoard()[rStart][cStart];
-						Card endCard = game.getCardsOnBoard()[rEnd][cEnd];
-						int elStart;
-						int elEnd;
-						
-						switch (direction) {
-						case "up":
-							elStart = startCard.getCardMatrix()[0][1];
-							elEnd = endCard.getCardMatrix()[2][1];
-							if (elStart == 0 && elEnd == 0) {
-								try {
-									movePlayer(rStart, cStart, rEnd, cEnd);
-									moveAllowed = false;
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}
-							break;
-						case "down":
-							elStart = startCard.getCardMatrix()[2][1];
-							elEnd = endCard.getCardMatrix()[0][1];
-							if (elStart == 0 && elEnd == 0) {
-								try {
-									movePlayer(rStart, cStart, rEnd, cEnd);
-									moveAllowed = false;
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}
-							break;
-						case "left":
-							elStart = startCard.getCardMatrix()[1][0];
-							elEnd = endCard.getCardMatrix()[1][2];
-							if (elStart == 0 && elEnd == 0) {
-								try {
-									movePlayer(rStart, cStart, rEnd, cEnd);
-									moveAllowed = false;
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}
-							break;
-						case "right":
-							elStart = startCard.getCardMatrix()[1][2];
-							elEnd = endCard.getCardMatrix()[1][0];
-							if (elStart == 0 && elEnd == 0) {
-								try {
-									movePlayer(rStart, cStart, rEnd, cEnd);
-									moveAllowed = false;
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}
-							break;
+					if (imgID.equals(iconBuff.getId())) {
+						game.getTurnsOrder().bufferReceived(selectedPlayer);
+						game.getTurnsOrder().whosPlaying().getInventory().setBufferCollected
+								(game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected()-1);
+						lblBuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected());
+						game.getStatus().getStatusList().add(selectedPlayer.getName() + " has been buffed");
+					} else if (imgID.equals(iconDebuff.getId())) {
+						if (!selectedPlayer.equals(game.getTurnsOrder().whosPlaying())) {
+							game.getTurnsOrder().debufferReceived(selectedPlayer);
+							game.getTurnsOrder().whosPlaying().getInventory().setDebufferCollected
+									(game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected()-1);
+							lblDebuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected());
+							game.getStatus().getStatusList().add(selectedPlayer.getName() + " has been debuffed");
 						}
 					}
-					
-	            }
-				
+					labelStatus.setText(game.getStatus().getStatusList().get(game.getStatus().getStatusList().size()-1));
+				}
+
+				event.consume();
+			} else if (moveAllowed){
+
+				Card[][] thisMatrix = new Card[game.getCardsOnBoard().length][];
+				for (int i = 0; i < game.getCardsOnBoard().length; i++) {
+					thisMatrix[i] = game.getCardsOnBoard()[i].clone();
+				}
+
+				String rcStart = db.getString();
+				int rStart = Integer.parseInt(""+rcStart.charAt(0));
+				int cStart = Integer.parseInt(""+rcStart.charAt(1));
+
+				Position rc = strToID(paneID);
+
+				Position startPos = new Position(rStart, cStart);
+				Position endPos = new Position(rc.getRow(), rc.getColumn());
+
+				Card[][] slideMatrix = game.getCardsOnBoard();
+				game = CardsController.cardsSlider(game, slideMatrix, startPos, endPos, slideMatrix.length);
+
+				drawEverything();
+				for (int i=0; i<thisMatrix.length; i++) {
+					for (int j=0; j<thisMatrix.length; j++) {
+						if (!thisMatrix[i][j].equals(game.getCardsOnBoard()[i][j])) {
+							moveAllowed = false;
+						}
+					}
+
+				}
 			}
-        	
-        };
+		};
+        
+        onPaneClick = event -> {
+
+			Position rc = strToID(((Pane)event.getSource()).getId());
+
+			if(event.getButton().equals(MouseButton.PRIMARY) && event.isShiftDown() && moveAllowed){
+
+				//Clock Wise Rotations
+				rotationMove = true;
+				history(game.getCardsOnBoard()[rc.getRow()][rc.getColumn()].getCardMatrix(), rc.getRow(), rc.getColumn());
+				int[][] rotMatrix = game.getCardsOnBoard()[rc.getRow()][rc.getColumn()].getCardMatrix();
+				rotMatrix = CardsController.clockWiseRotation(rotMatrix);
+				game.getCardsOnBoard()[rc.getRow()][rc.getColumn()].setCardMatrix(rotMatrix);
+				drawEverything();
+
+}else if (event.getButton().equals(MouseButton.PRIMARY) && moveAllowed && !rotationMove){
+
+Position startPosition = game.getTurnsOrder().whosPlaying().getPosition();
+int rStart = startPosition.getRow();
+int cStart = startPosition.getColumn();
+				int rEnd = rc.getRow();
+				int cEnd = rc.getColumn();
+
+				String direction = getDirection(rStart, cStart, rEnd, cEnd);
+
+				if (!direction.equals("")) {
+
+					Card startCard = game.getCardsOnBoard()[rStart][cStart];
+					Card endCard = game.getCardsOnBoard()[rEnd][cEnd];
+					int elStart;
+					int elEnd;
+
+					switch (direction) {
+					case "up":
+						elStart = startCard.getCardMatrix()[0][1];
+						elEnd = endCard.getCardMatrix()[2][1];
+						if (elStart == 0 && elEnd == 0) {
+							try {
+								movePlayer(rStart, cStart, rEnd, cEnd);
+								moveAllowed = false;
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						break;
+					case "down":
+						elStart = startCard.getCardMatrix()[2][1];
+						elEnd = endCard.getCardMatrix()[0][1];
+						if (elStart == 0 && elEnd == 0) {
+							try {
+								movePlayer(rStart, cStart, rEnd, cEnd);
+								moveAllowed = false;
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						break;
+					case "left":
+						elStart = startCard.getCardMatrix()[1][0];
+						elEnd = endCard.getCardMatrix()[1][2];
+						if (elStart == 0 && elEnd == 0) {
+							try {
+								movePlayer(rStart, cStart, rEnd, cEnd);
+								moveAllowed = false;
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						break;
+					case "right":
+						elStart = startCard.getCardMatrix()[1][2];
+						elEnd = endCard.getCardMatrix()[1][0];
+						if (elStart == 0 && elEnd == 0) {
+							try {
+								movePlayer(rStart, cStart, rEnd, cEnd);
+								moveAllowed = false;
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						break;
+					}
+				}
+
+}
+
+		};
     	
     }
     
@@ -824,9 +802,10 @@ public class Controller {
 	public void history(int[][] matrix, int r, int c) {
 
 		boolean newPosition = true;
-		for (int i = 0; i<historyPosition.size(); i++) {
-			if (historyPosition.get(i).getRow() == r && historyPosition.get(i).getColumn() == c) {
+		for (Position position : historyPosition) {
+			if (position.getRow() == r && position.getColumn() == c) {
 				newPosition = false;
+				break;
 			}
 		}
 		if(newPosition) {
