@@ -59,10 +59,7 @@ public class CollectController {
     private static final Integer STARTTIME = 5;
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
     private Timeline timeline;
-    Scene thisScene;
     EventHandler<KeyEvent> keyHandler;
-    boolean success;
-    Game currentGame;
     Controller mainController;
     Position position;
     OnCard onCard;
@@ -156,7 +153,6 @@ public class CollectController {
 				Stage stage = (Stage) lblTimer.getScene().getWindow();
 		    	stage.close();
 		    	timeline.stop();
-		    	currentGame.removeBuffDebuff(position, onCard);
 			}
 		};
 		timeline.setOnFinished(onFinished);
@@ -166,13 +162,11 @@ public class CollectController {
 	/**
 	 * this method only exists here, because of not being able to call getScene from initialize
 	 * or any other method that is called in initialize. The params are also used to call a controller
-	 * method to collect a buffer/debuffer and remove it from the board
-	 * @param game represents current game
+	 * method to collect a buffer/debuffer
 	 * @param controller current instance of Controller
 	 */
-	public void assignListeners(Game game, Controller controller) {
+	public void assignListeners(Controller controller) {
 		popupRoot.getScene().setOnKeyPressed(keyHandler);
-		currentGame = game;
 		mainController = controller;
 	}
 	

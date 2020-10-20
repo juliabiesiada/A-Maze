@@ -7,5 +7,6 @@ public enum OnCard {
     BUFFER,
     DEBUFFER,
     PLAYER_AND_GEM,
-    STAIRS
+    STAIRS,
+    PLAYER_AND_STAIRS
 }

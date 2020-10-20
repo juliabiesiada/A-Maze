@@ -84,6 +84,7 @@ public class Controller {
 	String imgID;
 	Boolean rotationMove;
 	Boolean stairsSpawned;
+	Position stairsPosition;
 
 	public Game getGame() {
 		return game;
@@ -127,6 +128,7 @@ public class Controller {
 		//to allow only one movement per turn
 		moveAllowed = true;
 		rotationMove = false;
+		stairsSpawned = false;
 	}
 
 	public void createBoard() {
@@ -147,13 +149,22 @@ public class Controller {
 		spawnGems();
 		drawEverything();
 
+		for (int i=0; i<game.getCardsOnBoard().length; i++) {
+			for (int j=0; j<game.getCardsOnBoard().length; j++) {
+				System.out.println(game.getCardsOnBoard()[i][j].getOnCard().toString());
+			}
+		}
+
 	}
 
 	public void drawEverything() {
 		drawBoard();
-		spawnPlayers();
 		drawGems();
 		spawnBufferDebuffer();
+		if (stairsSpawned) {
+			spawnStairs();
+		}
+		spawnPlayers();
 	}
 
 	public void drawBoard() {
@@ -390,8 +401,9 @@ public class Controller {
         }
     }
 
-    private void showPopup() throws IOException {
+    private void showPopup(Position pos, OnCard onThisCard) throws IOException {
 
+		game.removeBuffDebuff(pos, onThisCard);
 		Stage popup = new Stage();
 		popup.initModality(Modality.APPLICATION_MODAL);
 		popup.setTitle("Collect the potion!");
@@ -409,7 +421,7 @@ public class Controller {
 
 		Scene scene = new Scene(root, 400, 400);
 		//kind of a stupid solution but well, couldn't get scene in initialize
-		collectController.assignListeners(game, this);
+		collectController.assignListeners(this);
 		scene.getStylesheets().add("View/application.css");
 		popup.setScene(scene);
 		popup.show();
@@ -439,7 +451,7 @@ public class Controller {
 
     @FXML
 	void easterEggMagic(MouseEvent event) {
-		System.out.println("magic");
+
 		for (Player player : game.getPlayers()) {
 			if (player.getName().equals("Raphael") || player.getName().equals("raphael") || player.getName().equals("Raphaël")) {
 				player.setIconURL("/Assets/umbreon.gif");
@@ -448,7 +460,7 @@ public class Controller {
 				player.setIconURL("/Assets/cyndaquil.gif");
 			}
 		}
-		spawnPlayers();
+		drawEverything();
 	}
     
     @FXML 
@@ -719,41 +731,51 @@ public class Controller {
     	Player thisPlayer = game.getTurnsOrder().whosPlaying();
 		destination = game.getCardsOnBoard()[rEnd][cEnd];
 
-		if(onCardEnd == OnCard.STAIRS && isGameWon()) {
-			btnEndTurn.setDisable(true);
-			for (int i=0; i<sPanes.length; i++) {
-				victory();
+		//if the move happens: set new player position and update the cards: card left by the player
+		//and card entered by the player
+		if (onCardEnd != OnCard.PLAYER && onCardEnd != OnCard.PLAYER_AND_GEM && onCardEnd != OnCard.PLAYER_AND_STAIRS) {
+
+			thisPlayer.setPosition(new Position(rEnd, cEnd));
+
+			switch (onCardStart) {
+				case PLAYER_AND_STAIRS:
+					game.getCardsOnBoard()[rStart][cStart].setOnCard(OnCard.STAIRS);
+					break;
+				case PLAYER_AND_GEM:
+					game.getCardsOnBoard()[rStart][cStart].setOnCard(OnCard.GEM);
+					break;
+				default:
+					game.getCardsOnBoard()[rStart][cStart].setOnCard(OnCard.NOTHING);
 			}
+
+			switch (onCardEnd) {
+				case STAIRS:
+					if (isGameWon()) {
+						btnEndTurn.setDisable(true);
+						victory();
+					}else {
+						game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER_AND_STAIRS);
+					}
+					break;
+				case GEM:
+					if (findGemByPosition(rEnd, cEnd).getPlayerColor() == game.getTurnsOrder().whosPlaying().getPlayerColor()) {
+						collectGem(findGemByPosition(rEnd, cEnd));
+						game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER);
+					}else {
+						game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER_AND_GEM);
+					}
+					break;
+				case DEBUFFER:
+				case BUFFER:
+					showPopup(new Position(rEnd, cEnd), onCardEnd);
+					game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER);
+					break;
+				case NOTHING:
+					game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER);
+					break;
+			}
+			drawEverything();
 		}
-    	
-    	if(onCardEnd != OnCard.PLAYER) {
-    		
-    		thisPlayer.setPosition(new Position(rEnd, cEnd));
-    		
-            ObservableList<Node> paneContent = sPanes[rStart][cStart].getChildren();
-            Node playerImageView;
-            //see later with collecting of gems if it disappears first
-            if (onCardStart == OnCard.PLAYER_AND_GEM) {
-            	playerImageView = paneContent.get(2);
-            	game.getCardsOnBoard()[rStart][cStart].setOnCard(OnCard.GEM);
-            }else {
-            	playerImageView = paneContent.get(1);
-            	game.getCardsOnBoard()[rStart][cStart].setOnCard(OnCard.NOTHING);
-            }
-            
-            if(onCardEnd == OnCard.GEM) {
-            	if (findGemByPosition(rEnd, cEnd).getPlayerColor() == game.getTurnsOrder().whosPlaying().getPlayerColor()) {
-					collectGem(findGemByPosition(rEnd, cEnd));
-				}else {
-					game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER_AND_GEM);
-				}
-            } else if (onCardEnd == OnCard.BUFFER || onCardEnd == OnCard.DEBUFFER){
-                showPopup();
-            }else {
-				game.getCardsOnBoard()[rEnd][cEnd].setOnCard(OnCard.PLAYER);
-			}
-            drawEverything();
-    	}
     }
 
 	public Gem findGemByPosition(int row, int col) {
@@ -776,13 +798,11 @@ public class Controller {
 		lblGems.setText(""+thisPlayer.getInventory().getGemsCollected());
 		game.getGems().remove(gem);
 		drawEverything();
-		game.getCardsOnBoard()[thisPlayer.getPosition().getRow()][thisPlayer.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
-
+		game.getStatus().getStatusList().add(game.getTurnsOrder().whosPlaying().getName() + " collected a gem");
 		if (isGameWon() && !stairsSpawned) {
 			spawnStairs();
+			stairsSpawned = true;
 		}
-
-		game.getStatus().getStatusList().add(game.getTurnsOrder().whosPlaying().getName() + " collected a gem");
 		labelStatus.setText(game.getStatus().getStatusList().get(game.getStatus().getStatusList().size()-1));
 
 	}
@@ -802,8 +822,6 @@ public class Controller {
 			game.getStatus().getStatusList().add(game.getTurnsOrder().whosPlaying().getName() + " collected a poison");
 
 		}
-
-		game.removeBuffDebuff(destination.getPosition(), onCardEnd);
 		labelStatus.setText(game.getStatus().getStatusList().get(game.getStatus().getStatusList().size()-1));
 	}
 
@@ -844,6 +862,7 @@ public class Controller {
 		}
 
 		if(counter == 0) {
+			game.getStatus().getStatusList().add(game.getTurnsOrder().whosPlaying().getName() + " collected all gems!");
 			return true;
 		}
 		return false;
@@ -851,21 +870,39 @@ public class Controller {
 
 	public void spawnStairs() {
 		//stairs have to appear
-		ArrayList<Card> cardsAvailable = new ArrayList<Card>();
-		for (int i = 0; i<game.getCardsOnBoard().length; i++) {
-			for (int j = 0; j<game.getCardsOnBoard().length; j++) {
-				if (game.getCardsOnBoard()[i][j].getOnCard() == OnCard.NOTHING) {
-					cardsAvailable.add(game.getCardsOnBoard()[i][j]);
+
+		Image stairsImg = new Image("/Assets/exit.png");
+		ImageView stairsIV = new ImageView(stairsImg);
+		stairsIV.setFitHeight(tileDimension);
+		stairsIV.setFitWidth(tileDimension);
+
+		if (!stairsSpawned) {
+
+			ArrayList<Card> cardsAvailable = new ArrayList<Card>();
+			for (int i = 0; i<game.getCardsOnBoard().length; i++) {
+				for (int j = 0; j<game.getCardsOnBoard().length; j++) {
+					if (game.getCardsOnBoard()[i][j].getOnCard() == OnCard.NOTHING) {
+						cardsAvailable.add(game.getCardsOnBoard()[i][j]);
+					}
 				}
 			}
+			Random rand = new Random();
+			int randomIndex = rand.nextInt(cardsAvailable.size());
+			Card randomCard = cardsAvailable.get(randomIndex);
+			stairsPosition = cardsAvailable.get(randomIndex).getPosition();
+			game.getCardsOnBoard()[randomCard.getPosition().getRow()]
+					[randomCard.getPosition().getColumn()].setOnCard(OnCard.STAIRS);
+
+			sPanes[randomCard.getPosition().getRow()][randomCard.getPosition().getColumn()].getChildren().add(stairsIV);
+			sPanes[randomCard.getPosition().getRow()][randomCard.getPosition().getColumn()].setAlignment(stairsIV, Pos.CENTER);
+
+		} else {
+
+			sPanes[stairsPosition.getRow()][stairsPosition.getColumn()].getChildren().add(stairsIV);
+			sPanes[stairsPosition.getRow()][stairsPosition.getColumn()].setAlignment(stairsIV, Pos.CENTER);
 		}
-		Random rand = new Random();
-		int randomIndex = rand.nextInt(cardsAvailable.size());
-		game.getCardsOnBoard()[cardsAvailable.get(randomIndex).getPosition().getRow()]
-				[cardsAvailable.get(randomIndex).getPosition().getColumn()].setOnCard(OnCard.STAIRS);
-		//add imageView with stairs
-		//cardsAvailable.get(randomIndex).add
-		stairsSpawned = true;
+
+
 	}
 
 	private void victory() {
