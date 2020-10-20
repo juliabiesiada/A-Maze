@@ -49,11 +49,7 @@ public class CharacterController {
     
     @FXML
     private Label txtError;
-    
-    Player player1 = new Player();
-    Player player2 = new Player();
-    Player player3 = new Player();
-    Player player4 = new Player();
+
     int characterIndex;
     Game game;
     boolean player1active;
@@ -67,8 +63,9 @@ public class CharacterController {
     ArrayList<ImageView> previewImageViews = new ArrayList<ImageView>();
     
     public void initialize() {
-
+		//decides which image and name is currently displayed
     	characterIndex  = 0;
+    	//determines which player the choice is being made for
     	player1active = true;
     	player2active = true;
     	player3active = false;
@@ -82,6 +79,7 @@ public class CharacterController {
     	imgCharacter.setImage(new Image(characters.get(characterIndex).getImageURL()));
     	txtName.setText(characters.get(characterIndex).getName());
 
+    	//GUI elements for preview at the bottom of the screen
 		previewVBoxs.add(new VBox());
 		previewVBoxs.add(new VBox());
 		previewVBoxs.add(new VBox());
@@ -99,7 +97,10 @@ public class CharacterController {
 		previewImageViews.add(new ImageView());
 		previewImageViews.add(new ImageView());
     }
-    
+
+	/**method called from the previous controller to pass the current game object
+	 * @param game current game object
+	 */
     public void startChoosing(Game game) {
     	this.game = game;
     	
@@ -127,6 +128,9 @@ public class CharacterController {
 		switchView(delta);
     }
 
+	/**Method switching the character image and name in reaction to clicking on arrows
+	 * @param delta indicates the direction of the switch (left/right)
+	 */
 	private void switchView(int delta) {
 		if (characterIndex + delta < 0) {
 			characterIndex = 3;
@@ -142,17 +146,23 @@ public class CharacterController {
 
 	}
 
+	/**
+	 * Method to prevent the players from choosing identical names
+	 */
 	private boolean isNameUsed() {
-    	boolean isUsed = false;
+
     	for (int i = 0; i<game.getPlayers().length; i++) {
     		if (namePlayer().equals(game.getPlayers()[i].getName())) {
-    			isUsed = true;
-    			return isUsed;
+    			return true;
 			}
 		}
-    	return isUsed;
+    	return false;
 	}
 
+	/**Sets player's icon and name when the character icon is pressed
+	 * Removes chosen characters from the list to prevent repeating characters
+	 * @param event
+	 */
 	@FXML
     void chooseCharacter(MouseEvent event) {
     	
@@ -256,7 +266,10 @@ public class CharacterController {
     	String name = txtName.getText();
     	return name;
     }
-    
+
+	/**Setting the preview at the bottom of the screen
+	 * @param index Which player image and name should be added to preview
+	 */
     private void setPreview(int index) {
 
     	previewImageViews.get(index).setImage(new Image(characters.get(characterIndex).getImageURL()));

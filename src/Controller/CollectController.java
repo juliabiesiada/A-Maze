@@ -81,9 +81,12 @@ public class CollectController {
 		arrowRight = new Image("Assets/arrowRight.png");
 		arrowDown = new Image("Assets/arrowDown.png");
 		arrowLeft = new Image("Assets/arrowLeft.png");
-		
+
+		//correct order of keys pressed
 		keyOrder = new ArrayList<KeyCode>();
+		//order of images, corresponding to correct key order
 		imgOrder = new ArrayList<Image>();
+		//list of all the keys pressed
 		pressedKeys = new ArrayList<KeyCode>();
 		
 		randomize();
@@ -98,6 +101,9 @@ public class CollectController {
 
     }
 
+	/**
+	 * This method randomizes the correct order of keys and corresponding images
+	 */
 	public void randomize() {
 		
 		rand = new Random();
@@ -131,7 +137,10 @@ public class CollectController {
 		}
 		
 	}
-	
+
+	/**
+	 * Starting the timer, user has 5 seconds to enter correct key combination
+	 */
 	private void startTimer() {
 		
 		lblTimer.textProperty().bind(timeSeconds.asString());
@@ -154,6 +163,13 @@ public class CollectController {
 		timeline.playFromStart();
 	}
 
+	/**
+	 * this method only exists here, because of not being able to call getScene from initialize
+	 * or any other method that is called in initialize. The params are also used to call a controller
+	 * method to collect a buffer/debuffer and remove it from the board
+	 * @param game represents current game
+	 * @param controller current instance of Controller
+	 */
 	public void assignListeners(Game game, Controller controller) {
 		popupRoot.getScene().setOnKeyPressed(keyHandler);
 		currentGame = game;
