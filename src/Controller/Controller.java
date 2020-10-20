@@ -117,6 +117,9 @@ public class Controller {
 			lblGems.setText("0");
 		}
 
+		game.getStatus().getStatusList().add(game.getTurnsOrder().whosPlaying().getName() + " is playing");
+		labelStatus.setText(game.getStatus().getStatusList().get(game.getStatus().getStatusList().size()-1));
+
 	}
 	
 	public void initialize() {
@@ -138,8 +141,8 @@ public class Controller {
 		game.setCardsOnBoard(cards);
 		setPlayerInitialPosition(game);
 
-		//game.getStatus().getStatusList().add(game.getPlayers()[0].getName() + " is playing");
-		//labelStatus.setText(game.getStatus().getStatusList().get(0));
+		game.getStatus().getStatusList().add(game.getPlayers()[0].getName() + " is playing");
+		labelStatus.setText(game.getStatus().getStatusList().get(game.getStatus().getStatusList().size()-1));
 
 		spawnGems();
 		drawEverything();
@@ -498,8 +501,7 @@ public class Controller {
     	        ClipboardContent cb = new ClipboardContent();
     	        cb.putString(rStr + cStr);
     	        db.setContent(cb);
-				
-				System.out.println(r+""+c+" start drag");
+
 				event.consume();
 			}
     		
@@ -548,18 +550,21 @@ public class Controller {
 							game.getTurnsOrder().whosPlaying().getInventory().setBufferCollected
 									(game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected()-1);
 							lblBuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getBufferCollected());
+							game.getStatus().getStatusList().add(selectedPlayer.getName() + " has been buffed");
 						} else if (imgID.equals(iconDebuff.getId())) {
 							if (!selectedPlayer.equals(game.getTurnsOrder().whosPlaying())) {
 								game.getTurnsOrder().debufferReceived(selectedPlayer);
 								game.getTurnsOrder().whosPlaying().getInventory().setDebufferCollected
 										(game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected()-1);
 								lblDebuff.setText(""+game.getTurnsOrder().whosPlaying().getInventory().getDebufferCollected());
+								game.getStatus().getStatusList().add(selectedPlayer.getName() + " has been debuffed");
 							}
 						}
+						labelStatus.setText(game.getStatus().getStatusList().get(game.getStatus().getStatusList().size()-1));
 					}
 
 					event.consume();
-				} else {
+				} else if (moveAllowed){
 
 					String rcStart = db.getString();
 					int rStart = Integer.parseInt(""+rcStart.charAt(0));
@@ -579,6 +584,7 @@ public class Controller {
 					game = CardsController.cardsSlider(game, slideMatrix, startPos, endPos, slideMatrix.length);
 
 					drawEverything();
+					moveAllowed = false;
 				}
 			}
         	
@@ -776,6 +782,9 @@ public class Controller {
 			spawnStairs();
 		}
 
+		game.getStatus().getStatusList().add(game.getTurnsOrder().whosPlaying().getName() + " collected a gem");
+		labelStatus.setText(game.getStatus().getStatusList().get(game.getStatus().getStatusList().size()-1));
+
 	}
 
 	public void collectBuffDebuff() {
@@ -786,12 +795,16 @@ public class Controller {
 		if (onCardEnd == OnCard.BUFFER) {
 			thisPlayer.getInventory().setBufferCollected(thisPlayer.getInventory().getBufferCollected() + 1);
 			lblBuff.setText(""+thisPlayer.getInventory().getBufferCollected());
+			game.getStatus().getStatusList().add(game.getTurnsOrder().whosPlaying().getName() + " collected a potion");
 		}else if (onCardEnd == OnCard.DEBUFFER) {
 			thisPlayer.getInventory().setDebufferCollected(thisPlayer.getInventory().getDebufferCollected() + 1);
 			lblDebuff.setText(""+thisPlayer.getInventory().getDebufferCollected());
+			game.getStatus().getStatusList().add(game.getTurnsOrder().whosPlaying().getName() + " collected a poison");
+
 		}
 
 		game.removeBuffDebuff(destination.getPosition(), onCardEnd);
+		labelStatus.setText(game.getStatus().getStatusList().get(game.getStatus().getStatusList().size()-1));
 	}
 
 	public void history(int[][] matrix, int r, int c) {

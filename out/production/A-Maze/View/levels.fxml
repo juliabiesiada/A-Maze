@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
@@ -15,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" styleClass="screen2" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.LevelController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" styleClass="screen2" stylesheets="@application.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.LevelController">
    <center>
       <HBox maxHeight="-Infinity" maxWidth="-Infinity" BorderPane.alignment="CENTER">
          <children>
@@ -23,7 +18,7 @@
                <children>
                   <Label alignment="CENTER" styleClass="text" text="Beginner (7x7)">
                      <font>
-                        <Font name="Consolas" size="16.0" />
+                        <Font name="Yu Gothic Medium" size="16.0" />
                      </font>
                      <VBox.margin>
                         <Insets bottom="20.0" />
@@ -58,7 +53,7 @@
                <children>
                   <Label styleClass="text" text="Advanced (9x9)">
                      <font>
-                        <Font name="Consolas" size="16.0" />
+                        <Font name="Yu Gothic Medium" size="16.0" />
                      </font>
                      <VBox.margin>
                         <Insets bottom="20.0" />
@@ -100,7 +95,7 @@
                <children>
                   <Label alignment="TOP_CENTER" styleClass="text" text="Expert (11x11)">
                      <font>
-                        <Font name="Consolas" size="16.0" />
+                        <Font name="Yu Gothic Medium" size="16.0" />
                      </font>
                      <VBox.margin>
                         <Insets bottom="20.0" />
@@ -148,7 +143,7 @@
    <top>
       <Label styleClass="text" stylesheets="@application.css" text="Choose difficulty level:" BorderPane.alignment="CENTER">
          <font>
-            <Font name="Consolas" size="27.0" />
+            <Font name="Yu Gothic Medium" size="27.0" />
          </font>
          <BorderPane.margin>
             <Insets top="40.0" />
