@@ -396,7 +396,7 @@ public class Controller {
 		popup.setTitle("Collect the potion!");
 
 		FXMLLoader popupLoader = new FXMLLoader(getClass().getResource("/View/popupCollect.fxml"));
-		CollectController collectController = new CollectController();
+		CollectController collectController = new CollectController(iv1, iv2, iv3, iv4, lblTimer, popupRoot);
 		collectController.setPosition(destination.getPosition());
 		collectController.setOnCard(onCardEnd);
 		popupLoader.setController(collectController);
