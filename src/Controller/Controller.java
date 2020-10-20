@@ -419,7 +419,7 @@ public class Controller {
 
 		Parent root = popupLoader.getRoot();
 
-		Scene scene = new Scene(root, 400, 400);
+		Scene scene = new Scene(root, 349, 192);
 		//kind of a stupid solution but well, couldn't get scene in initialize
 		collectController.assignListeners(this);
 		scene.getStylesheets().add("View/application.css");
@@ -436,11 +436,11 @@ public class Controller {
 		    }
 		});
 
-		popup.setHeight(200);
-		popup.setWidth(400);
+		popup.setHeight(192);
+		popup.setWidth(349);
 
-		popup.setMinHeight(200);
-		popup.setMinWidth(400);
+		popup.setMinHeight(192);
+		popup.setMinWidth(349);
 
 	}
     
