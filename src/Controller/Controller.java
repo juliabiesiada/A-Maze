@@ -576,8 +576,7 @@ public class Controller {
 					Position endPos = new Position(rEnd, cEnd);
 
 					Card[][] slideMatrix = game.getCardsOnBoard();
-					slideMatrix = CardsController.cardsSlider(slideMatrix, startPos, endPos, slideMatrix.length);
-					game.setCardsOnBoard(slideMatrix);
+					game = CardsController.cardsSlider(game, slideMatrix, startPos, endPos, slideMatrix.length);
 
 					drawEverything();
 				}

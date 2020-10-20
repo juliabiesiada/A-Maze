@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.*;
+import javafx.geometry.Pos;
 
 import java.util.concurrent.Callable;
 
@@ -186,26 +187,36 @@ public class CardsController {
      * @param value the grid dimension
      * @return the changed cards matrix
      */
-    public static Card[][] cardsSlider(Card[][] cards, Position prevPos, Position newPos, int value) {
+    public static Game cardsSlider(Game game, Card[][] cards, Position prevPos, Position newPos, int value) {
         Card[] slidedLine = new Card[value];
+        Position pos = new Position(0,0);
+        for (int i = 0; i<value; i++) {
+            slidedLine[i] = (new Card(pos, CardType.ANGLEPATH, Rotation.ONE));
+        }
         //VERTICAL SLIDE:
         if (prevPos.getColumn() == newPos.getColumn()) {
             if ((prevPos.getRow() == 0 && newPos.getRow() == value-1) || (prevPos.getRow() == value-1 && newPos.getRow() == 0)) {
                 //top to bottom
                 if (prevPos.getRow() < newPos.getRow()) {
-                    slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];
                     for (int i = 0; i < value - 1; i++) {
-                        slidedLine[i + 1] = cards[i][prevPos.getColumn()];
+                        slidedLine[i] = cards[i + 1][prevPos.getColumn()];
+                        slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];
                     }
                 }
                 //bottom to top
                 else {
-                    slidedLine[0] = cards[newPos.getRow()][newPos.getColumn()];
+                    slidedLine[0] = cards[prevPos.getRow()][prevPos.getColumn()];
                     for (int i = 1; i < value; i++) {
-                        slidedLine[i - 1] = cards[i][prevPos.getColumn()];
+                        slidedLine[i] = cards[i - 1][prevPos.getColumn()];
                     }
                 }
                 for (int i = 0; i<value; i++) {
+                    slidedLine[i].setPosition(new Position(i, prevPos.getColumn()));
+                    if (cards[prevPos.getRow()][i].getOnCard() != OnCard.NOTHING) {
+                        Position objPos = new Position(prevPos.getRow(), i);
+                        Position newObjPos = slidedLine[i].getPosition();
+                        game = replaceObject(game, cards[prevPos.getRow()][i].getOnCard(), objPos, newObjPos);
+                    }
                     cards[i][prevPos.getColumn()] = slidedLine[i];
                 }
             }
@@ -213,19 +224,19 @@ public class CardsController {
 
         //HORIZONTAL SLIDE
         else if (prevPos.getRow() == newPos.getRow()) {
-            if ((prevPos.getColumn() == 0 && newPos.getColumn() == value) || (prevPos.getColumn() == value && newPos.getColumn() == 0)) {
+            if ((prevPos.getColumn() == 0 && newPos.getColumn() == value-1) || (prevPos.getColumn() == value-1 && newPos.getColumn() == 0)) {
                 //left to right
                 if (prevPos.getColumn() < newPos.getColumn()) {
-                    slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];
                     for (int i = 0; i < value - 1; i++) {
-                        slidedLine[i + 1] = cards[prevPos.getRow()][i];
+                        slidedLine[i] = cards[prevPos.getRow()][i+1];
                     }
+                    slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];
                 }
                 //right to left
                 else {
-                    slidedLine[0] = cards[newPos.getRow()][newPos.getColumn()];
+                    slidedLine[0] = cards[prevPos.getRow()][prevPos.getColumn()];
                     for (int i = 1; i < value; i++) {
-                        slidedLine[i - 1] = cards[prevPos.getRow()][i];
+                        slidedLine[i] = cards[prevPos.getRow()][i - 1];
                     }
                 }
                 for (int i = 0; i<value; i++) {
@@ -233,7 +244,35 @@ public class CardsController {
                 }
             }
         }
-        return cards;
+        game.setCardsOnBoard(cards);
+        return game;
+    }
+
+    private static Game replaceObject(Game game, OnCard onCard, Position objPos, Position newObjPos) {
+
+        switch (onCard) {
+            case BUFFER:
+                System.out.println("sono entrato");
+                for (int i = 0; i<game.getBuffPositions().size(); i++) {
+                    if (game.getBuffPositions().get(i).getRow() == objPos.getRow() &&
+                            game.getBuffPositions().get(i).getColumn() == objPos.getColumn()) {
+                        game.getBuffPositions().remove(i);
+                        game.getBuffPositions().add(i, newObjPos);
+                    }
+                }
+                break;
+            case DEBUFFER:
+                break;
+            case PLAYER:
+                break;
+            case GEM:
+                break;
+            case PLAYER_AND_GEM:
+                break;
+            case STAIRS:
+                break;
+        }
+        return game;
     }
 
 
