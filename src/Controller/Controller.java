@@ -10,12 +10,10 @@ import Model.*;
 import Model.Card;
 import Model.Game;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -33,18 +31,12 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 
 public class Controller {
 
-	private static final int NUM_OF_COLORS = 4;
 	@FXML
 	private StackPane board_root;
-	@FXML
-	private List<Pane> panes;
-	@FXML
-	private GridPane littleGrid;
 	@FXML 
 	private ImageView iconGems;
 	@FXML
@@ -63,8 +55,6 @@ public class Controller {
 	Label labelStatus;
 
 	GridPane board_grid;
-	//for level choosing
-	int size;
 	int tileDimension;
 	int levelSize;
 	int numOfGems;
@@ -80,22 +70,19 @@ public class Controller {
     OnCard onCardEnd;
     Card destination;
     boolean moveAllowed;
-	List<int[][]> historyMatrix = new ArrayList<int[][]>();
-	List<Position> historyPosition = new ArrayList<Position>();
+	List<int[][]> historyMatrix = new ArrayList<>();
+	List<Position> historyPosition = new ArrayList<>();
 	String imgID;
 	Boolean rotationMove;
 	Boolean stairsSpawned;
 	Position stairsPosition;
 
-	public Game getGame() {
-		return game;
-	}
 
 	public void setGame(Game game) {
 		this.game = game;
 	}
 
-	public void onClicked(MouseEvent mouseEvent) throws IOException {
+	public void onEndTurnClicked() {
 		//End Turn
 		//allowing player to move
 		rotationMove = false;
@@ -206,7 +193,7 @@ public class Controller {
 							pathImageView.setFitHeight(tileDimension);
 							pane.getChildren().add(pathImageView);
 						} else {
-							String url = new String();
+							String url = "";
 							switch (cards[i][j].getCardMatrix()[l][m]) {
 								case 1:
 									url = "/Assets/wall1.png";
@@ -265,13 +252,12 @@ public class Controller {
 
 		//this put diamonds on the board
 		for (Player player : game.getPlayers()) {
-			String urlGem = colorToGemURL(player.getPlayerColor());
 
 			for (int i = 0; i<numOfGems; i++) {
 				int randomRow = new Randomizer().randomize(levelSize);
 				int randomCol = new Randomizer().randomize(levelSize);
 				if (game.getCardsOnBoard()[randomRow][randomCol].getOnCard() == OnCard.NOTHING &&
-						game.getCardsOnBoard()[randomRow][randomCol].isAvailable() == true) {
+						game.getCardsOnBoard()[randomRow][randomCol].isAvailable()) {
 					game.getCardsOnBoard()[randomRow][randomCol].setOnCard(OnCard.GEM);
 					game.getGems().add(new Gem(player.getPlayerColor(), new Position(randomRow,randomCol)));
 				} else {
@@ -298,7 +284,7 @@ public class Controller {
 	public void spawnBufferDebuffer() {
 		//handles buffer and debuffer
 		int val = game.getTurnsOrder().getCounter() % 10;
-		if (val == 0 && buffDebuffAlreadySpawn == false) {
+		if (val == 0 && !buffDebuffAlreadySpawn) {
 			game.updateBuffDebuff();
 			buffDebuffAlreadySpawn = true;
 		}
@@ -430,12 +416,7 @@ public class Controller {
 
 		//to stop user from closing the window
 		Platform.setImplicitExit(false);
-		popup.setOnCloseRequest(new EventHandler<WindowEvent>() {
-		    @Override
-		    public void handle(WindowEvent event) {
-		        event.consume();
-		    }
-		});
+		popup.setOnCloseRequest(Event::consume);
 
 		popup.setHeight(192);
 		popup.setWidth(349);
@@ -452,7 +433,7 @@ public class Controller {
     }
 
     @FXML
-	void easterEggMagic(MouseEvent event) {
+	void easterEggMagic() {
 
 		for (Player player : game.getPlayers()) {
 			if (player.getName().equals("Raphael") || player.getName().equals("raphael") || player.getName().equals("Raphaël")) {
@@ -853,7 +834,7 @@ int cStart = startPosition.getColumn();
 
 		if (!stairsSpawned) {
 
-			ArrayList<Card> cardsAvailable = new ArrayList<Card>();
+			ArrayList<Card> cardsAvailable = new ArrayList<>();
 			for (int i = 0; i<game.getCardsOnBoard().length; i++) {
 				for (int j = 0; j<game.getCardsOnBoard().length; j++) {
 					if (game.getCardsOnBoard()[i][j].getOnCard() == OnCard.NOTHING) {
@@ -881,7 +862,6 @@ int cStart = startPosition.getColumn();
 	}
 
 	private void victory() {
-		Player winner = game.getTurnsOrder().whosPlaying();
 
 		Stage winStage = new Stage();
 		//winStage.initModality(Modality.APPLICATION_MODAL);
