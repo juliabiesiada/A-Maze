@@ -243,7 +243,7 @@ public class Controller {
 			playerImageView.setFitHeight(tileDimension);
 			playerImageView.setFitWidth(tileDimension);
 			sPanes[player.getPosition().getRow()][player.getPosition().getColumn()].getChildren().add(playerImageView);
-			sPanes[player.getPosition().getRow()][player.getPosition().getColumn()].setAlignment(playerImageView, Pos.CENTER);
+			StackPane.setAlignment(playerImageView, Pos.CENTER);
 			game.getCardsOnBoard()[player.getPosition().getRow()][player.getPosition().getColumn()].setOnCard(OnCard.PLAYER);
 		}
 	}
@@ -277,7 +277,7 @@ public class Controller {
 			gemImageView.setFitHeight(tileDimension);
 			gemImageView.setFitWidth(tileDimension);
 			sPanes[row][col].getChildren().add(gemImageView);
-			sPanes[row][col].setAlignment(gemImageView, Pos.CENTER);
+			StackPane.setAlignment(gemImageView, Pos.CENTER);
 		}
 	}
 
@@ -294,7 +294,7 @@ public class Controller {
 			buffImageView.setFitHeight(tileDimension);
 			buffImageView.setFitWidth(tileDimension);
 			sPanes[game.getBuffPositions().get(i).getRow()][game.getBuffPositions().get(i).getColumn()].getChildren().add(buffImageView);
-			sPanes[game.getBuffPositions().get(i).getRow()][game.getBuffPositions().get(i).getColumn()].setAlignment(buffImageView, Pos.CENTER);
+			StackPane.setAlignment(buffImageView, Pos.CENTER);
 		}
 		for (int i = 0; i<game.getDebuffPositions().size(); i++) {
 			Image debuffImage = new Image("/Assets/poison_icon.png");
@@ -302,7 +302,7 @@ public class Controller {
 			debuffImageView.setFitHeight(tileDimension);
 			debuffImageView.setFitWidth(tileDimension);
 			sPanes[game.getDebuffPositions().get(i).getRow()][game.getDebuffPositions().get(i).getColumn()].getChildren().add(debuffImageView);
-			sPanes[game.getDebuffPositions().get(i).getRow()][game.getDebuffPositions().get(i).getColumn()].setAlignment(debuffImageView, Pos.CENTER);
+			StackPane.setAlignment(debuffImageView, Pos.CENTER);
 		}
 	}
 
@@ -501,10 +501,10 @@ public class Controller {
 			String paneID = ((Pane)event.getSource()).getId();
 
 			if (db.hasImage()) {
-
+				
 				Node node = (Node)event.getSource();
-				Integer cIndex = board_grid.getColumnIndex(node);
-				Integer rIndex = board_grid.getRowIndex(node);
+				Integer cIndex = GridPane.getColumnIndex(node);
+				Integer rIndex = GridPane.getRowIndex(node);
 				Player selectedPlayer = null;
 
 				for (int i = 0; i<game.getPlayers().length; i++) {
@@ -850,12 +850,12 @@ int cStart = startPosition.getColumn();
 					[randomCard.getPosition().getColumn()].setOnCard(OnCard.STAIRS);
 
 			sPanes[randomCard.getPosition().getRow()][randomCard.getPosition().getColumn()].getChildren().add(stairsIV);
-			sPanes[randomCard.getPosition().getRow()][randomCard.getPosition().getColumn()].setAlignment(stairsIV, Pos.CENTER);
+			StackPane.setAlignment(stairsIV, Pos.CENTER);
 
 		} else {
 
 			sPanes[stairsPosition.getRow()][stairsPosition.getColumn()].getChildren().add(stairsIV);
-			sPanes[stairsPosition.getRow()][stairsPosition.getColumn()].setAlignment(stairsIV, Pos.CENTER);
+			StackPane.setAlignment(stairsIV, Pos.CENTER);
 		}
 
 
