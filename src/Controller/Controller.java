@@ -424,6 +424,7 @@ public class Controller {
 		collectController.assignListeners(this);
 		scene.getStylesheets().add("View/application.css");
 		popup.setScene(scene);
+		popup.setResizable(false);
 		popup.show();
 
 		//to stop user from closing the window
@@ -907,6 +908,26 @@ public class Controller {
 
 	private void victory() {
 		Player winner = game.getTurnsOrder().whosPlaying();
+
+		Stage winStage = new Stage();
+		//winStage.initModality(Modality.APPLICATION_MODAL);
+		winStage.setTitle("WINNER");
+
+		FXMLLoader winnerLoader = new FXMLLoader(getClass().getResource("/View/youWin.fxml"));
+		WinController winController = new WinController();
+		winnerLoader.setController(winController);
+
+		try {
+			winnerLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Parent root = winnerLoader.getRoot();
+		Scene scene = new Scene(root, 349, 192);
+		winStage.setScene(scene);
+		winStage.setResizable(false);
+		winStage.show();
 	}
 
 }
