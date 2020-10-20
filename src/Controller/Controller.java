@@ -11,6 +11,7 @@ import Model.Card;
 import Model.Game;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -500,19 +501,11 @@ public class Controller {
 
 			@Override
 			public void handle(MouseEvent event) {
-				
-				//need to check to what the constraints are applied in slider method
-				String paneID = ((Pane)event.getSource()).getId();
-            	paneID = paneID.replaceAll("\\D+"," ");
-            	String[] splited = paneID.split("\\s+");
-				String rStr = splited[1];
-				String cStr = splited[2];
-				int r = Integer.parseInt(rStr);
-				int c = Integer.parseInt(cStr);
-				
+
+				Position rc = strToID(((Pane)event.getSource()).getId());
 				Dragboard db = ((Pane)event.getSource()).startDragAndDrop(TransferMode.ANY);
     	        ClipboardContent cb = new ClipboardContent();
-    	        cb.putString(rStr + cStr);
+    	        cb.putString(""+rc.getRow()+""+rc.getColumn());
     	        db.setContent(cb);
 
 				event.consume();
@@ -588,15 +581,10 @@ public class Controller {
 					int rStart = Integer.parseInt(""+rcStart.charAt(0));
 					int cStart = Integer.parseInt(""+rcStart.charAt(1));
 
-					paneID = paneID.replaceAll("\\D+"," ");
-					String[] splited = paneID.split("\\s+");
-					String rStr = splited[1];
-					String cStr = splited[2];
-					int rEnd = Integer.parseInt(rStr);
-					int cEnd = Integer.parseInt(cStr);
+					Position rc = strToID(paneID);
 
 					Position startPos = new Position(rStart, cStart);
-					Position endPos = new Position(rEnd, cEnd);
+					Position endPos = new Position(rc.getRow(), rc.getColumn());
 
 					Card[][] slideMatrix = game.getCardsOnBoard();
 					game = CardsController.cardsSlider(game, slideMatrix, startPos, endPos, slideMatrix.length);
@@ -620,18 +608,13 @@ public class Controller {
 			@Override
 			public void handle(MouseEvent event) {
 				
-				String paneID = ((Pane)event.getSource()).getId();
-            	paneID = paneID.replaceAll("\\D+"," ");
-            	String[] splited = paneID.split("\\s+");
-				String rStr = splited[1];
-				String cStr = splited[2];
-				int r = Integer.parseInt(rStr);
-				int c = Integer.parseInt(cStr);
+				Position rc = strToID(((Pane)event.getSource()).getId());
+				int r = rc.getRow();
+				int c = rc.getColumn();
 				
 				if(event.getButton().equals(MouseButton.PRIMARY) && event.isShiftDown() && moveAllowed){
 
-					//Clock Wise Rotationssss
-					//make history
+					//Clock Wise Rotations
 					rotationMove = true;
 					history(game.getCardsOnBoard()[r][c].getCardMatrix(), r, c);
 					int[][] rotMatrix = game.getCardsOnBoard()[r][c].getCardMatrix();
@@ -940,6 +923,18 @@ public class Controller {
 		winStage.setScene(scene);
 		winStage.setResizable(false);
 		winStage.show();
+	}
+
+	public Position strToID(String strID) {
+
+		strID = strID.replaceAll("\\D+"," ");
+		String[] splited = strID.split("\\s+");
+		String rStr = splited[1];
+		String cStr = splited[2];
+		int r = Integer.parseInt(rStr);
+		int c = Integer.parseInt(cStr);
+
+		return new Position(r,c);
 	}
 
 }
