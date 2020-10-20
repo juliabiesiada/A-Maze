@@ -59,3 +59,9 @@
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
 }
+
+.popUp {
+	-fx-background-image: url(../Assets/tileScreen.png);
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+}

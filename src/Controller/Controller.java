@@ -579,6 +579,11 @@ public class Controller {
 					event.consume();
 				} else if (moveAllowed){
 
+					Card[][] thisMatrix = new Card[game.getCardsOnBoard().length][];
+					for (int i = 0; i < game.getCardsOnBoard().length; i++) {
+						thisMatrix[i] = game.getCardsOnBoard()[i].clone();
+					}
+
 					String rcStart = db.getString();
 					int rStart = Integer.parseInt(""+rcStart.charAt(0));
 					int cStart = Integer.parseInt(""+rcStart.charAt(1));
@@ -597,7 +602,14 @@ public class Controller {
 					game = CardsController.cardsSlider(game, slideMatrix, startPos, endPos, slideMatrix.length);
 
 					drawEverything();
-					moveAllowed = false;
+					for (int i=0; i<thisMatrix.length; i++) {
+						for (int j=0; j<thisMatrix.length; j++) {
+							if (!thisMatrix[i][j].equals(game.getCardsOnBoard()[i][j])) {
+								moveAllowed = false;
+							}
+						}
+
+					}
 				}
 			}
         	

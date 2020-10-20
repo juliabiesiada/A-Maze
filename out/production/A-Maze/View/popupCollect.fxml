@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
@@ -7,27 +13,26 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox fx:id ="popupRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="178.0" prefWidth="370.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="popupRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="192.0" prefWidth="349.0" styleClass="popUp" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <HBox alignment="CENTER" prefHeight="97.0" prefWidth="370.0">
          <children>
-            <ImageView fx:id="iv1" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="iv1" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
                   <Insets left="10.0" right="10.0" />
                </HBox.margin>
             </ImageView>
-            <ImageView fx:id="iv2" fitHeight="80.0" fitWidth="80.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="iv2" fitHeight="70.0" fitWidth="70.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
             </ImageView>
-            <ImageView fx:id="iv3" fitHeight="80.0" fitWidth="80.0" layoutX="210.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="iv3" fitHeight="70.0" fitWidth="70.0" layoutX="210.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
             </ImageView>
-            <ImageView fx:id="iv4" fitHeight="80.0" fitWidth="80.0" layoutX="410.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="iv4" fitHeight="70.0" fitWidth="70.0" layoutX="410.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
@@ -37,7 +42,7 @@
             <Insets top="10.0" />
          </VBox.margin>
       </HBox>
-      <Label fx:id="lblTimer" textFill="#ee0707">
+      <Label fx:id="lblTimer" styleClass="text" stylesheets="@application.css" textFill="#ee0707">
          <font>
             <Font name="Yu Gothic Medium" size="25.0" />
          </font>
