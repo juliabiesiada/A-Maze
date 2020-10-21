@@ -28,8 +28,8 @@ public class TurnManager {
      */
     public void turnInitializer() {
         for (int i = 0; i<3; i++) {
-            for (int j = 0; j<players.length; j++) {
-                turns.add(players[j].getName());
+            for (Player player : players) {
+                turns.add(player.getName());
             }
         }
     }
@@ -41,7 +41,7 @@ public class TurnManager {
     public void bufferReceived(Player player) {
         boolean buffAdded = false;
         for (int i = 0; i<turns.size(); i++) {
-            if (turns.get(i) == player.getName() && buffAdded == false) {
+            if (turns.get(i).equals(player.getName()) && !buffAdded) {
                 turns.add(i+1, player.getName());
                 buffAdded = true;
             }
@@ -57,7 +57,7 @@ public class TurnManager {
         boolean debuffAdded = false;
         int turnsToRemove = 2;
         for (int i = 0; i<turns.size(); i++) {
-            if (turns.get(i) == player.getName() && debuffAdded == false) {
+            if (turns.get(i).equals(player.getName()) && !debuffAdded) {
                 turns.remove(i);
                 i--;
                 turnsToRemove--;
@@ -78,15 +78,15 @@ public class TurnManager {
 
     /**
      * This method removes from turns the player who has just ended hi turn and put him in the bottom of the list
-     * @param player
+     * @param player player who just ended a turn
      */
     public void turnCompleted(Player player) {
-        if (turns.get(0) == player.getName()) {
+        if (turns.get(0).equals(player.getName())) {
             lastPlayer = player.getName();
             turns.remove(0);
             if (playersCounter == 4) {
-                for (int i = 0; i<players.length; i++) {
-                    turns.add(players[i].getName());
+                for (Player value : players) {
+                    turns.add(value.getName());
                     playersCounter = 1;
                 }
             }
@@ -101,7 +101,7 @@ public class TurnManager {
     public Player whosPlaying() {
         Player currentPlayer = null;
         for(Player player: players) {
-            if (player.getName() == turns.get(0)){
+            if (player.getName().equals(turns.get(0))){
                 currentPlayer = player;
             }
         }
