@@ -42,7 +42,7 @@ public class Game {
         while (numOfBuff < 2 || numOfDebuff < 2) {
             int row = new Randomizer().randomize(cardsOnBoard.length);
             int col = new Randomizer().randomize(cardsOnBoard.length);
-            if (cardsOnBoard[row][col].isAvailable() == true) {
+            if (cardsOnBoard[row][col].isAvailable()) {
                 if (cardsOnBoard[row][col].getOnCard() == OnCard.NOTHING) {
                     if (numOfBuff <= 1) {
                         cardsOnBoard[row][col].setOnCard(OnCard.BUFFER);
@@ -63,6 +63,7 @@ public class Game {
             for (int i = 0; i<buffPositions.size(); i++) {
                 if (buffPositions.get(i).getColumn() == pos.getColumn() && buffPositions.get(i).getRow() == pos.getRow()) {
                     buffPositions.remove(i);
+                    break;
                 }
             }
         }
@@ -70,6 +71,7 @@ public class Game {
             for (int i = 0; i<debuffPositions.size(); i++) {
                 if (debuffPositions.get(i).getColumn() == pos.getColumn() && debuffPositions.get(i).getRow() == pos.getRow()) {
                     debuffPositions.remove(i);
+                    break;
                 }
             }
         }

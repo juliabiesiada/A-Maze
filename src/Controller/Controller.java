@@ -81,6 +81,9 @@ public class Controller {
 		this.game = game;
 	}
 
+	/**
+	 * handles a click on "End turn" button
+	 */
 	public void onEndTurnClicked() {
 		//End Turn
 		//allowing player to move
@@ -144,6 +147,9 @@ public class Controller {
 
 	}
 
+	/**
+	 * this method is for updating the board
+	 */
 	public void drawEverything() {
 		drawBoard();
 		drawGems();
@@ -154,6 +160,9 @@ public class Controller {
 		spawnPlayers();
 	}
 
+	/**
+	 * this is a method drawing the board
+	 */
 	public void drawBoard() {
 		//root is pane, contains a grid, allows us to be flexible with the size
 		board_root.getChildren().clear();
@@ -234,9 +243,11 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * this method spawns players on the board
+	 */
 	public void spawnPlayers() {
 
-		//this put players on the board
 		for (Player player : game.getPlayers()) {
 			playerImage = new Image(player.getIconURL());
 			playerImageView = new ImageView(playerImage);
@@ -248,6 +259,9 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * this method initially spawns gems on the board
+	 */
 	public void spawnGems() {
 
 		//this put diamonds on the board
@@ -268,6 +282,10 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * this method draws already spawned gems on the board
+	 * has to be separate from spawnGems() cause otherwise collection would be impossible
+	 */
 	public void drawGems() {
 		for (int i = 0; i<game.getGems().size(); i++) {
 			int row = game.getGems().get(i).getPosition().getRow();
@@ -281,6 +299,9 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * this method spawns buffers and debuffers on the board
+	 */
 	public void spawnBufferDebuffer() {
 		//handles buffer and debuffer
 		int val = game.getTurnsOrder().getCounter() % 10;
@@ -306,6 +327,10 @@ public class Controller {
 		}
 	}
 
+	/** This method associates appropriate gem url with player's color
+	 * @param color player's color
+	 * @return gem's url
+	 */
 	public String colorToGemURL(PlayerColor color) {
 		String urlGem = "";
 		switch (color) {
@@ -388,6 +413,11 @@ public class Controller {
         }
     }
 
+	/** This method displays a popup to collect a potion or poison
+	 * @param pos position of the poison/potion being collected
+	 * @param onThisCard what is on card (poison or potion)
+	 * @throws IOException if the fxml file for the popup is not found
+	 */
     private void showPopup(Position pos, OnCard onThisCard) throws IOException {
 
 		game.removeBuffDebuff(pos, onThisCard);
@@ -746,6 +776,11 @@ public class Controller {
 		}
     }
 
+	/** this method finds location of a specific gem on the list of gems of game object
+	 * @param row row of the card the gem is on
+	 * @param col column of the card the gem is on
+	 * @return specific gem object
+	 */
 	public Gem findGemByPosition(int row, int col) {
 		Gem thisGem = null;
 		for (int i = 0; i<game.getGems().size(); i++) {
@@ -757,6 +792,9 @@ public class Controller {
 		return thisGem;
 	}
 
+	/** handles gem collection
+	 * @param gem gem that is being collected
+	 */
 	public void collectGem(Gem gem) {
 		Player thisPlayer = game.getTurnsOrder().whosPlaying();
 		if (thisPlayer.getInventory() == null) {
@@ -775,6 +813,9 @@ public class Controller {
 
 	}
 
+	/**
+	 * this method handles buff and debuff colection
+	 */
 	public void collectBuffDebuff() {
 		Player thisPlayer = game.getTurnsOrder().whosPlaying();
 		if (thisPlayer.getInventory() == null) {
@@ -793,6 +834,12 @@ public class Controller {
 		labelStatus.setText(game.getStatus().getStatusList().get(game.getStatus().getStatusList().size()-1));
 	}
 
+	/** This method allows the card matrix to go back to it's initial rotation when a player starts rotating another
+	 * card in the same turn
+	 * @param matrix card matrix before rotation
+	 * @param r row of the card being rotated
+	 * @param c column of the card being rotated
+	 */
 	public void history(int[][] matrix, int r, int c) {
 
 		boolean newPosition = true;
@@ -820,6 +867,9 @@ public class Controller {
 
 	}
 
+	/**
+	 * @return if the player collected all his gems
+	 */
 	public boolean isGameWon() {
 
 		int counter = 0;
@@ -837,6 +887,9 @@ public class Controller {
 		return false;
 	}
 
+	/**
+	 * When one of the players collects all his gems this method makes stairs appear on the board in a random place
+	 */
 	public void spawnStairs() {
 		//stairs have to appear
 
@@ -874,6 +927,9 @@ public class Controller {
 
 	}
 
+	/**
+	 * Handles winning the game event
+	 */
 	private void victory() {
 
 		Stage winStage = new Stage();
@@ -897,6 +953,10 @@ public class Controller {
 		winStage.show();
 	}
 
+	/** Method called in event handlers to get panes id from e.g "r1c1" to integers representing rows and columns
+	 * @param strID id gotten from event source
+	 * @return ID as position
+	 */
 	public Position strToID(String strID) {
 
 		strID = strID.replaceAll("\\D+"," ");
