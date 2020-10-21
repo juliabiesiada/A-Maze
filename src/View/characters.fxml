@@ -77,7 +77,7 @@
          <children>
             <Label fx:id="labelOrder" styleClass="text" stylesheets="@application.css" text="Player 1, choose your character:">
                <font>
-                  <Font size="22.0" />
+                  <Font size="20.0" />
                </font>
             </Label>
             <Label fx:id="txtError" styleClass="text" stylesheets="@application.css" textFill="RED">
