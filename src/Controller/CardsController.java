@@ -198,25 +198,30 @@ public class CardsController {
             if ((prevPos.getRow() == 0 && newPos.getRow() == value-1) || (prevPos.getRow() == value-1 && newPos.getRow() == 0)) {
                 //top to bottom
                 if (prevPos.getRow() < newPos.getRow()) {
+                    slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];
+                    slidedLine[value - 1].setPosition(new Position(newPos.getRow(), newPos.getColumn()));
+                    if (cards[prevPos.getRow()][prevPos.getColumn()].getOnCard() != OnCard.NOTHING) {
+                        game = replaceObject(game, cards[prevPos.getRow()][prevPos.getColumn()].getOnCard(), prevPos, slidedLine[value - 1].getPosition());
+                    }
+                    System.out.println(slidedLine[value - 1].getPosition().getRow() + " " + slidedLine[value - 1].getPosition().getColumn());
                     for (int i = 0; i < value - 1; i++) {
                         slidedLine[i] = cards[i + 1][prevPos.getColumn()];
-                        slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];
+                        slidedLine[i].setPosition(new Position(i, prevPos.getColumn()));
+                        if (cards[i + 1][prevPos.getColumn()].getOnCard() != OnCard.NOTHING) {
+                            game = replaceObject(game, cards[i + 1][prevPos.getColumn()].getOnCard(), new Position(i + 1, prevPos.getColumn()), slidedLine[i].getPosition());
+                        }
                     }
                 }
                 //bottom to top
                 else {
                     slidedLine[0] = cards[prevPos.getRow()][prevPos.getColumn()];
+                    slidedLine[0].setPosition(new Position(0, newPos.getColumn()));
                     for (int i = 1; i < value; i++) {
                         slidedLine[i] = cards[i - 1][prevPos.getColumn()];
+                        slidedLine[i].setPosition(new Position(i - 1, prevPos.getColumn()));
                     }
                 }
                 for (int i = 0; i<value; i++) {
-                    slidedLine[i].setPosition(new Position(i, prevPos.getColumn()));
-                    if (cards[prevPos.getRow()][i].getOnCard() != OnCard.NOTHING) {
-                        Position objPos = new Position(prevPos.getRow(), i);
-                        Position newObjPos = slidedLine[i].getPosition();
-                        game = replaceObject(game, cards[prevPos.getRow()][i].getOnCard(), objPos, newObjPos);
-                    }
                     cards[i][prevPos.getColumn()] = slidedLine[i];
                 }
             }
@@ -249,25 +254,55 @@ public class CardsController {
     }
 
     private static Game replaceObject(Game game, OnCard onCard, Position objPos, Position newObjPos) {
-
+        System.out.println(onCard);
+        System.out.println(objPos.getRow() + "" + objPos.getColumn() + " " + newObjPos.getRow() + "" + newObjPos.getColumn());
         switch (onCard) {
             case BUFFER:
-                System.out.println("sono entrato");
                 for (int i = 0; i<game.getBuffPositions().size(); i++) {
                     if (game.getBuffPositions().get(i).getRow() == objPos.getRow() &&
                             game.getBuffPositions().get(i).getColumn() == objPos.getColumn()) {
                         game.getBuffPositions().remove(i);
-                        game.getBuffPositions().add(i, newObjPos);
+                        game.getBuffPositions().add(newObjPos);
                     }
                 }
                 break;
             case DEBUFFER:
+                for (int i = 0; i<game.getDebuffPositions().size(); i++) {
+                    if (game.getDebuffPositions().get(i).getRow() == objPos.getRow() &&
+                            game.getDebuffPositions().get(i).getColumn() == objPos.getColumn()) {
+                        //System.out.println("sono stronzissimo");
+                        game.getDebuffPositions().remove(i);
+                        game.getDebuffPositions().add(newObjPos);
+                    }
+                }
                 break;
             case PLAYER:
+                for (Player player : game.getPlayers()) {
+                    //System.out.println(player.getName() + player.getPosition().getRow() + player.getPosition().getColumn());
+                    if (player.getPosition().getRow() == objPos.getRow() && player.getPosition().getColumn() == objPos.getColumn()) {
+                        player.setPosition(newObjPos);
+                    }
+                    //System.out.println(player.getName() + player.getPosition().getRow() + player.getPosition().getColumn());
+                }
                 break;
             case GEM:
+                for (Gem gem : game.getGems()) {
+                    if (gem.getPosition().getRow() == objPos.getRow() && gem.getPosition().getColumn() == objPos.getColumn()) {
+                        gem.setPosition(newObjPos);
+                    }
+                }
                 break;
             case PLAYER_AND_GEM:
+                for (Player player : game.getPlayers()) {
+                    if (player.getPosition().getRow() == objPos.getRow() && player.getPosition().getColumn() == objPos.getColumn()) {
+                        player.setPosition(newObjPos);
+                    }
+                }
+                for (Gem gem : game.getGems()) {
+                    if (gem.getPosition().getRow() == objPos.getRow() && gem.getPosition().getColumn() == objPos.getColumn()) {
+                        gem.setPosition(newObjPos);
+                    }
+                }
                 break;
             case STAIRS:
                 break;

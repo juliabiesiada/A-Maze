@@ -42,7 +42,7 @@
             <Insets top="10.0" />
          </VBox.margin>
       </HBox>
-      <Label fx:id="lblTimer" styleClass="text" stylesheets="@application.css" textFill="#ee0707">
+      <Label fx:id="lblTimer" styleClass="text" stylesheets="@application.css" textFill="#00bcd4">
          <font>
             <Font name="Yu Gothic Medium" size="25.0" />
          </font>
