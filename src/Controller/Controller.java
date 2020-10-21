@@ -157,6 +157,7 @@ public class Controller {
 
 	public void drawBoard() {
 		//root is pane, contains a grid, allows us to be flexible with the size
+		board_root.getChildren().clear();
 		board_grid = new GridPane();
 		board_root.getChildren().add(board_grid);
 		board_grid.setAlignment(Pos.CENTER);
@@ -396,7 +397,7 @@ public class Controller {
 		popup.setTitle("Collect the potion!");
 
 		FXMLLoader popupLoader = new FXMLLoader(getClass().getResource("/View/popupCollect.fxml"));
-		CollectController collectController = new CollectController(iv1, iv2, iv3, iv4, lblTimer, popupRoot);
+		CollectController collectController = new CollectController();
 		collectController.setPosition(destination.getPosition());
 		collectController.setOnCard(onCardEnd);
 		popupLoader.setController(collectController);

@@ -54,15 +54,6 @@ public class CollectController {
     Position position;
     OnCard onCard;
 
-	public CollectController(ImageView iv1, ImageView iv2, ImageView iv3, ImageView iv4, Label lblTimer, VBox popupRoot) {
-		this.iv1 = iv1;
-		this.iv2 = iv2;
-		this.iv3 = iv3;
-		this.iv4 = iv4;
-		this.lblTimer = lblTimer;
-		this.popupRoot = popupRoot;
-	}
-
 	public void setOnCard(OnCard on) {
     	this.onCard = on;
 	}
