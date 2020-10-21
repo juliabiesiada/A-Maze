@@ -466,6 +466,12 @@ public class Controller {
 			else if (player.getName().equals("Mehdi") || player.getName().equals("mehdi")) {
 				player.setIconURL("/Assets/cyndaquil.gif");
 			}
+			else if (player.getName().equals("Gaia") || player.getName().equals("gaia") || player.getName().equals("Gaio") || player.getName().equals("gaio")) {
+				player.setIconURL("/Assets/slowbro.gif");
+			}
+			else if (player.getName().equals("Julia") || player.getName().equals("julia")) {
+				player.setIconURL("/Assets/espeon.gif");
+			}
 		}
 		drawEverything();
 	}
