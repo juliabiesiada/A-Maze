@@ -203,7 +203,6 @@ public class CardsController {
                     if (cards[prevPos.getRow()][prevPos.getColumn()].getOnCard() != OnCard.NOTHING) {
                         game = replaceObject(game, cards[prevPos.getRow()][prevPos.getColumn()].getOnCard(), prevPos, slidedLine[value - 1].getPosition());
                     }
-                    System.out.println(slidedLine[value - 1].getPosition().getRow() + " " + slidedLine[value - 1].getPosition().getColumn());
                     for (int i = 0; i < value - 1; i++) {
                         slidedLine[i] = cards[i + 1][prevPos.getColumn()];
                         slidedLine[i].setPosition(new Position(i, prevPos.getColumn()));
@@ -216,9 +215,15 @@ public class CardsController {
                 else {
                     slidedLine[0] = cards[prevPos.getRow()][prevPos.getColumn()];
                     slidedLine[0].setPosition(new Position(0, newPos.getColumn()));
+                    if (cards[prevPos.getRow()][prevPos.getColumn()].getOnCard() != OnCard.NOTHING) {
+                        game = replaceObject(game, cards[prevPos.getRow()][prevPos.getColumn()].getOnCard(), prevPos, slidedLine[0].getPosition());
+                    }
                     for (int i = 1; i < value; i++) {
                         slidedLine[i] = cards[i - 1][prevPos.getColumn()];
-                        slidedLine[i].setPosition(new Position(i - 1, prevPos.getColumn()));
+                        slidedLine[i].setPosition(new Position(i, prevPos.getColumn()));
+                        if (cards[i - 1][prevPos.getColumn()].getOnCard() != OnCard.NOTHING) {
+                            game = replaceObject(game, cards[i - 1][prevPos.getColumn()].getOnCard(), new Position(i - 1, prevPos.getColumn()), slidedLine[i].getPosition());
+                        }
                     }
                 }
                 for (int i = 0; i<value; i++) {
@@ -232,16 +237,33 @@ public class CardsController {
             if ((prevPos.getColumn() == 0 && newPos.getColumn() == value-1) || (prevPos.getColumn() == value-1 && newPos.getColumn() == 0)) {
                 //left to right
                 if (prevPos.getColumn() < newPos.getColumn()) {
+                    slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];
+                    slidedLine[value - 1].setPosition(new Position(newPos.getRow(), newPos.getColumn()));
+                    if (cards[prevPos.getRow()][prevPos.getColumn()].getOnCard() != OnCard.NOTHING) {
+                        game = replaceObject(game, cards[prevPos.getRow()][prevPos.getColumn()].getOnCard(), prevPos, slidedLine[value - 1].getPosition());
+                    }
                     for (int i = 0; i < value - 1; i++) {
                         slidedLine[i] = cards[prevPos.getRow()][i+1];
+                        slidedLine[i].setPosition(new Position(prevPos.getRow(), i));
+                        if (cards[prevPos.getRow()][i + 1].getOnCard() != OnCard.NOTHING) {
+                            game = replaceObject(game, cards[prevPos.getRow()][i + 1].getOnCard(), new Position(prevPos.getRow(), i + 1), slidedLine[i].getPosition());
+                        }
                     }
-                    slidedLine[value - 1] = cards[prevPos.getRow()][prevPos.getColumn()];
                 }
+
                 //right to left
                 else {
                     slidedLine[0] = cards[prevPos.getRow()][prevPos.getColumn()];
+                    slidedLine[0].setPosition(new Position(newPos.getRow(), 0));
+                    if (cards[prevPos.getRow()][prevPos.getColumn()].getOnCard() != OnCard.NOTHING) {
+                        game = replaceObject(game, cards[prevPos.getRow()][prevPos.getColumn()].getOnCard(), prevPos, slidedLine[0].getPosition());
+                    }
                     for (int i = 1; i < value; i++) {
                         slidedLine[i] = cards[prevPos.getRow()][i - 1];
+                        slidedLine[i].setPosition(new Position(prevPos.getRow(), i));
+                        if (cards[prevPos.getRow()][i - 1].getOnCard() != OnCard.NOTHING) {
+                            game = replaceObject(game, cards[prevPos.getRow()][i - 1].getOnCard(), new Position(prevPos.getRow(), i - 1), slidedLine[i].getPosition());
+                        }
                     }
                 }
                 for (int i = 0; i<value; i++) {
