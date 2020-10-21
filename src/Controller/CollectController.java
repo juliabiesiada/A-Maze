@@ -46,7 +46,7 @@ public class CollectController {
     List<Image> imgOrder;
     List<KeyCode> pressedKeys;
     Random rand;
-    private static final Integer STARTTIME = 5;
+    private static final Integer STARTTIME = 3;
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
     private Timeline timeline;
     EventHandler<KeyEvent> keyHandler;

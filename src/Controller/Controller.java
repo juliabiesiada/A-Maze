@@ -139,12 +139,6 @@ public class Controller {
 		spawnGems();
 		drawEverything();
 
-		for (int i=0; i<game.getCardsOnBoard().length; i++) {
-			for (int j=0; j<game.getCardsOnBoard().length; j++) {
-				System.out.println(game.getCardsOnBoard()[i][j].getOnCard().toString());
-			}
-		}
-
 	}
 
 	/**
