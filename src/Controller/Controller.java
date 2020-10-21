@@ -932,6 +932,7 @@ public class Controller {
 
 		FXMLLoader winnerLoader = new FXMLLoader(getClass().getResource("/View/youWin.fxml"));
 		WinController winController = new WinController();
+		winController.setPreviousStage(((Stage)lblBuff.getScene().getWindow()));
 		winnerLoader.setController(winController);
 
 		try {

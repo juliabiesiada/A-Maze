@@ -3,6 +3,7 @@ package Controller;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import Application.Main;
 import Model.Character;
 import Model.Game;
 import Model.Player;
@@ -250,7 +251,6 @@ public class CharacterController {
     			
     			Stage stage = new Stage();
     			stage.setScene(new Scene(root, 600, 620));
-    			
     			
     			stage.setTitle("A-maze");
     			
