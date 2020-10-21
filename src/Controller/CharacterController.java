@@ -115,6 +115,9 @@ public class CharacterController {
     	}
     }
 
+	/** Method that checks which way the player is switching charactersS
+	 * @param event click
+	 */
     @FXML
     void switchCharacter(MouseEvent event) {
     	
@@ -134,8 +137,9 @@ public class CharacterController {
 	 * @param delta indicates the direction of the switch (left/right)
 	 */
 	private void switchView(int delta) {
+
 		if (characterIndex + delta < 0) {
-			characterIndex = 3;
+			characterIndex = characters.size()-1;
 		}else if (characterIndex + delta >= characters.size()) {
 			characterIndex = 0;
 		}else {
@@ -145,7 +149,6 @@ public class CharacterController {
 			imgCharacter.setImage(new Image(characters.get(characterIndex).getImageURL()));
 			txtName.setText(characters.get(characterIndex).getName());
 		}
-
 	}
 
 	/**
