@@ -7,15 +7,14 @@ public class TurnManager {
     private Player[] players;
     private ArrayList<String> turns;
     int counter;
-    String lastPlayer;
-    int playersCounter;
+    boolean firstPlayer;
 
     public TurnManager(Player[] players) {
         this.players = players;
         this.turns = new ArrayList<>();
         turnInitializer();
         this.counter = 0;
-        this.playersCounter = 0;
+        this.firstPlayer = false;
     }
 
     //GETTER
@@ -82,17 +81,15 @@ public class TurnManager {
      */
     public void turnCompleted(Player player) {
         if (turns.get(0).equals(player.getName())) {
-            lastPlayer = player.getName();
             turns.remove(0);
-            if (playersCounter == 4) {
+            if (player.getName().equals(players[0].getName())) {
+                firstPlayer = true;
+            }
+            if (firstPlayer) {
                 for (Player value : players) {
                     turns.add(value.getName());
-                    playersCounter = 1;
                 }
-            }
-            if (!lastPlayer.equals(player.getName())) {
-                playersCounter++;
-                lastPlayer = player.getName();
+                firstPlayer = false;
             }
             counter++;
         }
