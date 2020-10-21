@@ -51,7 +51,7 @@ public class StartController {
 				thisStage.close();
 				
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/levels.fxml"));
-				Parent root = (Parent) loader.load();
+				Parent root = loader.load();
 				LevelController lvlController = loader.getController(); 
 				lvlController.startChoosing(game);
 				
@@ -75,14 +75,11 @@ public class StartController {
         private Player[] setPlayers(int i) {
 
             if (i == 2) {
-				Player[] players = {new Player(), new Player()};
-				return players;
+				return new Player[]{new Player(), new Player()};
 			} else if (i == 3) {
-				Player[] players = {new Player(), new Player(), new Player()};
-				return players;
+				return new Player[]{new Player(), new Player(), new Player()};
 			}else {
-				Player[] players = {new Player(), new Player(), new Player(), new Player()};
-				return players;
+				return new Player[]{new Player(), new Player(), new Player(), new Player()};
 			}
 		}
 	

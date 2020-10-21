@@ -18,24 +18,22 @@ public class LevelController {
 	GridPane boardBeginner;
 
 	Game game = new Game();
-	//TODO you should make the mouse event change this variable.
-	// Then the controller should have access to the variable.
 
 	public void startChoosing(Game game) {
 		this.game = game;
 	}
 	
-	public void chooseBeginner(MouseEvent mouseEvent) {
+	public void chooseBeginner() {
 		game.setLevel(Level.EASY);
 		chooseLevel(game);
 	}
 
-	public void chooseAdvanced(MouseEvent mouseEvent) {
+	public void chooseAdvanced() {
 		game.setLevel(Level.MEDIUM);
 		chooseLevel(game);
 	}
 	
-	public void chooseExpert(MouseEvent mouseEvent) {
+	public void chooseExpert() {
 		game.setLevel(Level.HARD);
 		chooseLevel(game);
 	}
@@ -48,7 +46,7 @@ public class LevelController {
 			thisStage.close();
 			
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/characters.fxml"));
-			Parent root = (Parent) loader.load();
+			Parent root = loader.load();
 			CharacterController charController = loader.getController(); 
 			charController.startChoosing(game);
 			

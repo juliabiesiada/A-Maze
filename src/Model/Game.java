@@ -11,12 +11,21 @@ public class Game {
     private Status status;
     private ArrayList<Position> buffPositions;
     private ArrayList<Position> debuffPositions;
+    private Position stairsPosition;
 
     public Game() {
         this.gems = new ArrayList<Gem>();
         this.status = new Status();
         this.buffPositions = new ArrayList<Position>();
         this.debuffPositions = new ArrayList<Position>();
+    }
+
+    public Position getStairsPosition() {
+        return stairsPosition;
+    }
+
+    public void setStairsPosition(Position stairsPosition) {
+        this.stairsPosition = stairsPosition;
     }
 
     public Status getStatus() {

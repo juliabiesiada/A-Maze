@@ -7,6 +7,8 @@ import Model.Character;
 import Model.Game;
 import Model.Player;
 import Model.PlayerColor;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -43,8 +45,8 @@ public class CharacterController {
     
     @FXML
     private HBox chosenCharacters;
-    
-    @FXML 
+
+    @FXML
     private Button btnStart;
     
     @FXML
@@ -56,11 +58,11 @@ public class CharacterController {
     boolean player2active;
     boolean player3active;
     boolean player4active;
-    ArrayList<Character> characters = new ArrayList<Character>();
-    ArrayList<VBox> previewVBoxs = new ArrayList<VBox>();
-    ArrayList<Label> previewLabels = new ArrayList<Label>();
-    ArrayList<Label> previewLabelsSet = new ArrayList<Label>();
-    ArrayList<ImageView> previewImageViews = new ArrayList<ImageView>();
+    ArrayList<Character> characters = new ArrayList<>();
+    ArrayList<VBox> previewVBoxs = new ArrayList<>();
+    ArrayList<Label> previewLabels = new ArrayList<>();
+    ArrayList<Label> previewLabelsSet = new ArrayList<>();
+    ArrayList<ImageView> previewImageViews = new ArrayList<>();
     
     public void initialize() {
 		//decides which image and name is currently displayed
@@ -152,7 +154,7 @@ public class CharacterController {
 	private boolean isNameUsed() {
 
     	for (int i = 0; i<game.getPlayers().length; i++) {
-    		if (namePlayer().equals(game.getPlayers()[i].getName())) {
+    		if (txtName.getText().equals(game.getPlayers()[i].getName())) {
     			return true;
 			}
 		}
@@ -161,14 +163,14 @@ public class CharacterController {
 
 	/**Sets player's icon and name when the character icon is pressed
 	 * Removes chosen characters from the list to prevent repeating characters
-	 * @param event
+	 *
 	 */
 	@FXML
-    void chooseCharacter(MouseEvent event) {
+    void chooseCharacter() {
     	
     	txtError.setText("");
     	
-    	if (namePlayer().isEmpty()) {
+    	if (txtName.getText().isEmpty()) {
     		txtError.setText("You know your hero needs a name, right?");
     	} else if (isNameUsed()) {
     		txtError.setText("This name is already used");
@@ -176,7 +178,7 @@ public class CharacterController {
     	
 			if (player1active) {
 				game.getPlayers()[0].setIconURL(characters.get(characterIndex).getImageURL());
-				game.getPlayers()[0].setName(namePlayer());
+				game.getPlayers()[0].setName(txtName.getText());
 				game.getPlayers()[0].setPlayerColor(PlayerColor.BLUE);
 				
 				setPreview(0);
@@ -186,7 +188,7 @@ public class CharacterController {
 				
 			}else if (player2active) {
 				game.getPlayers()[1].setIconURL(characters.get(characterIndex).getImageURL());
-				game.getPlayers()[1].setName(namePlayer());
+				game.getPlayers()[1].setName(txtName.getText());
 				game.getPlayers()[1].setPlayerColor(PlayerColor.GREEN);
 				
 				setPreview(1);
@@ -200,7 +202,7 @@ public class CharacterController {
 				
 			}else if (player3active) {
 				game.getPlayers()[2].setIconURL(characters.get(characterIndex).getImageURL());
-				game.getPlayers()[2].setName(namePlayer());
+				game.getPlayers()[2].setName(txtName.getText());
 				game.getPlayers()[2].setPlayerColor(PlayerColor.YELLOW);
 				
 				setPreview(2);
@@ -214,7 +216,7 @@ public class CharacterController {
 				
 			}else if (player4active) {
 				game.getPlayers()[3].setIconURL(characters.get(characterIndex).getImageURL());
-				game.getPlayers()[3].setName(namePlayer());
+				game.getPlayers()[3].setName(txtName.getText());
 				game.getPlayers()[3].setPlayerColor(PlayerColor.RED);
 
 				setPreview(3);
@@ -238,7 +240,7 @@ public class CharacterController {
     			thisStage.close();
     			
     			FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/mainBoard.fxml"));
-    			Parent root = (Parent) loader.load();
+    			Parent root = loader.load();
     			Controller mainController = loader.getController(); 
     			mainController.setGame(game);
     			mainController.createBoard();
@@ -262,11 +264,6 @@ public class CharacterController {
     	
 	}
 
-	private String namePlayer() {
-    	String name = txtName.getText();
-    	return name;
-    }
-
 	/**Setting the preview at the bottom of the screen
 	 * @param index Which player image and name should be added to preview
 	 */
@@ -275,12 +272,12 @@ public class CharacterController {
     	previewImageViews.get(index).setImage(new Image(characters.get(characterIndex).getImageURL()));
 		previewImageViews.get(index).setFitHeight(25);
 		previewImageViews.get(index).setFitWidth(30);
-		previewLabels.get(index).setText(namePlayer());
+		previewLabels.get(index).setText(txtName.getText());
 		previewVBoxs.get(index).setPadding(new Insets(0, 20, 0, 10));
 		previewVBoxs.get(index).getChildren().addAll(previewLabelsSet.get(index), previewImageViews.get(index),
 				previewLabels.get(index));
+		previewVBoxs.get(index).setId(""+index);
 		chosenCharacters.getChildren().add(previewVBoxs.get(index));
 
 	}
-	
 }

@@ -75,7 +75,6 @@ public class Controller {
 	String imgID;
 	Boolean rotationMove;
 	Boolean stairsSpawned;
-	Position stairsPosition;
 
 
 	public void setGame(Game game) {
@@ -478,7 +477,7 @@ public class Controller {
     }
     
     private void initHandlers() {
-    	//for panes
+
     	onPaneDragDetected = event -> {
 
 			Position rc = strToID(((Pane)event.getSource()).getId());
@@ -494,7 +493,8 @@ public class Controller {
 			event.acceptTransferModes(TransferMode.ANY);
 			event.consume();
 		};
-        
+
+        //both for panes and buff/debuff
         onDragDropped = event -> {
 
 			Dragboard db = event.getDragboard();
@@ -517,8 +517,6 @@ public class Controller {
 					}
 				}
 				if (selectedPlayer != null) {
-
-					//check if the same images
 
 					if (imgID.equals(iconBuff.getId())) {
 						game.getTurnsOrder().bufferReceived(selectedPlayer);
@@ -576,7 +574,6 @@ public class Controller {
 
 			if(event.getButton().equals(MouseButton.PRIMARY) && event.isShiftDown() && moveAllowed){
 
-				//Clock Wise Rotations
 				rotationMove = true;
 				history(game.getCardsOnBoard()[rc.getRow()][rc.getColumn()].getCardMatrix(), rc.getRow(), rc.getColumn());
 				int[][] rotMatrix = game.getCardsOnBoard()[rc.getRow()][rc.getColumn()].getCardMatrix();
@@ -584,11 +581,11 @@ public class Controller {
 				game.getCardsOnBoard()[rc.getRow()][rc.getColumn()].setCardMatrix(rotMatrix);
 				drawEverything();
 
-}else if (event.getButton().equals(MouseButton.PRIMARY) && moveAllowed && !rotationMove){
+				}else if (event.getButton().equals(MouseButton.PRIMARY) && moveAllowed && !rotationMove){
 
-Position startPosition = game.getTurnsOrder().whosPlaying().getPosition();
-int rStart = startPosition.getRow();
-int cStart = startPosition.getColumn();
+				Position startPosition = game.getTurnsOrder().whosPlaying().getPosition();
+				int rStart = startPosition.getRow();
+				int cStart = startPosition.getColumn();
 				int rEnd = rc.getRow();
 				int cEnd = rc.getColumn();
 
@@ -658,7 +655,14 @@ int cStart = startPosition.getColumn();
 		};
     	
     }
-    
+
+	/**checking in which direction the player is moving
+	 * @param rStart row of the card he is starting from
+	 * @param cStart column of the card he is starting from
+	 * @param rEnd row of destination card
+	 * @param cEnd column of destination card
+	 * @return direction as left, right, up or down
+	 */
     private String getDirection(int rStart, int cStart, int rEnd, int cEnd) {
     	
     	String direction = "";
@@ -679,7 +683,15 @@ int cStart = startPosition.getColumn();
      		
     	return direction;
     }
-    
+
+	/** This method check if player is allowed to move, and triggers the consequences of the move
+	 * like collect gem, collect debuff.
+	 * @param rStart row of the card he is starting from
+	 * @param cStart column of the card he is starting from
+	 * @param rEnd row of destination card
+	 * @param cEnd column of destination card
+	 * @throws IOException because in one of the cases a method to open a popup is called
+	 */
     private void movePlayer(int rStart, int cStart, int rEnd, int cEnd) throws IOException {
 
     	OnCard onCardStart = game.getCardsOnBoard()[rStart][cStart].getOnCard();
@@ -846,7 +858,7 @@ int cStart = startPosition.getColumn();
 			Random rand = new Random();
 			int randomIndex = rand.nextInt(cardsAvailable.size());
 			Card randomCard = cardsAvailable.get(randomIndex);
-			stairsPosition = cardsAvailable.get(randomIndex).getPosition();
+			game.setStairsPosition(cardsAvailable.get(randomIndex).getPosition());
 			game.getCardsOnBoard()[randomCard.getPosition().getRow()]
 					[randomCard.getPosition().getColumn()].setOnCard(OnCard.STAIRS);
 
@@ -855,7 +867,7 @@ int cStart = startPosition.getColumn();
 
 		} else {
 
-			sPanes[stairsPosition.getRow()][stairsPosition.getColumn()].getChildren().add(stairsIV);
+			sPanes[game.getStairsPosition().getRow()][game.getStairsPosition().getColumn()].getChildren().add(stairsIV);
 			StackPane.setAlignment(stairsIV, Pos.CENTER);
 		}
 
